@@ -13,13 +13,13 @@ from flask import Flask
 from pigal_flask import Pigal
 
 
+class Config:
+    PIGAL_ROOT_DIR = '.'
+
+
 app = Flask(__name__)
+app.config.from_object(Config)
 pigal = Pigal(app)
-
-
-@app.route('/')
-def index():
-    return "Hello World"
 
 
 if __name__ == "__main__":
