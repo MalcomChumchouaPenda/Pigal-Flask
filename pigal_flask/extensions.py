@@ -43,7 +43,6 @@ class Pigal:
                 rootname = nameparts[0].replace('_', '-')
                 url_prefix = '/' if rootname == 'home' else f'/{rootname}' 
                 ui_root = f'pages.{name}'
-                print(url_prefix, ui_root)
                 self._register_page(app, ui_root, url_prefix)
                 
     def _register_page(self, app, ui_root, url_prefix):
@@ -68,18 +67,38 @@ class PigalUi(Blueprint):
 
     """
 
-    def __init__(self, import_name, imported_file):
-        page_root = os.path.dirname(imported_file)
-        while 'routes' in page_root:
-            page_root = os.path.dirname(page_root)
-        root_name = os.path.basename(page_root)
-        static_url_path = os.path.join(page_root, 'static')
+    def __init__(self, imported_file):
+        # split path components
+        path_components = []
+        current_file = imported_file
+        while current_file != os.path.dirname(current_file):
+            path_components.append(os.path.basename(current_file))
+            current_file = os.path.dirname(current_file)
+        path_components.append(current_file)
+        path_components.reverse()
+
+        # search root name
+        if 'routes' in path_components:
+            i = path_components.index('routes')
+        else:
+            i = path_components.index('routes.py')
+        root_name = path_components[i-1]
+
+        # search import name
+        j = path_components.index('pages')
+        import_parts = path_components[j:]
+        import_parts[-1] = import_parts[-1].replace(".py", "")
+        import_name = ".".join(import_parts)
+
+        # search static url
+        static_url_path = os.path.join(*path_components[:i])
+        static_url_path = os.path.join(static_url_path, 'static')
         super().__init__(root_name, import_name, 
                          template_folder='templates', 
                          static_folder='static',
                          static_url_path=static_url_path)
         # self.login_required = login_required
-        
+
 
     # def roles_accepted(self, *roles):
     #     """Décorateur pour protéger les routes Flask qui renvoient des pages HTML."""

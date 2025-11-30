@@ -53,7 +53,9 @@ To create a page, we must create a *PigalUi* instance in *routes.py*.
 ```python
 from pigal_flask import PigalUi
 
-ui = PigalUi(__name__)
+
+ui = PigalUi(__file__)
+
 
 @ui.route('/')
 def index():
