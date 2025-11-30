@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pigal Home</title>
+    <link href="{{ url_for('home.static', filename='custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <h1>Bienvenue dans une page minimal</h1>
+    <p>Hey this is from Home page</p>
+    <a href="{{ url_for('demo.index') }}">Voir la page demo</a>
+</body>
+</html>

@@ -68,19 +68,16 @@ class PigalUi(Blueprint):
 
     """
 
-    def __init__(self, import_name, **kwargs):
-        # root_dir = current_app.config['PIGAL_ROOT_DIR']
-        print(import_name, kwargs)
-        names = re.findall('.*\.([A-Za-z0-9_]+)\.routes', import_name)
-        url_parts = import_name.split('.')
-        url_parts[-1] = 'static'
-        # url_path = os.path.join(ROOT_DIR, *url_parts)
-        super().__init__(names[0], import_name, 
+    def __init__(self, import_name, imported_file):
+        page_root = os.path.dirname(imported_file)
+        while 'routes' in page_root:
+            page_root = os.path.dirname(page_root)
+        root_name = os.path.basename(page_root)
+        static_url_path = os.path.join(page_root, 'static')
+        super().__init__(root_name, import_name, 
                          template_folder='templates', 
                          static_folder='static',
-                        #  static_url_path=url_path,
-                         static_url_path='./static' ,
-                         **kwargs)
+                         static_url_path=static_url_path)
         # self.login_required = login_required
         
 
