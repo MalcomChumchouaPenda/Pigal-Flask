@@ -41,10 +41,10 @@ pigal = Pigal(app)
 Then we can implement pages. each page has the following minimal structure:
 ```
 
-/page                      # A page directory
-├── /static                # Static files (Flask standard directory)
-├── /templates             # Jinja Templates (Flask standard directory)
-├── routes.py              # Page routing (Flask Blueprint)
+/page                # A page directory
+├── /static          # Static files (Flask standard directory)
+├── /templates       # Jinja Templates (Flask standard directory)
+├── routes.py        # Page routing (Flask Blueprint)
 
 ```
 
@@ -53,9 +53,7 @@ To create a page, we must create a *PigalUi* instance in *routes.py*.
 ```python
 from pigal_flask import PigalUi
 
-
 ui = PigalUi(__file__)
-
 
 @ui.route('/')
 def index():
@@ -63,7 +61,7 @@ def index():
 
 ```
 
-A *PigalUi* is a extended Flask Blueprint. It is automatically discovered and registered by *pigal* into Flask App. The name of the blueprint and its url prefix is automatically created based on page name. 
+A *PigalUi* is a extended Flask Blueprint whose *name* and *url_prefix* are automatically created. 
 
 For examples:
 
@@ -74,6 +72,27 @@ For examples:
 | home      | *home*         |*/*         |
 
 
+Some examples to *home* and *students* blueprints:
+
+```html
+
+<body>
+    <a href="{{ url_for('home.index') }}">home index page</a>
+    <a href="{{ url_for('home.some') }}">home some page</a>
+    <a href="{{ url_for('students.some') }}">students some page</a>
+</body>
+```
+
+> [!IMPORTANT]
+> An *home* page provide the special index page required by any pigal frontend project
+
+> [!NOTE]
+> *PigalUi* instances which are in routes module are automatically discovered and registered by *Pigal* instance.
+
+### Minimal Pigal Backend Project (to do)
+
+
+### Minimal Pigal Full Project (to do)
 > [!NOTE]
 > This is a general note about how to use Markdown.
 
@@ -85,20 +104,3 @@ For examples:
 
 > [!IMPORTANT]
 > All users must complete the security training by Friday.
-In the following html code we refer for examples to *home* and *students* blueprints:
-
-```html
-
-<body>
-    <a href="{{ url_for('home.index') }}">home index page</a>
-    <a href="{{ url_for('home.some') }}">home some page</a>
-    <a href="{{ url_for('students.some') }}">students some page</a>
-</body>
-
-```
-
-### Minimal Pigal Backend Project (to do)
-
-
-### Minimal Pigal Full Project (to do)
-
