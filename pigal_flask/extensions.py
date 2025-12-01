@@ -3,7 +3,12 @@ import os
 import re
 from importlib import import_module
 from flask import Blueprint
-from .constants import PAGE_NAME_PATTERN
+from flask_restx import Api, Namespace
+
+
+_PAGE_NAME_PATTERN = '^([a-z][a-z0-9_]*)$'
+_SERVICE_NAME_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
+_API_BP = Blueprint('api', __name__)
 
 
 class Pigal:
@@ -15,16 +20,28 @@ class Pigal:
     app: Flask
         flask Application to extend
 
+    Attributes
+    ----------
+    api: Flask-Restx.Api
+        Rest Api for services
+    api_bp: Flask.Blueprint
+        Rest Api blueprint
+
     """
 
     def __init__(self, app=None):
         super().__init__()
+        self.api = None
         if app is not None:
             self.init_app(app)
     
     def init_app(self, app):
         """Initializes the Flask app"""
         self._register_pages(app)
+        if 'PIGAL_API_VERSION' in app.config:
+            self._setup_api(app)
+            self.register_services(app)
+
 
     def _register_pages(self, app):
         app.logger.debug('looking for pages...')
@@ -34,7 +51,7 @@ class Pigal:
             for name in os.listdir(pages_dir):
                 if name.startswith('_'):
                     continue
-                nameparts = re.findall(PAGE_NAME_PATTERN, name)
+                nameparts = re.findall(_PAGE_NAME_PATTERN, name)
                 if len(nameparts) != 1:
                     app.logger.info(f'Ignore folder: {name}')
                     continue
@@ -49,6 +66,43 @@ class Pigal:
             # menus = import_module(f'{ui_root}.menus')
             app.register_blueprint(routes.ui, url_prefix=url_prefix)
             app.logger.info(f'Register page: {ui_root} => {url_prefix}')
+            return True
+        except (ModuleNotFoundError, AttributeError) as e:
+            app.logger.warning(e)
+
+
+    def _setup_api(self, app):
+        self.api = Api(_API_BP,
+                       version=app.config['PIGAL_API_VERSION'],
+                       title=app.config['PIGAL_API_TITLE'],
+                       description=app.config['PIGAL_API_DESCR'],
+                       doc='/doc/')
+        app.register_blueprint(_API_BP, url_prefix='/api')
+
+    def register_services(self, app):
+        app.logger.debug('looking for services...')
+        work_dir = os.path.abspath(app.config['PIGAL_ROOT_DIR'])
+        services_dir = os.path.join(work_dir, 'services')
+        if os.path.isdir(services_dir):
+            for name in os.listdir(services_dir):
+                if name.startswith('_'):
+                    continue
+                nameparts = re.findall(_SERVICE_NAME_PATTERN, name)
+                if len(nameparts) != 1:
+                    app.logger.warning('Ignore folder: '+ name)
+                    continue
+                rootname, version = nameparts[0]
+                rootname = rootname.replace('_', '-')
+                version = version.replace('_', '.')
+                url_prefix = f'/{rootname}/{version}'
+                service_root = f'services.{name}'
+                self.register_service(app, service_root, url_prefix)
+
+    def register_service(self, app, service_root, url_prefix):
+        try:
+            routes = import_module(f'{service_root}.routes')
+            self.api.add_namespace(routes.api, path=url_prefix)
+            app.logger.info(f'Register service: {service_root} => {url_prefix}')
             return True
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
@@ -116,3 +170,58 @@ class PigalUi(Blueprint):
     #         return decorated_function
     #     return decorator
 
+
+
+class PigalApi(Namespace):
+    """
+    The Extended Flask-Restx Namespace for Pigal Projects backend
+
+    Parameters
+    ----------
+    import_name: str
+        name used during import
+
+    """
+
+    def __init__(self, imported_file):
+        # split path components
+        path_components = []
+        current_file = imported_file
+        while current_file != os.path.dirname(current_file):
+            path_components.append(os.path.basename(current_file))
+            current_file = os.path.dirname(current_file)
+        path_components.append(current_file)
+        path_components.reverse()
+
+        # search root name
+        if 'routes' in path_components:
+            i = path_components.index('routes')
+        else:
+            i = path_components.index('routes.py')
+        root_name = path_components[i-1]
+        super().__init__(root_name)
+        
+    # @classmethod
+    # def login_required(cls, f):
+    #     """Décorateur pour protéger les routes API."""
+    #     @wraps(f)
+    #     def decorated_function(*args, **kwargs):
+    #         if not current_user.is_authenticated:
+    #             return {'message': 'Unauthorized'}, 401
+    #         return f(*args, **kwargs)
+    #     return decorated_function
+    
+    # @classmethod
+    # def roles_accepted(cls, *roles):
+    #     """Décorateur pour protéger les routes API avec des rôles spécifiques."""
+    #     def decorator(f):
+    #         @wraps(f)
+    #         # @login_required
+    #         def decorated_function(*args, **kwargs):
+    #             if not current_user.is_authenticated:
+    #                 return {'message': 'Unauthorized'}, 401
+    #             if len([n for n in roles if current_user.has_role(n)]) == 0:
+    #                 return {'message': 'Forbidden'}, 403
+    #             return f(*args, **kwargs)
+    #         return decorated_function
+    #     return decorator

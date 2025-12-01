@@ -11,7 +11,7 @@ if root_dir not in sys.path:
     sys.path.append(root_dir)
 
 
-# MINIMAL FRONTEND CONFIGURATION
+# MINIMAL BACKEND CONFIGURATION
 
 from flask import Flask
 from pigal_flask import Pigal
@@ -19,6 +19,9 @@ from pigal_flask import Pigal
 
 class Config:
     PIGAL_ROOT_DIR = '.'
+    PIGAL_API_VERSION = '1.0'
+    PIGAL_API_TITLE = 'Pigal API demo'
+    PIGAL_API_DESCR = 'A Pigal API for demo'
 
 
 app = Flask(__name__)

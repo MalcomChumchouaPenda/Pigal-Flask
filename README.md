@@ -22,15 +22,13 @@ We can have 03 types of Pigal Projects:
 
 ### Minimal Pigal Frontend Project
 
-We must create and initialize an app with Pigal extension
+We must create and initialize a *Pigal extension*
 
 ```python
 from pigal_flask import Pigal
 
-
 class Config:
     PIGAL_ROOT_DIR = '.'
-
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -48,7 +46,7 @@ Then we can implement pages. each page has the following minimal structure:
 
 ```
 
-To create a page, we must create a *PigalUi* instance in *routes.py*.
+To create a *page*, we must create a *PigalUi* instance in *routes.py*.
 
 ```python
 from pigal_flask import PigalUi
@@ -72,7 +70,7 @@ For examples:
 | home      | *home*         |*/*         |
 
 
-Some examples to *home* and *students* blueprints:
+Some examples with *home* and *students* blueprints:
 
 ```html
 
@@ -84,23 +82,55 @@ Some examples to *home* and *students* blueprints:
 ```
 
 > [!IMPORTANT]
-> An *home* page provide the special index page required by any pigal frontend project
+> An *home page* provide the special index *page* required by any *pigal frontend* project
 
 > [!NOTE]
-> *PigalUi* instances which are in routes module are automatically discovered and registered by *Pigal* instance.
+> *PigalUi* instances which are in *routes* module are automatically discovered and registered by *Pigal* instance.
 
-### Minimal Pigal Backend Project (to do)
 
+### Minimal Pigal Backend Project
+
+As for *Pigal Frontend*, we must create and initialize an *Pigal extension*
+
+```python
+# ... imports ...
+
+class Config:
+    PIGAL_ROOT_DIR = '.'
+    PIGAL_API_VERSION = '1.0'
+    PIGAL_API_TITLE = 'Pigal API demo'
+    PIGAL_API_DESCR = 'A Pigal API for demo'
+
+app = Flask(__name__)
+app.config.from_object(Config)
+pigal = Pigal(app)
+
+```
+
+Then we can implement *services*. each *service* has the following minimal structure:
+```
+
+/service             # A page directory
+├── /store           # data store (required directory)
+├── routes.py        # Service routing (Flask-Restx Api/Namespace)
+
+```
+
+To create a *service*, we must create a *PigalApi* instance in *routes.py*.
+
+```python
+
+from flask_restx import Resource
+from pigal_flask import PigalApi
+
+api = PigalApi(__file__)
+
+@api.route('/hello')
+class HelloApi(Resource):
+    def get(self):
+        return {'message':'Hello World'}
+
+```
 
 ### Minimal Pigal Full Project (to do)
-> [!NOTE]
-> This is a general note about how to use Markdown.
 
-> [!TIP]
-> Remember to save your work frequently to avoid losing progress.
-
-> [!WARNING]
-> Proceed with caution when modifying system files.
-
-> [!IMPORTANT]
-> All users must complete the security training by Friday.
