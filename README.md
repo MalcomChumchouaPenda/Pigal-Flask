@@ -98,8 +98,6 @@ As for *Pigal Frontend*, we must create and initialize an *Pigal extension*
 class Config:
     PIGAL_ROOT_DIR = '.'
     PIGAL_API_VERSION = '1.0'
-    PIGAL_API_TITLE = 'Pigal API demo'
-    PIGAL_API_DESCR = 'A Pigal API for demo'
 
 app = Flask(__name__)
 app.config.from_object(Config)

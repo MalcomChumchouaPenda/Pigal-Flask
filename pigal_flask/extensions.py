@@ -72,11 +72,12 @@ class Pigal:
 
 
     def _setup_api(self, app):
-        self.api = Api(_API_BP,
-                       version=app.config['PIGAL_API_VERSION'],
-                       title=app.config['PIGAL_API_TITLE'],
-                       description=app.config['PIGAL_API_DESCR'],
-                       doc='/doc/')
+        config = app.config
+        self.api = Api(_API_BP, 
+                       doc='/doc/', 
+                       version=config['PIGAL_API_VERSION'], 
+                       title=config.get('PIGAL_API_TITLE', 'Pigal Api'),
+                       description=config.get('PIGAL_API_DESCR', ''))
         app.register_blueprint(_API_BP, url_prefix='/api')
 
     def register_services(self, app):
@@ -200,7 +201,7 @@ class PigalApi(Namespace):
             i = path_components.index('routes.py')
         root_name = path_components[i-1]
         super().__init__(root_name)
-        
+
     # @classmethod
     # def login_required(cls, f):
     #     """Décorateur pour protéger les routes API."""
