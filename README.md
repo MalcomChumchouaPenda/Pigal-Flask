@@ -108,6 +108,7 @@ pigal = Pigal(app)
 ```
 
 Then we can implement *services*. each *service* has the following minimal structure:
+
 ```
 
 /service             # A page directory
@@ -131,6 +132,10 @@ class HelloApi(Resource):
         return {'message':'Hello World'}
 
 ```
+
+> [!NOTE]
+> *PigalApi* instances which are in *routes* module are automatically discovered and registered by *Pigal* instance.
+
 
 ### Minimal Pigal Full Project (to do)
 
