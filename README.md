@@ -74,8 +74,28 @@ For examples:
 | home      | *home*         |*/*         |
 
 
-**NB**: The *home* page is the special root page
+> [!NOTE]
+> This is a general note about how to use Markdown.
 
+> [!TIP]
+> Remember to save your work frequently to avoid losing progress.
+
+> [!WARNING]
+> Proceed with caution when modifying system files.
+
+> [!IMPORTANT]
+> All users must complete the security training by Friday.
+In the following html code we refer for examples to *home* and *students* blueprints:
+
+```html
+
+<body>
+    <a href="{{ url_for('home.index') }}">home index page</a>
+    <a href="{{ url_for('home.some') }}">home some page</a>
+    <a href="{{ url_for('students.some') }}">students some page</a>
+</body>
+
+```
 
 ### Minimal Pigal Backend Project (to do)
 
