@@ -63,11 +63,11 @@ A *PigalUi* is a extended Flask Blueprint whose *name* and *url_prefix* are auto
 
 For examples:
 
-| Page name | Blueprint name | Url prefix |
+| Page name | Blueprint name |Url prefix  |
 | ---       | ---            | ---        |
-| payments  | *payments*     |*/payments* |
-| students  | *students*     |*/students* |
-| home      | *home*         |*/*         |
+| payments  | *payments*     | `/payments`|
+| students  | *students*     |`/students` |
+| home      | *home*         |`/`         |
 
 
 Some examples with *home* and *students* blueprints:
@@ -133,6 +133,15 @@ class HelloApi(Resource):
 
 > [!NOTE]
 > *PigalApi* instances which are in *routes* module are automatically discovered and registered by *Pigal* instance.
+
+A *PigalApi* is a extended Flask-Restx Namespace whose *name* and *url_prefix* are automatically created. 
+
+For examples:
+
+| Service name | Namespace id | Url prefix        |
+| ---          | ---          | ---               |
+| payments_v0  | *payments*   | `/api/payments/v0`|
+| students_v2  | *students*   |`/api/students/v2` |
 
 
 ### Minimal Pigal Full Project (to do)

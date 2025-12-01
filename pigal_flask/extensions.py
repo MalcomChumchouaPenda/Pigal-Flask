@@ -6,8 +6,8 @@ from flask import Blueprint
 from flask_restx import Api, Namespace
 
 
-_PAGE_NAME_PATTERN = '^([a-z][a-z0-9_]*)$'
-_SERVICE_NAME_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
+_PAGE_PATTERN = '^([a-z][a-z0-9_]*)$'
+_SERVICE_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
 _API_BP = Blueprint('api', __name__)
 
 
@@ -51,7 +51,7 @@ class Pigal:
             for name in os.listdir(pages_dir):
                 if name.startswith('_'):
                     continue
-                nameparts = re.findall(_PAGE_NAME_PATTERN, name)
+                nameparts = re.findall(_PAGE_PATTERN, name)
                 if len(nameparts) != 1:
                     app.logger.info(f'Ignore folder: {name}')
                     continue
@@ -88,7 +88,7 @@ class Pigal:
             for name in os.listdir(services_dir):
                 if name.startswith('_'):
                     continue
-                nameparts = re.findall(_SERVICE_NAME_PATTERN, name)
+                nameparts = re.findall(_SERVICE_PATTERN, name)
                 if len(nameparts) != 1:
                     app.logger.warning('Ignore folder: '+ name)
                     continue
@@ -170,7 +170,6 @@ class PigalUi(Blueprint):
     #             return f(*args, **kwargs)
     #         return decorated_function
     #     return decorator
-
 
 
 class PigalApi(Namespace):
