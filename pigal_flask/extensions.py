@@ -6,10 +6,9 @@ from flask import Blueprint
 from .constants import PAGE_NAME_PATTERN
 
 
-
 class Pigal:
     """
-    The main class for adding utils to Flask for Pigal Projects
+    The Main Class for adding utils to Flask App
 
     Parameters
     ----------
@@ -28,7 +27,6 @@ class Pigal:
         self._register_pages(app)
 
     def _register_pages(self, app):
-        # print('cwd', os.getcwd(), os.path.abspath(app.config['PIGAL_ROOT_DIR']))
         app.logger.debug('looking for pages...')
         work_dir = os.path.abspath(app.config['PIGAL_ROOT_DIR'])
         pages_dir = os.path.join(work_dir, 'pages')
@@ -58,7 +56,7 @@ class Pigal:
 
 class PigalUi(Blueprint):
     """
-    The main class to extend Flask Blueprints for Pigal Projects frontend
+    The Extended Flask Blueprint for Pigal Projects frontend
 
     Parameters
     ----------
@@ -117,3 +115,4 @@ class PigalUi(Blueprint):
     #             return f(*args, **kwargs)
     #         return decorated_function
     #     return decorator
+
