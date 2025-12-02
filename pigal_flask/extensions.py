@@ -5,7 +5,7 @@ import sys
 import inspect
 from importlib import import_module
 
-from sqlalchemy.orm import declared_attr, DeclarativeBase
+from sqlalchemy.orm import declared_attr
 from flask import Blueprint
 from flask_restx import Api, Namespace
 from flask_sqlalchemy import SQLAlchemy
@@ -29,8 +29,6 @@ class Pigal:
     ----------
     api: Flask-Restx.Api
         Rest Api for services
-    api_bp: Flask.Blueprint
-        Rest Api blueprint
 
     """
 
@@ -43,9 +41,8 @@ class Pigal:
     def init_app(self, app):
         """Initializes the Flask app"""
         self._register_pages(app)
-        if 'PIGAL_API_VERSION' in app.config:
-            self._setup_api(app)
-            self._register_services(app)
+        self._setup_api(app)
+        self._register_services(app)
 
 
     def _register_pages(self, app):
@@ -80,9 +77,8 @@ class Pigal:
         config = app.config
         self.api = Api(_API_BP, 
                        doc='/doc/', 
-                       version=config['PIGAL_API_VERSION'], 
-                       title=config.get('PIGAL_API_TITLE', 'Pigal Api'),
-                       description=config.get('PIGAL_API_DESCR', ''))
+                       version=config['PIGAL_PROJECT_VERSION'], 
+                       title= config['PIGAL_PROJECT_NAME'] + 'Api')
         app.register_blueprint(_API_BP, url_prefix='/api')
 
     def _register_services(self, app):
@@ -303,16 +299,4 @@ class PigalDb(SQLAlchemy):
         
         # store models binds
         app.config['SQLALCHEMY_BINDS'] = bind_keys
-    
-
-    def _prepare_models(self, name, models):
-        '''add __bind_key__ and __tablename__ to models'''
-        Model = self.Model
-        print('now i got', self.Model, type(self.Model))
-        for n, obj in inspect.getmembers(models):
-            if inspect.isclass(obj) and issubclass(obj, Model):
-                # setattr(obj, '__bind_key__', name)
-                # setattr(obj, '__tablename__', f'{name}')
-                print(obj.__tablename__, obj.__bind_key__)
-                # print(n, type(obj))
 

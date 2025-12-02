@@ -131,7 +131,7 @@ We can create services in `services` directory. Each service has the following m
 ```
 
 /service             # A service directory
-├── /static          # Static files (Flask directory)
+├── /store           # Data store (Pigal directory)
 ├── routes.py        # Service routing (Flask-Restx Namespace)
 
 ```
@@ -214,7 +214,7 @@ Now we can create *database*. each *database* is created inside one *service*. A
 
 ```
 /service             
-├── /static          # Static files (Flask directory)
+├── /store           # Data store (Pigal directory)
 ├── routes.py        # Service routing (Flask-Restx Namespace)
 ├── models.py        # Database modelling (Flask-SqlAlchemy Model)
 ├── ...   
