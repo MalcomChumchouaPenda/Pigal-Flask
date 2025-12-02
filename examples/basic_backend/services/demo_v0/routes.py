@@ -2,6 +2,7 @@
 from flask_restx import Resource
 from pigal_flask import PigalApi
 
+
 api = PigalApi(__file__)
 
 @api.route('/hello')

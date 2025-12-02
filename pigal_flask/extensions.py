@@ -4,11 +4,11 @@ import re
 import sys
 import inspect
 from importlib import import_module
-
-from sqlalchemy.orm import declared_attr
 from flask import Blueprint
 from flask_restx import Api, Namespace
 from flask_sqlalchemy import SQLAlchemy
+from .utils import bind_key, tablename
+
 
 
 _PAGE_PATTERN = '^([a-z][a-z0-9_]*)$'
@@ -78,7 +78,7 @@ class Pigal:
         self.api = Api(_API_BP, 
                        doc='/doc/', 
                        version=config['PIGAL_PROJECT_VERSION'], 
-                       title= config['PIGAL_PROJECT_NAME'] + 'Api')
+                       title= config['PIGAL_PROJECT_NAME'] + ' Api')
         app.register_blueprint(_API_BP, url_prefix='/api')
 
     def _register_services(self, app):
@@ -225,22 +225,6 @@ class PigalApi(Namespace):
     #     return decorator
 
 
-def __find_key(cls):
-    module = sys.modules[cls.__module__]
-    root_path = os.path.abspath(module.__file__)
-    while 'models' in root_path:
-        root_path = os.path.dirname(root_path)
-    return os.path.basename(root_path)
-    
-@declared_attr
-def __bind_key__(cls):
-    return __find_key(cls)
-    
-@declared_attr
-def __tablename__(cls):
-    key = __find_key(cls)
-    name = cls.__name__.lower()
-    return f'{key}_{name}'
     
 
 class PigalDb(SQLAlchemy):
@@ -248,8 +232,8 @@ class PigalDb(SQLAlchemy):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        setattr(self.Model, '__tablename__', __tablename__)
-        setattr(self.Model, '__bind_key__', __bind_key__)
+        setattr(self.Model, '__tablename__', tablename)
+        setattr(self.Model, '__bind_key__', bind_key)
 
     def init_app(self, app):
         self._prepare_db(app)
