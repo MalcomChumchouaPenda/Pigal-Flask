@@ -225,8 +225,6 @@ class PigalApi(Namespace):
     #     return decorator
 
 
-    
-
 class PigalDb(SQLAlchemy):
     """The Extended Db for Pigal Projects backend"""
 
