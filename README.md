@@ -11,7 +11,7 @@ The architecture of Pigal project is based on three components (as shown in diag
 - *services* which provide domain specific backend or API
 
 
-![SVG Image](.\docs\diagrams\pigal_project_architecture.drawio.svg)
+![SVG Image](docs/diagrams/pigal_project_architecture.drawio.svg)
 
 Pigal follow a modular architecture
 
