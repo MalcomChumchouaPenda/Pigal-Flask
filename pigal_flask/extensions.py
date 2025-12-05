@@ -10,7 +10,6 @@ from flask_sqlalchemy import SQLAlchemy
 from .utils import bind_key, tablename
 
 
-
 _PAGE_PATTERN = '^([a-z][a-z0-9_]*)$'
 _SERVICE_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
 _API_BP = Blueprint('api', __name__)

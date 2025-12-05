@@ -7,4 +7,5 @@ ui = PigalUi(__file__)
 
 @ui.route('/')
 def index():
-    return render_template('demo-index.jinja')
+    return render_template('students-index.html')
+

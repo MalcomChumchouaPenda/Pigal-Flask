@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pigal Home</title>
-    <link href="{{ url_for('demo.static', filename='custom.css') }}" rel="stylesheet">
+    <link href="{{ url_for('payments.static', filename='custom.css') }}" rel="stylesheet">
 </head>
 <body>
     <h1>Bienvenue dans une page demo</h1>
     <p>Hey this is from Demo page</p>
-    <a href="{{ url_for('home.index') }}">Revenir a la page d'accueil</a>
+    <p>{{ request.endpoint }}</p>
+    <p>{{ request.url }}</p>
+    <a href="{{ url_for('students.index') }}">Revenir a la page etudiants</a>
 </body>
 </html>

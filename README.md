@@ -2,6 +2,18 @@
 
 Pigal-Flask is an extension for Flask to create Pigal Projects
 
+## Introduction
+Pigal-Flask is facilitates the development of Pigal project. A Pigal project aims to create an modular web portal for an organisation which need to build progressively an integrated information system. **Pigal** means in french ("**P**ortail d'**i**nformation et de **g**estion des **a**ctivites en **l**igne").
+
+The architecture of Pigal project is based on three components (as shown in diagram):
+- *app* which provide home pages, auth services and global theme
+- *pages* which provide domain specific frontend or UI
+- *services* which provide domain specific backend or API
+
+
+![SVG Image](docs\diagrams\pigal_project_architecture.drawio.svg)
+
+Pigal follow a modular architecture
 
 ## Quickstart
 A Pigal Project has the following structure:
@@ -103,22 +115,18 @@ A `PigalUi` is a extended Flask Blueprint whose `name` and `url_prefix` are auto
 | ---        | ---            | ---         |
 | `payments` | `payments`     | `/payments` |
 | `students` | `students`     | `/students` |
-| `home`     | `home`         | `/`         |
 
 
-Some examples with `home` and `students` blueprints:
+Some examples with `payments` and `students` blueprints:
 
 ```html
 
 <body>
-    <a href="{{ url_for('home.index') }}">home index page</a>
-    <a href="{{ url_for('home.some') }}">home some page</a>
+    <a href="{{ url_for('payments.index') }}">payments index page</a>
+    <a href="{{ url_for('payments.some') }}">payments some page</a>
     <a href="{{ url_for('students.some') }}">students some page</a>
 </body>
 ```
-
-> [!IMPORTANT]
-> An *home* page provide the special index page required by any Pigal frontend
 
 > [!NOTE]
 > `PigalUi` instances which are in any `pages/<page_id>/routes.py` module are automatically discovered and registered by `Pigal` extension.
