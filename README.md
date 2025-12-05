@@ -16,7 +16,7 @@ The architecture of Pigal project is based on three components (as shown in diag
 Pigal follow a modular architecture
 
 ## Quickstart
-A Pigal Project has the following structure:
+A Pigal Project has the minimal following structure:
 ```
 
 /project
@@ -42,10 +42,10 @@ To create any project, we must then:
 A core `app` has the following minimal structure:
 
 ```
-/app                
-├── __init__.py     # Flask App factory module
-├── config.py       # Flask App configurations
-├── extensions.py   # Flask extensions initialization
+/app 
+├── __init__.py        # Flask App factory module
+├── config.py          # Flask App configurations
+├── extensions.py      # Flask extensions initialization
 
 ```
 
