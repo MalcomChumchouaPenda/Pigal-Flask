@@ -15,6 +15,10 @@ _SERVICE_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
 _API_BP = Blueprint('api', __name__)
 
 
+class InvalidProjectStructure(Exception):
+    pass
+
+
 class Pigal:
     """
     The Main Class for adding utils to Flask App
@@ -39,10 +43,21 @@ class Pigal:
     
     def init_app(self, app):
         """Initializes the Flask app"""
-        self._register_pages(app)
-        self._setup_api(app)
-        self._register_services(app)
+        self._check_project_structure(app)
+        # self._register_pages(app)
+        # self._setup_api(app)
+        # self._register_services(app)
 
+    def _check_project_structure(self, app):
+        project_dir = os.path.dirname(app.instance_path)
+        print(project_dir)
+        for required_name in ('app', 'pages', 'services'):
+            required_dir = os.path.join(project_dir, required_name)
+            print('test', required_dir)
+            if not os.path.isdir(required_dir):
+                msg = f"'{required_name}' directory is required but not found"
+                raise InvalidProjectStructure(msg)
+        
 
     def _register_pages(self, app):
         app.logger.debug('looking for pages...')

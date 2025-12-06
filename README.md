@@ -40,6 +40,9 @@ A Pigal Project has the minimal following structure:
 
 ```
 
+>[!IMPORTANT]
+> This structure is required for any Pigal project
+
 We can have 03 types of Pigal Projects:
 - Project with pages only (*Pigal Frontend Project*)
 - Project with services only (*Pigal Backend Project*)

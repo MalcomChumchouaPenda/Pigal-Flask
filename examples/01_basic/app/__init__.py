@@ -15,5 +15,6 @@ from .extensions import pigal
 from .config import Config
 
 app = Flask(__name__)
+print(app.instance_path, app.import_name)
 app.config.from_object(Config)
 pigal.init_app(app)
