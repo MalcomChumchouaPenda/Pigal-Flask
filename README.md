@@ -1,19 +1,33 @@
 # Pigal-Flask
 
-Pigal-Flask is an extension for Flask to create Pigal Projects
+Pigal-Flask is an Flask extension which facilitates the creation and management of modular web portal for organisations.
 
-## Introduction
-Pigal-Flask is facilitates the development of Pigal project. A Pigal project aims to create an modular web portal for an organisation which need to build progressively an integrated information system. **Pigal** means in french ("**P**ortail d'**i**nformation et de **g**estion des **a**ctivites en **l**igne").
+**Table of contents:**
+1. [Principles](#principles)
+2. [Installation](#installation)
+3. [Quickstart](#quickstart)
+4. [Customization](#customization)
+5. [Contributions](#contributions)
+6. [Licences](#licences)
 
-The architecture of Pigal project is based on three components (as shown in diagram):
+
+
+## Principles
+Pigal-Flask facilitates the development of Pigal project. A Pigal project aims to create an modular web portal for an organisation which need to build progressively an integrated information system. **Pigal** means in french ("**P**ortail d'**i**nformation et de **g**estion des **a**ctivites en **l**igne").
+
+A Pigal project follow a modular architecture based on 03 components:
 - *app* which provide home pages, auth services and global theme
 - *pages* which provide domain specific frontend or UI
 - *services* which provide domain specific backend or API
 
 
-![SVG Image](docs/diagrams/pigal_project_architecture.drawio.svg)
 
-Pigal follow a modular architecture
+![SVG Image](docs/diagrams/pigal_project_architecture.drawio.svg){width="50%"; style="display: block; margin: 0 auto" }
+
+
+## Installation
+
+*---(todo)---*
 
 ## Quickstart
 A Pigal Project has the minimal following structure:
@@ -171,7 +185,7 @@ A `PigalApi` is a extended Flask-Restx `Namespace` whose `name` and `url_prefix`
 | `students_v2` | `students`   | `/api/students/v2` |
 
 
-## Other Features
+## Customization
 
 ### Create minimal database
 
@@ -260,3 +274,9 @@ query = db.session.query(Person)
 print(query.all())
 
 ```
+
+## Contributions
+
+
+## Licences
+

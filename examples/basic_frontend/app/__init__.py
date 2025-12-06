@@ -16,4 +16,5 @@ from .config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+# print('\n\ttest', app.instance_path)
 pigal.init_app(app)
