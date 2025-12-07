@@ -22,7 +22,6 @@ def app1(tmpdir):
                 instance_path=tmpdir.strpath, 
                 instance_relative_config=True)
 
-
 def test_checks_app_directory_in_project_directory(app1):
     app = app1
     with pytest.raises(InvalidProjectStructure) as exc_info:
@@ -34,23 +33,16 @@ def test_checks_app_directory_in_project_directory(app1):
 
 @pytest.fixture
 def app2(tmpdir):
-    """Flask app created inside app directory"""
+    """Flask app without pages directory"""
+    services_dir = tmpdir / 'services'
+    services_dir.mkdir()
     app_dir = tmpdir / 'app'
     app_dir.mkdir()
-    app = Flask(__name__, 
+    return Flask(__name__, 
                 instance_path=app_dir, 
                 instance_relative_config=True)
-    app.project_dir = tmpdir
-    return app
-
-@pytest.fixture
-def project1(app2):
-    """Flask app without pages directory"""
-    services_dir = app2.project_dir / 'services'
-    services_dir.mkdir()
         
-
-def test_checks_pages_directory_in_project_directory(app2, project1):
+def test_checks_pages_directory_in_project_directory(app2):
     app = app2
     with pytest.raises(InvalidProjectStructure) as exc_info:
         pigal = Pigal()
@@ -60,14 +52,18 @@ def test_checks_pages_directory_in_project_directory(app2, project1):
 
 
 @pytest.fixture
-def project2(app2):
+def app3(tmpdir):
     """Flask app without services directory"""
-    pages_dir = app2.project_dir / 'pages'
+    pages_dir = tmpdir / 'pages'
     pages_dir.mkdir()
+    app_dir = tmpdir / 'app'
+    app_dir.mkdir()
+    return Flask(__name__, 
+                instance_path=app_dir, 
+                instance_relative_config=True)
 
-        
-def test_checks_services_directory_in_project_directory(app2, project2):
-    app = app2
+def test_checks_services_directory_in_project_directory(app3):
+    app = app3
     with pytest.raises(InvalidProjectStructure) as exc_info:
         pigal = Pigal()
         pigal.init_app(app)
@@ -76,30 +72,34 @@ def test_checks_services_directory_in_project_directory(app2, project2):
 
 
 @pytest.fixture
-def app3(app2):
-    """Flask app directory included in PYTHONPATH"""
-    app = app2
-    project_path = app.project_dir.strpath
+def app4(tmpdir):
+    """Flask app with pages and services directory"""
+    project_path = tmpdir.strpath
     if project_path not in sys.path:
         sys.path.append(project_path)
-    services_dir = app.project_dir / 'services'
+    services_dir = tmpdir / 'services'
     services_dir.mkdir()
-    pages_dir = app.project_dir / 'pages'
+    pages_dir = tmpdir / 'pages'
     pages_dir.mkdir()
+    app_dir = tmpdir / 'app'
+    app_dir.mkdir()
+    app = Flask(__name__, 
+                instance_path=app_dir, 
+                instance_relative_config=True)
     app.pages_dir = pages_dir
     app.services_dir = services_dir
     return app
 
-def test_requires_project_name_in_app_config(app3):
-    app = app3
+def test_requires_project_name_in_app_config(app4):
+    app = app4
     with pytest.raises(InvalidProjectConfig) as exc_info:
         pigal = Pigal()
         pigal.init_app(app)
     err_msg = "Configuration parameter 'PIGAL_PROJECT_NAME' is missing"
     assert str(exc_info.value) == err_msg
 
-def test_requires_project_version_in_app_config(app3):
-    app = app3
+def test_requires_project_version_in_app_config(app4):
+    app = app4
     app.config['PIGAL_PROJECT_NAME'] = 'test'
     with pytest.raises(InvalidProjectConfig) as exc_info:
         pigal = Pigal()
@@ -109,26 +109,40 @@ def test_requires_project_version_in_app_config(app3):
 
 
 @pytest.fixture
-def app4(app3):
+def app5(app4):
     """Flask app with minimal config"""
-    app = app3
+    app = app4
     app.config['PIGAL_PROJECT_NAME'] = 'demo'
-    app.config['PIGAL_PROJECT_VERSION'] = 'demo'
+    app.config['PIGAL_PROJECT_VERSION'] = '0.1'
     return app
 
-@pytest.fixture
-def pigal_ui(monkeypatch):
-    class PigalUi(Blueprint):
-        def __init__(self, file):
-            dir_ = os.path.dirname(file)
-            name = os.path.basename(dir_)
-            super().__init__(name, f'pages.{name}.routes')
-    monkeypatch.setattr(utils, 'PigalUi', PigalUi)
+def test_create_a_default_rest_api(app5):
+    app = app5
+    pigal = Pigal()
+    pigal.init_app(app)
+    assert isinstance(pigal.api, Api)
+    assert pigal.api.title == app.config['PIGAL_PROJECT_NAME'] + ' API'
+    assert pigal.api.version == app.config['PIGAL_PROJECT_VERSION']
+
+def test_create_an_api_blueprint(app5):
+    app = app5
+    pigal = Pigal()
+    pigal.init_app(app)
+    assert pigal.api.app == app.blueprints['api']
+    assert pigal.api.app.url_prefix == '/api'
+
+
+class FakePigalUi(Blueprint):
+    def __init__(self, file):
+        dir_ = os.path.dirname(file)
+        name = os.path.basename(dir_)
+        super().__init__(name, f'pages.{name}.routes')
 
 @pytest.fixture
-def project3(app4, pigal_ui):
-    """Complete project"""
-    pages_dir = app4.pages_dir
+def app6(app5, monkeypatch):
+    """Flask app with pigal pages"""
+    app = app5
+    pages_dir = app.pages_dir
     for name in ('demo1', 'demo2', '_demo3'):
         page_dir = pages_dir / name
         page_dir.mkdir()
@@ -138,38 +152,21 @@ def project3(app4, pigal_ui):
             """    
         routes = page_dir / 'routes.py'
         routes.write_text(code, encoding='utf-8')
+    monkeypatch.setattr(utils, 'PigalUi', FakePigalUi)
+    return app
 
-
-def test_registers_pages_ui_as_blueprint(app4, project3):
-    app = app4
+def test_registers_pages_ui_as_blueprint(app6):
+    app = app6
     pigal = Pigal()
     pigal.init_app(app)
     assert 'demo1' in app.blueprints
     assert 'demo2' in app.blueprints
 
-
-def test_ignores_private_directories_within_pages_directory(app4, project3):
-    app = app4
+def test_ignores_private_directories_within_pages_directory(app6):
+    app = app6
     pigal = Pigal()
     pigal.init_app(app)
-    assert '_demo1' not in app.blueprints
-    assert '__demo2' not in app.blueprints
-
-
-def test_create_a_default_rest_api(app4):
-    app = app4
-    pigal = Pigal()
-    pigal.init_app(app)
-    assert isinstance(pigal.api, Api)
-    assert pigal.api.title == app.config['PIGAL_PROJECT_NAME'] + ' API'
-    assert pigal.api.version == app.config['PIGAL_PROJECT_VERSION']
-
-def test_create_an_api_blueprint(app4):
-    app = app4
-    pigal = Pigal()
-    pigal.init_app(app)
-    assert pigal.api.app == app.blueprints['api']
-    assert pigal.api.app.url_prefix == '/api'
+    assert '_demo3' not in app.blueprints
 
 
 # @pytest.fixture
