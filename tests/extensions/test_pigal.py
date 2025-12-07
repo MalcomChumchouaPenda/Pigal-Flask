@@ -1,8 +1,13 @@
 
+import os
 import sys
+
 import pytest
-from flask import Flask
+from mock import MagicMock
+from flask import Flask, Blueprint
 from flask_restx import Api
+
+from pigal_flask import utils
 from pigal_flask.extensions import Pigal, InvalidProjectStructure, InvalidProjectConfig
 
 
@@ -107,16 +112,24 @@ def app4(app3):
     app.config['PIGAL_PROJECT_VERSION'] = 'demo'
     return app
 
+@pytest.fixture
+def pigal_ui(monkeypatch):
+    class PigalUi(Blueprint):
+        def __init__(self, file):
+            dir_ = os.path.dirname(file)
+            name = os.path.basename(dir_)
+            super().__init__(name, f'pages.{name}.routes')
+    monkeypatch.setattr(utils, 'PigalUi', PigalUi)
 
 @pytest.fixture
-def project3(app4):
+def project3(app4, pigal_ui):
     """Complete project"""
     pages_dir = app4.pages_dir
     for name in ('demo1', 'demo2'):
         page_dir = pages_dir / name
         page_dir.mkdir()
         code = f"""
-            \nfrom pigal_flask import PigalUi
+            \nfrom pigal_flask.utils import PigalUi
             \nui = PigalUi(__file__)
             \n@ui.route('/')
             \ndef index():
@@ -145,8 +158,10 @@ def test_registers_pages_ui_with_url_prefix(app4, project3):
 
 
 @pytest.fixture
-def project4(app4):
+def project4(app4, monkeypatch):
     """Project with private directories"""
+    monkeypatch.setattr(utils, 'PigalUi', MagicMock())
+    monkeypatch.setattr(utils, 'PigalApi', MagicMock())
     pages_dir = app4.pages_dir
     for name in ('_demo1', '__demo2'):
         page_dir = pages_dir / name
@@ -181,3 +196,21 @@ def test_create_an_api_blueprint(app4, project4):
     pigal.init_app(app)
     assert pigal.api.app == app.blueprints['api']
     assert pigal.api.app.url_prefix == '/api'
+
+
+# @pytest.fixture
+# def project5(app4):
+#     """Project with services"""
+#     services_dir = app4.services_dir
+#     for name in ('demo_v1', 'demo_v2'):
+#         service_dir = services_dir / name
+#         service_dir.mkdir()
+#         code = f"""
+#             \nfrom pigal_flask import PigalApi
+#             \nui = PigalUi(__file__)
+#             \n@ui.route('/')
+#             \ndef index():
+#             \n\treturn 'This is {name}'
+#             """    
+#         routes = page_dir / 'routes.py'
+#         routes.write_text(code, encoding='utf-8')
