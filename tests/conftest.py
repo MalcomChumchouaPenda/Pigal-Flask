@@ -16,10 +16,10 @@ from flask import Flask
 @pytest.fixture
 def app():
     """Flask app for testing"""
-    with tempfile.TemporaryDirectory() as tempdir:
-        appdir = os.path.join(tempdir, 'app')
+    with tempfile.TemporaryDirectory() as temp_dir:
+        app_dir = os.path.join(temp_dir, 'app')
         app = Flask(__name__, 
-                    instance_path=appdir, 
+                    instance_path=app_dir, 
                     instance_relative_config=True)
         yield app
 

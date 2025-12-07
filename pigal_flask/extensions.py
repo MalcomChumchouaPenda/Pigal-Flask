@@ -50,10 +50,8 @@ class Pigal:
 
     def _check_project_structure(self, app):
         project_dir = os.path.dirname(app.instance_path)
-        print(project_dir)
         for required_name in ('app', 'pages', 'services'):
             required_dir = os.path.join(project_dir, required_name)
-            print('test', required_dir)
             if not os.path.isdir(required_dir):
                 msg = f"'{required_name}' directory is required but not found"
                 raise InvalidProjectStructure(msg)

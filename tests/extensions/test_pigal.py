@@ -1,20 +1,15 @@
 
-import os
-import tempfile
 import pytest
 from flask import Flask
 from pigal_flask.extensions import Pigal, InvalidProjectStructure
 
 
 @pytest.fixture
-def app1():
+def app1(tmpdir):
     """Flask app for testing"""
-    with tempfile.TemporaryDirectory() as tempdir:
-        appdir = os.path.join(tempdir)
-        app = Flask(__name__, 
-                    instance_path=appdir, 
-                    instance_relative_config=True)
-        yield app
+    return Flask(__name__, 
+                instance_path=tmpdir.strpath, 
+                instance_relative_config=True)
 
 def test_checks_app_directory_in_project_directory(app1):
     app = app1
@@ -26,16 +21,15 @@ def test_checks_app_directory_in_project_directory(app1):
 
 
 @pytest.fixture
-def app2():
+def app2(tmpdir):
     """Flask app without pages directory"""
-    with tempfile.TemporaryDirectory() as tempdir:
-        appdir = os.path.join(tempdir, 'app')
-        app = Flask(__name__, 
-                    instance_path=appdir, 
-                    instance_relative_config=True)
-        os.makedirs(os.path.join(tempdir, 'services'))
-        os.makedirs(appdir)
-        yield app
+    services_dir = tmpdir / 'services'
+    services_dir.mkdir()
+    app_dir = tmpdir / 'app'
+    app_dir.mkdir()
+    return Flask(__name__, 
+                instance_path=app_dir, 
+                instance_relative_config=True)
         
 def test_checks_pages_directory_in_project_directory(app2):
     app = app2
@@ -47,16 +41,15 @@ def test_checks_pages_directory_in_project_directory(app2):
 
 
 @pytest.fixture
-def app3():
+def app3(tmpdir):
     """Flask app without services directory"""
-    with tempfile.TemporaryDirectory() as tempdir:
-        appdir = os.path.join(tempdir, 'app')
-        app = Flask(__name__, 
-                    instance_path=appdir, 
-                    instance_relative_config=True)
-        os.makedirs(os.path.join(tempdir, 'pages'))
-        os.makedirs(appdir)
-        yield app
+    pages_dir = tmpdir / 'pages'
+    pages_dir.mkdir()
+    app_dir = tmpdir / 'app'
+    app_dir.mkdir()
+    return Flask(__name__, 
+                instance_path=app_dir, 
+                instance_relative_config=True)
         
 def test_checks_services_directory_in_project_directory(app3):
     app = app3
