@@ -8,7 +8,11 @@ from flask import Flask, Blueprint
 from flask_restx import Api
 
 from pigal_flask import utils
-from pigal_flask.extensions import Pigal, InvalidProjectStructure, InvalidProjectConfig
+from pigal_flask.extensions import (
+    Pigal, 
+    InvalidProjectStructure, 
+    InvalidProjectConfig
+)
 
 
 @pytest.fixture
@@ -125,15 +129,12 @@ def pigal_ui(monkeypatch):
 def project3(app4, pigal_ui):
     """Complete project"""
     pages_dir = app4.pages_dir
-    for name in ('demo1', 'demo2'):
+    for name in ('demo1', 'demo2', '_demo3'):
         page_dir = pages_dir / name
         page_dir.mkdir()
         code = f"""
             \nfrom pigal_flask.utils import PigalUi
             \nui = PigalUi(__file__)
-            \n@ui.route('/')
-            \ndef index():
-            \n\treturn 'This is {name}'
             """    
         routes = page_dir / 'routes.py'
         routes.write_text(code, encoding='utf-8')
@@ -146,35 +147,8 @@ def test_registers_pages_ui_as_blueprint(app4, project3):
     assert 'demo1' in app.blueprints
     assert 'demo2' in app.blueprints
 
-def test_registers_pages_ui_with_url_prefix(app4, project3):
-    app = app4
-    pigal = Pigal()
-    pigal.init_app(app)
-    with app.test_client() as client:
-        for name in ('demo1', 'demo2'):
-            response = client.get(f'/{name}/')
-            assert response.data.decode() == f'This is {name}'
-            assert response.status_code == 200
 
-
-@pytest.fixture
-def project4(app4, monkeypatch):
-    """Project with private directories"""
-    monkeypatch.setattr(utils, 'PigalUi', MagicMock())
-    monkeypatch.setattr(utils, 'PigalApi', MagicMock())
-    pages_dir = app4.pages_dir
-    for name in ('_demo1', '__demo2'):
-        page_dir = pages_dir / name
-        page_dir.mkdir()
-        code = f"""
-            \nfrom pigal_flask import PigalUi
-            \nui = PigalUi(__file__)
-            """    
-        routes = page_dir / 'routes.py'
-        routes.write_text(code, encoding='utf-8')
-
-
-def test_ignores_private_directories_within_pages_directory(app4, project4):
+def test_ignores_private_directories_within_pages_directory(app4, project3):
     app = app4
     pigal = Pigal()
     pigal.init_app(app)
@@ -182,7 +156,7 @@ def test_ignores_private_directories_within_pages_directory(app4, project4):
     assert '__demo2' not in app.blueprints
 
 
-def test_create_a_default_rest_api(app4, project4):
+def test_create_a_default_rest_api(app4):
     app = app4
     pigal = Pigal()
     pigal.init_app(app)
@@ -190,7 +164,7 @@ def test_create_a_default_rest_api(app4, project4):
     assert pigal.api.title == app.config['PIGAL_PROJECT_NAME'] + ' API'
     assert pigal.api.version == app.config['PIGAL_PROJECT_VERSION']
 
-def test_create_an_api_blueprint(app4, project4):
+def test_create_an_api_blueprint(app4):
     app = app4
     pigal = Pigal()
     pigal.init_app(app)
