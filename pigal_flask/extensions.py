@@ -5,7 +5,7 @@ import sys
 import inspect
 from importlib import import_module
 from flask import Blueprint
-# from flask_restx import Api, Namespace
+from flask_restx import Api #, Namespace
 # from flask_sqlalchemy import SQLAlchemy
 # from .utils import bind_key, tablename
 
@@ -16,6 +16,9 @@ _API_BP = Blueprint('api', __name__)
 
 
 class InvalidProjectStructure(Exception):
+    pass
+
+class InvalidProjectConfig(Exception):
     pass
 
 
@@ -45,7 +48,8 @@ class Pigal:
         """Initializes the Flask app"""
         self._check_project_structure(app)
         self._register_pages(app)
-        # self._setup_api(app)
+        self._check_project_config(app)
+        self._setup_api(app)
         # self._register_services(app)
 
     def _check_project_structure(self, app):
@@ -55,6 +59,12 @@ class Pigal:
             if not os.path.isdir(required_dir):
                 msg = f"'{required_name}' directory is required but not found"
                 raise InvalidProjectStructure(msg)
+    
+    def _check_project_config(self, app):
+        for name in ('PIGAL_PROJECT_NAME', 'PIGAL_PROJECT_VERSION'):
+            if name not in app.config:
+                msg = f"Configuration parameter '{name}' is missing"
+                raise InvalidProjectConfig(msg)
         
 
     def _register_pages(self, app):
@@ -80,13 +90,14 @@ class Pigal:
             app.logger.warning(e)
 
 
-    # def _setup_api(self, app):
-    #     config = app.config
-    #     self.api = Api(_API_BP, 
-    #                    doc='/doc/', 
-    #                    version=config['PIGAL_PROJECT_VERSION'], 
-    #                    title= config['PIGAL_PROJECT_NAME'] + ' Api')
-    #     app.register_blueprint(_API_BP, url_prefix='/api')
+    def _setup_api(self, app):
+        config = app.config
+        title = config['PIGAL_PROJECT_NAME'] + ' API'
+        version = config['PIGAL_PROJECT_VERSION']
+        api_bp = Blueprint('api', __name__, url_prefix='/api')
+        api = Api(api_bp, title=title, version=version)
+        app.register_blueprint(api_bp)
+        self.api = api
 
     def _register_services(self, app):
         app.logger.debug('looking for services...')
@@ -178,58 +189,6 @@ class PigalUi(Blueprint):
     #             return f(*args, **kwargs)
     #         return decorated_function
     #     return decorator
-
-
-# class PigalApi(Namespace):
-#     """
-#     The Extended Flask-Restx Namespace for Pigal Projects backend
-
-#     Parameters
-#     ----------
-#     import_name: str
-#         name used during import
-
-#     """
-
-#     def __init__(self, imported_file):
-#         # split path components
-#         path_components = []
-#         current_file = imported_file
-#         while current_file != os.path.dirname(current_file):
-#             path_components.append(os.path.basename(current_file))
-#             current_file = os.path.dirname(current_file)
-#         path_components.append(current_file)
-#         path_components.reverse()
-
-#         # search root name
-#         i = path_components.index('routes.py')
-#         root_name = path_components[i-1]
-#         super().__init__(root_name)
-
-#     # @classmethod
-#     # def login_required(cls, f):
-#     #     """Décorateur pour protéger les routes API."""
-#     #     @wraps(f)
-#     #     def decorated_function(*args, **kwargs):
-#     #         if not current_user.is_authenticated:
-#     #             return {'message': 'Unauthorized'}, 401
-#     #         return f(*args, **kwargs)
-#     #     return decorated_function
-    
-#     # @classmethod
-#     # def roles_accepted(cls, *roles):
-#     #     """Décorateur pour protéger les routes API avec des rôles spécifiques."""
-#     #     def decorator(f):
-#     #         @wraps(f)
-#     #         # @login_required
-#     #         def decorated_function(*args, **kwargs):
-#     #             if not current_user.is_authenticated:
-#     #                 return {'message': 'Unauthorized'}, 401
-#     #             if len([n for n in roles if current_user.has_role(n)]) == 0:
-#     #                 return {'message': 'Forbidden'}, 403
-#     #             return f(*args, **kwargs)
-#     #         return decorated_function
-#     #     return decorator
 
 
 # class PigalDb(SQLAlchemy):

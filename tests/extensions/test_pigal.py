@@ -2,7 +2,8 @@
 import sys
 import pytest
 from flask import Flask
-from pigal_flask.extensions import Pigal, InvalidProjectStructure
+from flask_restx import Api
+from pigal_flask.extensions import Pigal, InvalidProjectStructure, InvalidProjectConfig
 
 
 @pytest.fixture
@@ -68,18 +69,49 @@ def test_checks_services_directory_in_project_directory(app2, project2):
 @pytest.fixture
 def app3(app2):
     """Flask app directory included in PYTHONPATH"""
-    project_path = app2.project_dir.strpath
+    app = app2
+    project_path = app.project_dir.strpath
     if project_path not in sys.path:
         sys.path.append(project_path)
-    return app2
+    services_dir = app.project_dir / 'services'
+    services_dir.mkdir()
+    pages_dir = app.project_dir / 'pages'
+    pages_dir.mkdir()
+    app.pages_dir = pages_dir
+    app.services_dir = services_dir
+    return app
+
+def test_requires_project_name_in_app_config(app3):
+    app = app3
+    with pytest.raises(InvalidProjectConfig) as exc_info:
+        pigal = Pigal()
+        pigal.init_app(app)
+    err_msg = "Configuration parameter 'PIGAL_PROJECT_NAME' is missing"
+    assert str(exc_info.value) == err_msg
+
+def test_requires_project_version_in_app_config(app3):
+    app = app3
+    app.config['PIGAL_PROJECT_NAME'] = 'test'
+    with pytest.raises(InvalidProjectConfig) as exc_info:
+        pigal = Pigal()
+        pigal.init_app(app)
+    err_msg = "Configuration parameter 'PIGAL_PROJECT_VERSION' is missing"
+    assert str(exc_info.value) == err_msg
+
 
 @pytest.fixture
-def project3(app3):
+def app4(app3):
+    """Flask app with minimal config"""
+    app = app3
+    app.config['PIGAL_PROJECT_NAME'] = 'demo'
+    app.config['PIGAL_PROJECT_VERSION'] = 'demo'
+    return app
+
+
+@pytest.fixture
+def project3(app4):
     """Complete project"""
-    services_dir = app3.project_dir / 'services'
-    services_dir.mkdir()
-    pages_dir = app3.project_dir / 'pages'
-    pages_dir.mkdir()
+    pages_dir = app4.pages_dir
     for name in ('demo1', 'demo2'):
         page_dir = pages_dir / name
         page_dir.mkdir()
@@ -94,15 +126,15 @@ def project3(app3):
         routes.write_text(code, encoding='utf-8')
 
 
-def test_registers_pages_ui_as_blueprint(app3, project3):
-    app = app3
+def test_registers_pages_ui_as_blueprint(app4, project3):
+    app = app4
     pigal = Pigal()
     pigal.init_app(app)
     assert 'demo1' in app.blueprints
     assert 'demo2' in app.blueprints
 
-def test_registers_pages_ui_with_url_prefix(app3, project3):
-    app = app3
+def test_registers_pages_ui_with_url_prefix(app4, project3):
+    app = app4
     pigal = Pigal()
     pigal.init_app(app)
     with app.test_client() as client:
@@ -113,12 +145,9 @@ def test_registers_pages_ui_with_url_prefix(app3, project3):
 
 
 @pytest.fixture
-def project4(app3):
+def project4(app4):
     """Project with private directories"""
-    services_dir = app3.project_dir / 'services'
-    services_dir.mkdir()
-    pages_dir = app3.project_dir / 'pages'
-    pages_dir.mkdir()
+    pages_dir = app4.pages_dir
     for name in ('_demo1', '__demo2'):
         page_dir = pages_dir / name
         page_dir.mkdir()
@@ -130,10 +159,25 @@ def project4(app3):
         routes.write_text(code, encoding='utf-8')
 
 
-def test_ignores_private_directories_within_pages_directory(app3, project4):
-    app = app3
+def test_ignores_private_directories_within_pages_directory(app4, project4):
+    app = app4
     pigal = Pigal()
     pigal.init_app(app)
     assert '_demo1' not in app.blueprints
     assert '__demo2' not in app.blueprints
 
+
+def test_create_a_default_rest_api(app4, project4):
+    app = app4
+    pigal = Pigal()
+    pigal.init_app(app)
+    assert isinstance(pigal.api, Api)
+    assert pigal.api.title == app.config['PIGAL_PROJECT_NAME'] + ' API'
+    assert pigal.api.version == app.config['PIGAL_PROJECT_VERSION']
+
+def test_create_an_api_blueprint(app4, project4):
+    app = app4
+    pigal = Pigal()
+    pigal.init_app(app)
+    assert pigal.api.app == app.blueprints['api']
+    assert pigal.api.app.url_prefix == '/api'
