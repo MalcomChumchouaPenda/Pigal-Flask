@@ -8,6 +8,7 @@ from flask import Blueprint
 from flask_restx import Api
 # from flask_sqlalchemy import SQLAlchemy
 # from .utils import bind_key, tablename
+from . import utils
 
 
 _SERVICE_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
@@ -76,13 +77,21 @@ class Pigal:
     def _register_page(self, app, ui_root, url_prefix):
         try:
             routes = import_module(f'{ui_root}.routes')
-            print(routes.ui)
-            # menus = import_module(f'{ui_root}.menus')
-            app.register_blueprint(routes.ui, url_prefix=url_prefix)
-            app.logger.info(f'Register page: {ui_root} => {url_prefix}')
-            return True
+            ui = routes.ui
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
+            return False
+        
+        if not isinstance(ui, utils.PigalUi):
+            name = url_prefix[1:]
+            msg = f"The object 'ui' of page '{name}' "
+            msg += "is not an instance of 'PigalUi'"
+            raise utils.InvalidPageUi(msg)
+        
+        # menus = import_module(f'{ui_root}.menus')
+        app.register_blueprint(routes.ui, url_prefix=url_prefix)
+        app.logger.info(f'Register page: {ui_root} => {url_prefix}')
+        return True
 
 
     def _register_services(self, app):

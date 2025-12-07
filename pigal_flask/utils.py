@@ -24,6 +24,10 @@ def __find_key(cls):
 #     return f'{key}_{name}'
 
 
+class InvalidPageUi(Exception):
+    pass
+
+
 class PigalUi(Blueprint):
     
     def __init__(self, import_file):
