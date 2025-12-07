@@ -63,6 +63,10 @@ class PigalUi(Blueprint):
         # self.login_required = login_required
 
 
+class InvalidServiceApi(Exception):
+    pass
+
+
 class PigalApi(Namespace):
 
     def __init__(self, import_file):

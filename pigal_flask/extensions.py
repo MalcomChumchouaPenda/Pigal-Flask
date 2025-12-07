@@ -117,14 +117,22 @@ class Pigal:
     def _register_service(self, app, service_root):
         try:
             routes = import_module(f'{service_root}.routes')
-            print(routes.api)
-            self.api.add_namespace(routes.api)
-            url_prefix = routes.api.path
-            app.logger.info(f'Register service: {service_root} => {url_prefix}')
-            return True
+            api = routes.api
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
+            return False
 
+        if not isinstance(api, utils.PigalApi):
+            _ , name = service_root.split('.')
+            msg = f"The object 'api' of service '{name}' "
+            msg += "is not an instance of 'PigalApi'"
+            raise utils.InvalidServiceApi(msg)
+        
+        self.api.add_namespace(api)
+        app.logger.info(f'Register service: {service_root} => {api.path}')
+        return True
+    
+    
 # class PigalDb(SQLAlchemy):
 #     """The Extended Db for Pigal Projects backend"""
 

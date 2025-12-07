@@ -5,7 +5,7 @@ import pytest
 from flask import Flask, Blueprint
 from flask_restx import Api, Namespace
 from pigal_flask import utils
-from pigal_flask.utils import InvalidPageUi
+from pigal_flask.utils import InvalidPageUi, InvalidServiceApi
 from pigal_flask.extensions import Pigal, InvalidProjectStructure, InvalidProjectConfig
 
 
@@ -181,7 +181,7 @@ def test_ignores_private_directories_within_pages_directory(app6):
 
 @pytest.fixture
 def app7(app5, monkeypatch):
-    """Flask app with pigal pages"""
+    """Flask app with incorrect pages ui"""
     monkeypatch.setattr(utils, 'PigalUi', FakePigalUi)
     app = app5
     pages_dir = app.pages_dir
@@ -200,7 +200,8 @@ def test_checks_page_ui_is_pigal_ui_instance(app7):
     with pytest.raises(InvalidPageUi) as exc_info:
         pigal = Pigal()
         pigal.init_app(app)
-    err_msg = "The object 'ui' of page 'demo' is not an instance of 'PigalUi'"
+    err_msg = "The object 'ui' of page 'demo' "
+    err_msg += "is not an instance of 'PigalUi'"
     assert str(exc_info.value) == err_msg
     assert 'demo' not in app.blueprints
 
@@ -238,3 +239,28 @@ def test_ignores_private_directories_within_services_directory(app8):
     namespaces = {n.name:n for n in pigal.api.namespaces}
     assert '_demo_v3' not in namespaces
 
+
+@pytest.fixture
+def app9(app5):
+    """Flask app with incorrect services api"""
+    app = app5
+    services_dir = app.services_dir
+    service_dir = services_dir / 'demo_v0'
+    service_dir.mkdir()
+    code = f"""
+        \nimport pigal_flask.utils as utl
+        \napi = object()
+        """    
+    routes = service_dir / 'routes.py'
+    routes.write_text(code, encoding='utf-8')
+    return app
+
+def test_checks_service_api_is_pigal_api_instance(app9):
+    app = app9
+    with pytest.raises(InvalidServiceApi) as exc_info:
+        pigal = Pigal()
+        pigal.init_app(app)
+    err_msg = "The object 'api' of service 'demo_v0' "
+    err_msg += "is not an instance of 'PigalApi'"
+    assert str(exc_info.value) == err_msg
+    assert 'demo' not in app.blueprints
