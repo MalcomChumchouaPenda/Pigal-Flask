@@ -7,54 +7,46 @@ from pigal_flask import Pigal
 
 
 @pytest.fixture
-def app1(tmpdir):
+def project1(app):
     """Flask app without pages and services"""
     # make project structure
-    services_dir = tmpdir / 'services'
+    project_dir = app.project_dir
+    services_dir = project_dir / 'services'
     services_dir.mkdir()
-    pages_dir = tmpdir / 'pages'
+    pages_dir = project_dir / 'pages'
     pages_dir.mkdir()
-    app_dir = tmpdir / 'app'
-    app_dir.mkdir()
 
-    # create app
-    app = Flask(__name__, 
-                instance_path=app_dir, 
-                instance_relative_config=True)
+    # configure app
     app.config['PIGAL_PROJECT_NAME'] = 'demo'
     app.config['PIGAL_PROJECT_VERSION'] = '0.1'
 
     # init pigal extension
     pigal = Pigal()
     pigal.init_app(app)
-    return app
 
 
-def test_has_no_default_index_page(app1):
-    with app1.test_client() as client:
-        response = client.get('/')
-        assert response.status_code == 404
+def test_has_no_default_index_page(client, project1):
+    response = client.get('/')
+    assert response.status_code == 404
 
-def test_has_default_api_doc(app1):
-    with app1.test_client() as client:
-        response = client.get('/api/')
-        assert response.status_code == 200
-        assert 'demo API' in response.data.decode()
+def test_has_default_api_doc(client, project1):
+    response = client.get('/api/')
+    assert response.status_code == 200
+    assert 'demo API' in response.data.decode()
         
 
 @pytest.fixture
-def app2(tmpdir):
+def project2(app):
     """Flask app with pages only"""
     # make project structure
-    services_dir = tmpdir / 'services'
+    project_dir = app.project_dir
+    services_dir = project_dir / 'services'
     services_dir.mkdir()
-    pages_dir = tmpdir / 'pages'
+    pages_dir = project_dir / 'pages'
     pages_dir.mkdir()
-    app_dir = tmpdir / 'app'
-    app_dir.mkdir()
 
     # include in PYTHONPATH
-    project_path = tmpdir.strpath
+    project_path = project_dir.strpath
     if project_path not in sys.path:
         sys.path.append(project_path)
 
@@ -68,13 +60,10 @@ def app2(tmpdir):
             \nui = PigalUi(__file__)
             \n@ui.route('/')
             \ndef index():
-            \n\treturn 'This is {name}'
+            \n    return 'This is {name}'
             """, encoding='utf-8')
 
     # create app
-    app = Flask(__name__, 
-                instance_path=app_dir, 
-                instance_relative_config=True)
     app.config['PIGAL_PROJECT_NAME'] = 'demo'
     app.config['PIGAL_PROJECT_VERSION'] = '0.1'
 
@@ -84,9 +73,56 @@ def app2(tmpdir):
     return app
 
 
-def test_has_render_all_pages_ui(app2):
-    with app2.test_client() as client:
-        for name in ('demo1', 'demo2'):
-            response = client.get(f'/{name}/')
-            assert response.status_code == 200
-            assert response.data.decode() == f'This is {name}'
+def test_renders_all_pages_ui(client, project2):
+    for name in ('demo1', 'demo2'):
+        response = client.get(f'/{name}/')
+        assert response.status_code == 200
+        assert response.data.decode() == f'This is {name}'
+            
+
+@pytest.fixture
+def project3(app):
+    """Flask app with services only"""
+    # make project structure
+    project_dir = app.project_dir
+    services_dir = project_dir / 'services'
+    services_dir.mkdir()
+    pages_dir = project_dir / 'pages'
+    pages_dir.mkdir()
+
+    # include in PYTHONPATH
+    project_path = project_dir.strpath
+    if project_path not in sys.path:
+        sys.path.append(project_path)
+
+    # create services
+    for name in ('demo_v1', 'demo_v2'):
+        service_dir = services_dir / name
+        service_dir.mkdir()
+        routes = service_dir / 'routes.py'
+        routes.write_text("""
+            \nfrom flask_restx import Resource
+            \nfrom pigal_flask.utils import PigalApi
+            \napi = PigalApi(__file__)
+            \n@api.route('/')
+            \nclass HelloApi(Resource):
+            \n    def get(self):
+            \n        return {'message': 'Hello, World!'}
+            """, encoding='utf-8')
+
+    # create app
+    app.config['PIGAL_PROJECT_NAME'] = 'demo'
+    app.config['PIGAL_PROJECT_VERSION'] = '0.1'
+
+    # init pigal extension
+    pigal = Pigal()
+    pigal.init_app(app)
+    return app
+
+
+def test_provides_all_services_api(client, project3):
+    for url in ('/api/demo/v1/', '/api/demo/v2/'):
+        response = client.get(url)
+        assert response.status_code == 200
+        assert response.json == {'message': 'Hello, World!'}
+

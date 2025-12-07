@@ -21,20 +21,6 @@ class InvalidProjectConfig(Exception):
 
 
 class Pigal:
-    """
-    The Main Class for adding utils to Flask App
-
-    Parameters
-    ----------
-    app: Flask
-        flask Application to extend
-
-    Attributes
-    ----------
-    api: Flask-Restx.Api
-        Rest Api for services
-
-    """
 
     def __init__(self, app=None):
         super().__init__()
@@ -45,10 +31,11 @@ class Pigal:
     def init_app(self, app):
         """Initializes the Flask app"""
         self._check_project_structure(app)
-        self._register_pages(app)
         self._check_project_config(app)
         self._setup_api(app)
-        # self._register_services(app)
+        self._register_pages(app)
+        self._register_services(app)
+
 
     def _check_project_structure(self, app):
         project_dir = os.path.dirname(app.instance_path)
@@ -63,8 +50,17 @@ class Pigal:
             if name not in app.config:
                 msg = f"Configuration parameter '{name}' is missing"
                 raise InvalidProjectConfig(msg)
-        
 
+    def _setup_api(self, app):
+        config = app.config
+        title = config['PIGAL_PROJECT_NAME'] + ' API'
+        version = config['PIGAL_PROJECT_VERSION']
+        api_bp = Blueprint('api', __name__, url_prefix='/api')
+        api = Api(api_bp, title=title, version=version)
+        app.register_blueprint(api_bp)
+        self.api = api
+
+        
     def _register_pages(self, app):
         app.logger.debug('looking for pages...')
         project_dir = os.path.dirname(app.instance_path)
@@ -89,38 +85,32 @@ class Pigal:
             app.logger.warning(e)
 
 
-    def _setup_api(self, app):
-        config = app.config
-        title = config['PIGAL_PROJECT_NAME'] + ' API'
-        version = config['PIGAL_PROJECT_VERSION']
-        api_bp = Blueprint('api', __name__, url_prefix='/api')
-        api = Api(api_bp, title=title, version=version)
-        app.register_blueprint(api_bp)
-        self.api = api
-
     def _register_services(self, app):
         app.logger.debug('looking for services...')
-        root_dir = os.path.abspath(app.config['PIGAL_ROOT_DIR'])
-        services_dir = os.path.join(root_dir, 'services')
+        project_dir = os.path.dirname(app.instance_path)
+        services_dir = os.path.join(project_dir, 'services')
         if os.path.isdir(services_dir):
             for name in os.listdir(services_dir):
                 if name.startswith('_'):
                     continue
-                nameparts = re.findall(_SERVICE_PATTERN, name)
-                if len(nameparts) != 1:
-                    app.logger.warning('Ignore folder: '+ name)
-                    continue
-                rootname, version = nameparts[0]
-                rootname = rootname.replace('_', '-')
-                version = version.replace('_', '.')
-                url_prefix = f'/{rootname}/{version}'
+                # nameparts = re.findall(_SERVICE_PATTERN, name)
+                # if len(nameparts) != 1:
+                #     app.logger.warning('Ignore folder: '+ name)
+                #     continue
+                # rootname, version = nameparts[0]
+                # rootname = rootname.replace('_', '-')
+                # version = version.replace('_', '.')
+                # url_prefix = f'/{rootname}/{version}'
+                # url_prefix = '/test'
                 service_root = f'services.{name}'
-                self._register_service(app, service_root, url_prefix)
+                self._register_service(app, service_root)
 
-    def _register_service(self, app, service_root, url_prefix):
+    def _register_service(self, app, service_root):
         try:
             routes = import_module(f'{service_root}.routes')
-            self.api.add_namespace(routes.api, path=url_prefix)
+            print(routes.api)
+            self.api.add_namespace(routes.api)
+            url_prefix = routes.api.path
             app.logger.info(f'Register service: {service_root} => {url_prefix}')
             return True
         except (ModuleNotFoundError, AttributeError) as e:

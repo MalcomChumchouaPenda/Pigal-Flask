@@ -60,7 +60,24 @@ class PigalUi(Blueprint):
 
 
 class PigalApi(Namespace):
-    pass
+
+    def __init__(self, import_file):
+        # split path components
+        path_components = []
+        current_file = import_file
+        while current_file != os.path.dirname(current_file):
+            path_components.append(os.path.basename(current_file))
+            current_file = os.path.dirname(current_file)
+        path_components.append(current_file)
+        path_components.reverse()
+
+        # search root name
+        i = path_components.index('routes.py')
+        root_name = path_components[i-1]
+
+        # search api path
+        base_name, version = root_name.split('_v')
+        super().__init__(root_name, path=f'/{base_name}/v{version}')
 
 
 
@@ -107,20 +124,7 @@ class PigalApi(Namespace):
 
 #     """
 
-#     def __init__(self, import_file):
-#         # split path components
-#         path_components = []
-#         current_file = import_file
-#         while current_file != os.path.dirname(current_file):
-#             path_components.append(os.path.basename(current_file))
-#             current_file = os.path.dirname(current_file)
-#         path_components.append(current_file)
-#         path_components.reverse()
 
-#         # search root name
-#         i = path_components.index('routes.py')
-#         root_name = path_components[i-1]
-#         super().__init__(root_name)
 
 #     # @classmethod
 #     # def login_required(cls, f):
