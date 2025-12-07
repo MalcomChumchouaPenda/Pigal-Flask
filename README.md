@@ -146,7 +146,7 @@ Some examples with `payments` and `students` blueprints:
 ```
 
 > [!NOTE]
-> `PigalUi` instances which are in any `pages/<page_id>/routes.py` module are automatically discovered and registered by `Pigal` extension.
+> `ui` objects which are in any `pages/<page_id>/routes.py` module are automatically discovered and registered by `Pigal` extension.
 
 
 ### Create minimal service (backend)
@@ -178,7 +178,7 @@ class HelloApi(Resource):
 ```
 
 > [!NOTE]
-> `PigalApi` instances which are in any `services/<service_id>/routes.py` module are automatically discovered and registered by `Pigal` instance.
+> `api` objects which are in any `services/<service_id>/routes.py` module are automatically discovered and registered by `Pigal` instance.
 
 A `PigalApi` is a extended Flask-Restx `Namespace` whose `name` and `url_prefix` are automatically created. For examples:
 
