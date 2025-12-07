@@ -5,9 +5,9 @@ import sys
 import inspect
 from importlib import import_module
 from flask import Blueprint
-from flask_restx import Api, Namespace
-from flask_sqlalchemy import SQLAlchemy
-from .utils import bind_key, tablename
+# from flask_restx import Api, Namespace
+# from flask_sqlalchemy import SQLAlchemy
+# from .utils import bind_key, tablename
 
 
 _PAGE_PATTERN = '^([a-z][a-z0-9_]*)$'
@@ -44,7 +44,7 @@ class Pigal:
     def init_app(self, app):
         """Initializes the Flask app"""
         self._check_project_structure(app)
-        # self._register_pages(app)
+        self._register_pages(app)
         # self._setup_api(app)
         # self._register_services(app)
 
@@ -59,18 +59,13 @@ class Pigal:
 
     def _register_pages(self, app):
         app.logger.debug('looking for pages...')
-        root_dir = os.path.abspath(app.config['PIGAL_ROOT_DIR'])
-        pages_dir = os.path.join(root_dir, 'pages')
+        project_dir = os.path.dirname(app.instance_path)
+        pages_dir = os.path.join(project_dir, 'pages')
         if os.path.isdir(pages_dir):
             for name in os.listdir(pages_dir):
                 if name.startswith('_'):
-                    continue
-                nameparts = re.findall(_PAGE_PATTERN, name)
-                if len(nameparts) != 1:
-                    app.logger.info(f'Ignore folder: {name}')
-                    continue
-                rootname = nameparts[0].replace('_', '-')
-                url_prefix = '/' if rootname == 'home' else f'/{rootname}' 
+                    continue 
+                url_prefix = f'/{name}' 
                 ui_root = f'pages.{name}'
                 self._register_page(app, ui_root, url_prefix)
                 
@@ -85,13 +80,13 @@ class Pigal:
             app.logger.warning(e)
 
 
-    def _setup_api(self, app):
-        config = app.config
-        self.api = Api(_API_BP, 
-                       doc='/doc/', 
-                       version=config['PIGAL_PROJECT_VERSION'], 
-                       title= config['PIGAL_PROJECT_NAME'] + ' Api')
-        app.register_blueprint(_API_BP, url_prefix='/api')
+    # def _setup_api(self, app):
+    #     config = app.config
+    #     self.api = Api(_API_BP, 
+    #                    doc='/doc/', 
+    #                    version=config['PIGAL_PROJECT_VERSION'], 
+    #                    title= config['PIGAL_PROJECT_NAME'] + ' Api')
+    #     app.register_blueprint(_API_BP, url_prefix='/api')
 
     def _register_services(self, app):
         app.logger.debug('looking for services...')
@@ -185,112 +180,112 @@ class PigalUi(Blueprint):
     #     return decorator
 
 
-class PigalApi(Namespace):
-    """
-    The Extended Flask-Restx Namespace for Pigal Projects backend
+# class PigalApi(Namespace):
+#     """
+#     The Extended Flask-Restx Namespace for Pigal Projects backend
 
-    Parameters
-    ----------
-    import_name: str
-        name used during import
+#     Parameters
+#     ----------
+#     import_name: str
+#         name used during import
 
-    """
+#     """
 
-    def __init__(self, imported_file):
-        # split path components
-        path_components = []
-        current_file = imported_file
-        while current_file != os.path.dirname(current_file):
-            path_components.append(os.path.basename(current_file))
-            current_file = os.path.dirname(current_file)
-        path_components.append(current_file)
-        path_components.reverse()
+#     def __init__(self, imported_file):
+#         # split path components
+#         path_components = []
+#         current_file = imported_file
+#         while current_file != os.path.dirname(current_file):
+#             path_components.append(os.path.basename(current_file))
+#             current_file = os.path.dirname(current_file)
+#         path_components.append(current_file)
+#         path_components.reverse()
 
-        # search root name
-        i = path_components.index('routes.py')
-        root_name = path_components[i-1]
-        super().__init__(root_name)
+#         # search root name
+#         i = path_components.index('routes.py')
+#         root_name = path_components[i-1]
+#         super().__init__(root_name)
 
-    # @classmethod
-    # def login_required(cls, f):
-    #     """Décorateur pour protéger les routes API."""
-    #     @wraps(f)
-    #     def decorated_function(*args, **kwargs):
-    #         if not current_user.is_authenticated:
-    #             return {'message': 'Unauthorized'}, 401
-    #         return f(*args, **kwargs)
-    #     return decorated_function
+#     # @classmethod
+#     # def login_required(cls, f):
+#     #     """Décorateur pour protéger les routes API."""
+#     #     @wraps(f)
+#     #     def decorated_function(*args, **kwargs):
+#     #         if not current_user.is_authenticated:
+#     #             return {'message': 'Unauthorized'}, 401
+#     #         return f(*args, **kwargs)
+#     #     return decorated_function
     
-    # @classmethod
-    # def roles_accepted(cls, *roles):
-    #     """Décorateur pour protéger les routes API avec des rôles spécifiques."""
-    #     def decorator(f):
-    #         @wraps(f)
-    #         # @login_required
-    #         def decorated_function(*args, **kwargs):
-    #             if not current_user.is_authenticated:
-    #                 return {'message': 'Unauthorized'}, 401
-    #             if len([n for n in roles if current_user.has_role(n)]) == 0:
-    #                 return {'message': 'Forbidden'}, 403
-    #             return f(*args, **kwargs)
-    #         return decorated_function
-    #     return decorator
+#     # @classmethod
+#     # def roles_accepted(cls, *roles):
+#     #     """Décorateur pour protéger les routes API avec des rôles spécifiques."""
+#     #     def decorator(f):
+#     #         @wraps(f)
+#     #         # @login_required
+#     #         def decorated_function(*args, **kwargs):
+#     #             if not current_user.is_authenticated:
+#     #                 return {'message': 'Unauthorized'}, 401
+#     #             if len([n for n in roles if current_user.has_role(n)]) == 0:
+#     #                 return {'message': 'Forbidden'}, 403
+#     #             return f(*args, **kwargs)
+#     #         return decorated_function
+#     #     return decorator
 
 
-class PigalDb(SQLAlchemy):
-    """The Extended Db for Pigal Projects backend"""
+# class PigalDb(SQLAlchemy):
+#     """The Extended Db for Pigal Projects backend"""
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        setattr(self.Model, '__tablename__', tablename)
-        setattr(self.Model, '__bind_key__', bind_key)
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         setattr(self.Model, '__tablename__', tablename)
+#         setattr(self.Model, '__bind_key__', bind_key)
 
-    def init_app(self, app):
-        self._prepare_db(app)
-        return super().init_app(app)
+#     def init_app(self, app):
+#         self._prepare_db(app)
+#         return super().init_app(app)
     
     
-    @classmethod
-    def _minify_uri(cls, uri):
-        if len(uri) > 50:
-            return uri[:20] + '...' + uri[-20:]
-        return uri
+#     @classmethod
+#     def _minify_uri(cls, uri):
+#         if len(uri) > 50:
+#             return uri[:20] + '...' + uri[-20:]
+#         return uri
     
-    def _prepare_db(self, app):
-        app.logger.debug('looking for databases...')
-        root_dir = os.path.abspath(app.config['PIGAL_ROOT_DIR'])
-        uri_template = app.config['PIGAL_DB_URI_TEMPLATE']
-        uri_args = {'root_dir':root_dir}
+#     def _prepare_db(self, app):
+#         app.logger.debug('looking for databases...')
+#         root_dir = os.path.abspath(app.config['PIGAL_ROOT_DIR'])
+#         uri_template = app.config['PIGAL_DB_URI_TEMPLATE']
+#         uri_args = {'root_dir':root_dir}
 
-        # by default
-        uri_args['service_id'] = 'default'
-        uri = uri_template.format_map(uri_args)
-        min_uri = self._minify_uri(uri)
-        app.config['SQLALCHEMY_DATABASE_URI'] = uri
-        app.logger.debug(f'Prepare database: default => {min_uri}')
+#         # by default
+#         uri_args['service_id'] = 'default'
+#         uri = uri_template.format_map(uri_args)
+#         min_uri = self._minify_uri(uri)
+#         app.config['SQLALCHEMY_DATABASE_URI'] = uri
+#         app.logger.debug(f'Prepare database: default => {min_uri}')
 
-        # by services
-        services_dir = os.path.join(root_dir, 'services')
-        bind_keys = {}
-        if os.path.isdir(services_dir):
-            for name in os.listdir(services_dir):
-                # check if has models
-                if name.startswith('_'):
-                    continue
-                if not re.match(_SERVICE_PATTERN, name):
-                    continue
-                modelspath = os.path.join(services_dir, name, 'models.py')
-                if not os.path.isfile(modelspath):
-                    continue
-                _ = import_module(f'services.{name}.models') # important to load metada
+#         # by services
+#         services_dir = os.path.join(root_dir, 'services')
+#         bind_keys = {}
+#         if os.path.isdir(services_dir):
+#             for name in os.listdir(services_dir):
+#                 # check if has models
+#                 if name.startswith('_'):
+#                     continue
+#                 if not re.match(_SERVICE_PATTERN, name):
+#                     continue
+#                 modelspath = os.path.join(services_dir, name, 'models.py')
+#                 if not os.path.isfile(modelspath):
+#                     continue
+#                 _ = import_module(f'services.{name}.models') # important to load metada
 
-                # create binds for sqlalchemy
-                uri_args['service_id'] = name
-                uri = uri_template.format_map(uri_args)
-                min_uri = self._minify_uri(uri)
-                bind_keys[name] = uri
-                app.logger.debug(f'Prepare database: {name} => {min_uri}')
+#                 # create binds for sqlalchemy
+#                 uri_args['service_id'] = name
+#                 uri = uri_template.format_map(uri_args)
+#                 min_uri = self._minify_uri(uri)
+#                 bind_keys[name] = uri
+#                 app.logger.debug(f'Prepare database: {name} => {min_uri}')
         
-        # store models binds
-        app.config['SQLALCHEMY_BINDS'] = bind_keys
+#         # store models binds
+#         app.config['SQLALCHEMY_BINDS'] = bind_keys
 
