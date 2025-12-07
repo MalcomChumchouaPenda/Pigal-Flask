@@ -9,20 +9,9 @@ from pigal_flask.utils import InvalidPageUi, InvalidServiceApi
 from pigal_flask.extensions import Pigal, InvalidProjectStructure, InvalidProjectConfig
 
 
-class FakePigalApi(Namespace):
-    def __init__(self, file):
-        dir_ = os.path.dirname(file)
-        name = os.path.basename(dir_)
-        super().__init__(name)
-    
-@pytest.fixture
-def fake_utils(monkeypatch):
-    # monkeypatch.setattr(utils, 'PigalUi', FakePigalUi)
-    monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
-
 
 @pytest.fixture
-def app1(tmpdir, fake_utils):
+def app1(tmpdir):
     """Flask app created outside app directory"""
     return Flask(__name__, 
                 instance_path=tmpdir.strpath, 
@@ -38,7 +27,7 @@ def test_checks_app_directory_in_project_directory(app1):
 
 
 @pytest.fixture
-def app2(tmpdir, fake_utils):
+def app2(tmpdir):
     """Flask app without pages directory"""
     services_dir = tmpdir / 'services'
     services_dir.mkdir()
@@ -58,7 +47,7 @@ def test_checks_pages_directory_in_project_directory(app2):
 
 
 @pytest.fixture
-def app3(tmpdir, fake_utils):
+def app3(tmpdir):
     """Flask app without services directory"""
     pages_dir = tmpdir / 'pages'
     pages_dir.mkdir()
@@ -78,7 +67,7 @@ def test_checks_services_directory_in_project_directory(app3):
 
 
 @pytest.fixture
-def app4(tmpdir, fake_utils):
+def app4(tmpdir):
     """Flask app with pages and services directory"""
     project_path = tmpdir.strpath
     if project_path not in sys.path:
@@ -206,9 +195,16 @@ def test_checks_page_ui_is_pigal_ui_instance(app7):
     assert 'demo' not in app.blueprints
 
 
+class FakePigalApi(Namespace):
+    def __init__(self, file):
+        dir_ = os.path.dirname(file)
+        name = os.path.basename(dir_)
+        super().__init__(name)
+
 @pytest.fixture
-def app8(app5):
+def app8(app5, monkeypatch):
     """Flask app with pigal services"""
+    monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
     app = app5
     services_dir = app.services_dir
     for name in ('demo_v1', 'demo_v2', '_demo_v3'):
@@ -241,8 +237,9 @@ def test_ignores_private_directories_within_services_directory(app8):
 
 
 @pytest.fixture
-def app9(app5):
+def app9(app5, monkeypatch):
     """Flask app with incorrect services api"""
+    monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
     app = app5
     services_dir = app.services_dir
     service_dir = services_dir / 'demo_v0'

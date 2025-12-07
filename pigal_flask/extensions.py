@@ -6,8 +6,7 @@ import inspect
 from importlib import import_module
 from flask import Blueprint
 from flask_restx import Api
-# from flask_sqlalchemy import SQLAlchemy
-# from .utils import bind_key, tablename
+from flask_sqlalchemy import SQLAlchemy
 from . import utils
 
 
@@ -131,62 +130,79 @@ class Pigal:
         self.api.add_namespace(api)
         app.logger.info(f'Register service: {service_root} => {api.path}')
         return True
-    
-    
+
+
+class PigalDb(SQLAlchemy):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        setattr(self.Model, '__tablename__', utils.tablename)
+        setattr(self.Model, '__bind_key__', utils.bind_key)
+
+    def init_app(self, app):
+        self._check_db_config(app)
+        self._prepare_db(app)
+        super().init_app(app)
+
+    def _check_db_config(self, app):
+        for name in ('PIGAL_DB_URI_TEMPLATE', ):
+            if name not in app.config:
+                msg = f"Configuration parameter '{name}' is missing"
+                raise InvalidProjectConfig(msg)
+
+#     @classmethod
+#     def _minify_uri(cls, uri):
+#         if len(uri) > 50:
+#             return uri[:20] + '...' + uri[-20:]
+#         return uri
+
+    def _prepare_db(self, app):
+        app.logger.debug('looking for databases...')
+        project_dir = os.path.dirname(app.instance_path)
+        uri_template = app.config['PIGAL_DB_URI_TEMPLATE']
+        uri_args = {'project_dir':project_dir}
+
+        # by default
+        uri_args['service_id'] = 'default'
+        uri = uri_template.format_map(uri_args)
+        # min_uri = self._minify_uri(uri)
+        app.config['SQLALCHEMY_DATABASE_URI'] = uri
+        # app.logger.debug(f'Prepare database: default => {min_uri}')
+
+        # by services
+        services_dir = os.path.join(project_dir, 'services')
+        bind_keys = {}
+        if os.path.isdir(services_dir):
+            for name in os.listdir(services_dir):
+#                 # check if has models
+                if name.startswith('_'):
+                    continue
+#                 if not re.match(_SERVICE_PATTERN, name):
+#                     continue
+                modelspath = os.path.join(services_dir, name, 'models.py')
+                if not os.path.isfile(modelspath):
+                    continue
+                _ = import_module(f'services.{name}.models') # important to load metada
+
+                # create binds for sqlalchemy
+                uri_args['service_id'] = name
+                uri = uri_template.format_map(uri_args)
+#                 min_uri = self._minify_uri(uri)
+                bind_keys[name] = uri
+#                 app.logger.debug(f'Prepare database: {name} => {min_uri}')
+        
+        # store models binds
+        app.config['SQLALCHEMY_BINDS'] = bind_keys
+
+
 # class PigalDb(SQLAlchemy):
 #     """The Extended Db for Pigal Projects backend"""
 
-#     def __init__(self, **kwargs):
-#         super().__init__(**kwargs)
-#         setattr(self.Model, '__tablename__', tablename)
-#         setattr(self.Model, '__bind_key__', bind_key)
 
 #     def init_app(self, app):
 #         self._prepare_db(app)
 #         return super().init_app(app)
     
     
-#     @classmethod
-#     def _minify_uri(cls, uri):
-#         if len(uri) > 50:
-#             return uri[:20] + '...' + uri[-20:]
-#         return uri
     
-#     def _prepare_db(self, app):
-#         app.logger.debug('looking for databases...')
-#         root_dir = os.path.abspath(app.config['PIGAL_ROOT_DIR'])
-#         uri_template = app.config['PIGAL_DB_URI_TEMPLATE']
-#         uri_args = {'root_dir':root_dir}
-
-#         # by default
-#         uri_args['service_id'] = 'default'
-#         uri = uri_template.format_map(uri_args)
-#         min_uri = self._minify_uri(uri)
-#         app.config['SQLALCHEMY_DATABASE_URI'] = uri
-#         app.logger.debug(f'Prepare database: default => {min_uri}')
-
-#         # by services
-#         services_dir = os.path.join(root_dir, 'services')
-#         bind_keys = {}
-#         if os.path.isdir(services_dir):
-#             for name in os.listdir(services_dir):
-#                 # check if has models
-#                 if name.startswith('_'):
-#                     continue
-#                 if not re.match(_SERVICE_PATTERN, name):
-#                     continue
-#                 modelspath = os.path.join(services_dir, name, 'models.py')
-#                 if not os.path.isfile(modelspath):
-#                     continue
-#                 _ = import_module(f'services.{name}.models') # important to load metada
-
-#                 # create binds for sqlalchemy
-#                 uri_args['service_id'] = name
-#                 uri = uri_template.format_map(uri_args)
-#                 min_uri = self._minify_uri(uri)
-#                 bind_keys[name] = uri
-#                 app.logger.debug(f'Prepare database: {name} => {min_uri}')
-        
-#         # store models binds
-#         app.config['SQLALCHEMY_BINDS'] = bind_keys
 

@@ -3,25 +3,28 @@ import os
 import sys
 from flask import Blueprint
 from flask_restx import Namespace
-# from sqlalchemy.orm import declared_attr
+from sqlalchemy.orm import declared_attr
 
 
 def __find_key(cls):
-    module = sys.modules[cls.__module__]
-    root_path = os.path.abspath(module.__file__)
-    while 'models' in root_path:
-        root_path = os.path.dirname(root_path)
-    return os.path.basename(root_path)
+    name_parts = cls.__module__.split('.')
+    i = name_parts.index('models')
+    return name_parts[i-1]
+    # module = sys.modules[cls.__module__]
+    # root_path = os.path.abspath(module.__file__)
+    # while 'models' in root_path:
+    #     root_path = os.path.dirname(root_path)
+    # return os.path.basename(root_path)
     
-# @declared_attr
-# def bind_key(cls):
-#     return __find_key(cls)
+@declared_attr
+def bind_key(cls):
+    return __find_key(cls)
     
-# @declared_attr
-# def tablename(cls):
-#     key = __find_key(cls)
-#     name = cls.__name__.lower()
-#     return f'{key}_{name}'
+@declared_attr
+def tablename(cls):
+    key = __find_key(cls)
+    name = cls.__name__.lower()
+    return f'{key}_{name}'
 
 
 class InvalidPageUi(Exception):
