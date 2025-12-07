@@ -5,14 +5,12 @@ import sys
 import inspect
 from importlib import import_module
 from flask import Blueprint
-from flask_restx import Api #, Namespace
+from flask_restx import Api
 # from flask_sqlalchemy import SQLAlchemy
 # from .utils import bind_key, tablename
 
 
-_PAGE_PATTERN = '^([a-z][a-z0-9_]*)$'
 _SERVICE_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
-_API_BP = Blueprint('api', __name__)
 
 
 class InvalidProjectStructure(Exception):

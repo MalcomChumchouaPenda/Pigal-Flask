@@ -1,7 +1,8 @@
 
 import os
 import sys
-from flask_restx import Api
+from flask import Blueprint
+from flask_restx import Namespace
 # from sqlalchemy.orm import declared_attr
 
 
@@ -23,7 +24,10 @@ def __find_key(cls):
 #     return f'{key}_{name}'
 
 
-class PigalApi(Api):
+class PigalUi(Blueprint):
+    pass
+
+class PigalApi(Namespace):
     pass
 
 
