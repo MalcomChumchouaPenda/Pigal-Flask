@@ -277,6 +277,9 @@ print(query.all())
 
 ```
 
+> [!IMPORTANT]
+> `PigalApi` will automatically prefix marshall `Model.name` to avoid conflict between models created inside differents versions of the same service.
+
 ## Contributions
 
 
