@@ -260,25 +260,52 @@ class Person(db.Model):
 > [!IMPORTANT]
 > A `PigalDb` is a subclass of `SQLAlchemy` provided by *Flask-SQLAlchemy*.
 
-Now, we can do for example:
+Now, in `services/persons_v0/routes.py` for example, we can create an api and model:
 
 ```python
 
+from flask_restx import Resource, fields
+from pigal_flask import PigalApi
 from app.extensions import db
 from services.persons_v0.models import Person
 
-person1 = Person(id=1, name='Demo A')
-person2 = Person(id=2, name='Demo B')
-db.session.add_all([person1, person2])
-db.session.commit()
+api = PigalApi(__file__)
 
-query = db.session.query(Person)
-print(query.all())
+person_model = api.model('Person', {
+    'id': fields.Integer(readonly=True),
+    'name': fields.String(required=True)
+})
+```
+
+> [!NOTE]
+> `PigalApi` will automatically prefix marshall `Model.name` to avoid conflict between models created inside differents versions of the same service. In the example above, the name of `person_model` will be `persons_v0.Person` instead of `Person`
+
+Then in `services/persons_v0/routes.py`, we can create CRUD routes for `Person`:
+
+```python
+
+# ...
+
+@api.route('/persons')
+class PersonsApi(Resource):
+
+    @api.marshal_list_with(person_model)
+    def get(self):
+        '''list all persons'''
+        return Person.query.all()
+    
+    @api.expect(person_model)
+    @api.marshal_with(person_model)
+    def post(self):
+        '''add new person'''
+        data = api.payload
+        new_person = Person(name=data['name'])
+        db.session.add(new_person)
+        db.session.commit()
+        return new_person
 
 ```
 
-> [!IMPORTANT]
-> `PigalApi` will automatically prefix marshall `Model.name` to avoid conflict between models created inside differents versions of the same service.
 
 ## Contributions
 
