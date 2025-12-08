@@ -1,7 +1,7 @@
 
 import sys
-import pytest
 import importlib
+import pytest
 
 
 extensions_code = """
@@ -40,7 +40,7 @@ class Person(db.Model):
 
 
 @pytest.fixture
-def project1(tmpdir):
+def db_project1(tmpdir):
     """Flask app with and services"""
     # make project app structure
     project_dir = tmpdir
@@ -79,8 +79,8 @@ def project1(tmpdir):
 
 
 @pytest.mark.parametrize('service_id', ['demo_v1', 'demo_v2'])
-def test_create_all_table(project1, service_id):
-    app, db = project1
+def test_create_all_table(db_project1, service_id):
+    app, db = db_project1
     with app.app_context():
         db.drop_all()
         db.create_all()

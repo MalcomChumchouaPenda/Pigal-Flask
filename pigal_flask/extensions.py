@@ -3,14 +3,13 @@ import os
 import re
 import sys
 import inspect
+import warnings
 from importlib import import_module
 from flask import Blueprint
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SAWarning
 from . import utils
-
-
-_SERVICE_PATTERN = '^([a-z][a-z0-9_]*)_(v[0-9]+)$'
 
 
 class InvalidProjectStructure(Exception):
@@ -131,10 +130,17 @@ class Pigal:
         app.logger.info(f'Register service: {service_root} => {api.path}')
         return True
 
+warnings.filterwarnings(
+    'ignore',                            # Action: Ignore the warning
+    category=SAWarning,                  # Category of the warning
+    message=".*bind_key.*",              # Message pattern to match
+    module="flask_sqlalchemy"            # Only suppress from this specific module
+)
 
 class PigalDb(SQLAlchemy):
 
     def __init__(self, *args, **kwargs):
+        kwargs['disable_autonaming'] = True
         super().__init__(*args, **kwargs)
         setattr(self.Model, '__tablename__', utils.tablename)
         setattr(self.Model, '__bind_key__', utils.bind_key)
@@ -150,11 +156,11 @@ class PigalDb(SQLAlchemy):
                 msg = f"Configuration parameter '{name}' is missing"
                 raise InvalidProjectConfig(msg)
 
-#     @classmethod
-#     def _minify_uri(cls, uri):
-#         if len(uri) > 50:
-#             return uri[:20] + '...' + uri[-20:]
-#         return uri
+    @classmethod
+    def _minify_uri(cls, uri):
+        if len(uri) > 50:
+            return uri[:20] + '...' + uri[-20:]
+        return uri
 
     def _prepare_db(self, app):
         app.logger.debug('looking for databases...')
@@ -165,9 +171,9 @@ class PigalDb(SQLAlchemy):
         # by default
         uri_args['service_id'] = 'default'
         uri = uri_template.format_map(uri_args)
-        # min_uri = self._minify_uri(uri)
+        min_uri = self._minify_uri(uri)
         app.config['SQLALCHEMY_DATABASE_URI'] = uri
-        # app.logger.debug(f'Prepare database: default => {min_uri}')
+        app.logger.debug(f'Prepare database: default => {min_uri}')
 
         # by services
         services_dir = os.path.join(project_dir, 'services')
@@ -187,9 +193,9 @@ class PigalDb(SQLAlchemy):
                 # create binds for sqlalchemy
                 uri_args['service_id'] = name
                 uri = uri_template.format_map(uri_args)
-#                 min_uri = self._minify_uri(uri)
+                min_uri = self._minify_uri(uri)
                 bind_keys[name] = uri
-#                 app.logger.debug(f'Prepare database: {name} => {min_uri}')
+                app.logger.debug(f'Prepare database: {name} => {min_uri}')
         
         # store models binds
         app.config['SQLALCHEMY_BINDS'] = bind_keys

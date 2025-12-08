@@ -126,6 +126,24 @@ def test_create_an_api_blueprint(app5):
     assert pigal.api.app == app.blueprints['api']
     assert pigal.api.app.url_prefix == '/api'
 
+def test_has_no_default_index_page(app5):
+    app = app5
+    pigal = Pigal()
+    pigal.init_app(app)
+    with app.test_client() as client:
+        response = client.get('/')
+        assert response.status_code == 404
+
+def test_has_default_api_doc(app5):
+    app = app5
+    pigal = Pigal()
+    pigal.init_app(app)
+    with app.test_client() as client:
+        response = client.get('/api/')
+        assert response.status_code == 200
+        assert 'demo API' in response.data.decode()
+        assert 'swagger' in response.data.decode()
+
 
 class FakePigalUi(Blueprint):
     def __init__(self, file):
@@ -145,7 +163,10 @@ def app6(app5, monkeypatch):
         code = f"""
             \nimport pigal_flask.utils as utl
             \nui = utl.PigalUi(__file__)
-            """    
+            \n@ui.route('/')
+            \ndef index():
+            \n    return 'This is {name}'
+            """
         routes = page_dir / 'routes.py'
         routes.write_text(code, encoding='utf-8')
     return app
@@ -155,7 +176,6 @@ def test_registers_pages_ui_as_blueprint(app6):
     pigal = Pigal()
     pigal.init_app(app)
     blueprints = app.blueprints
-    print({n:v for n,v in sys.modules.items() if n.startswith('pigal_flask')})
     assert 'demo1' in blueprints
     assert 'demo2' in blueprints
     assert isinstance(blueprints['demo1'], FakePigalUi)
@@ -166,6 +186,16 @@ def test_ignores_private_directories_within_pages_directory(app6):
     pigal = Pigal()
     pigal.init_app(app)
     assert '_demo3' not in app.blueprints
+
+def test_renders_all_pages_ui(app6):
+    app = app6
+    pigal = Pigal()
+    pigal.init_app(app)
+    with app.test_client() as client:
+        for name in ('demo1', 'demo2'):
+            response = client.get(f'/{name}/')
+            assert response.status_code == 200
+            assert response.data.decode() == f'This is {name}'
 
 
 @pytest.fixture
@@ -199,7 +229,7 @@ class FakePigalApi(Namespace):
     def __init__(self, file):
         dir_ = os.path.dirname(file)
         name = os.path.basename(dir_)
-        super().__init__(name)
+        super().__init__(name, path=f'/fake/{name}')
 
 @pytest.fixture
 def app8(app5, monkeypatch):
@@ -210,10 +240,15 @@ def app8(app5, monkeypatch):
     for name in ('demo_v1', 'demo_v2', '_demo_v3'):
         service_dir = services_dir / name
         service_dir.mkdir()
-        code = f"""
+        code = """
+            \nfrom flask_restx import Resource
             \nfrom pigal_flask.utils import PigalApi
             \napi = PigalApi(__file__)
-            """    
+            \n@api.route('/')
+            \nclass HelloApi(Resource):
+            \n    def get(self):
+            \n        return {'message': 'Hello, World!'}
+            """
         routes = service_dir / 'routes.py'
         routes.write_text(code, encoding='utf-8')
     return app
@@ -234,6 +269,16 @@ def test_ignores_private_directories_within_services_directory(app8):
     pigal.init_app(app)
     namespaces = {n.name:n for n in pigal.api.namespaces}
     assert '_demo_v3' not in namespaces
+
+def test_provides_all_services_api(app8):
+    app = app8
+    pigal = Pigal()
+    pigal.init_app(app)
+    with app.test_client() as client:
+        for url in ('/api/fake/demo_v1/', '/api/fake/demo_v2/'):
+            response = client.get(url)
+            assert response.status_code == 200
+            assert response.json == {'message': 'Hello, World!'}
 
 
 @pytest.fixture

@@ -10,11 +10,6 @@ def __find_key(cls):
     name_parts = cls.__module__.split('.')
     i = name_parts.index('models')
     return name_parts[i-1]
-    # module = sys.modules[cls.__module__]
-    # root_path = os.path.abspath(module.__file__)
-    # while 'models' in root_path:
-    #     root_path = os.path.dirname(root_path)
-    # return os.path.basename(root_path)
     
 @declared_attr
 def bind_key(cls):
@@ -89,6 +84,11 @@ class PigalApi(Namespace):
         # search api path
         base_name, version = root_name.split('_v')
         super().__init__(root_name, path=f'/{base_name}/v{version}')
+
+    def model(self, name, *args, **kwargs):
+        args = list(args)
+        args.insert(0, f'{self.name}.{name}')
+        return super().model(*args, **kwargs)
 
 
 

@@ -1,6 +1,7 @@
 
 import os
 import sys
+import importlib
 import pytest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
