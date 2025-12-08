@@ -22,7 +22,7 @@ A Pigal project follow a modular architecture based on 03 components:
 
 
 
-![SVG Image](docs/diagrams/pigal_project_architecture.drawio.svg){width="50%"; style="display: block; margin: 0 auto" }
+![SVG Image](docs/diagrams/pigal_project_architecture.drawio.svg)
 
 
 ## Installation
