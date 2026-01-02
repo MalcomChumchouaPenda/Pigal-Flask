@@ -28,6 +28,16 @@ def create_pages(domain):
     cookiecutter(template, no_input=True, extra_context=extra)
 
 
+@click.command('create-service')
+@click.argument('domain')
+@click.argument('version')
+def create_service(domain, version):
+    name = f"{domain}_v{version.replace('.', '_')}"
+    extra = {'project_name': name}
+    template = os.path.join(template_dir, 'cookiecutter_service')
+    cookiecutter(template, no_input=True, extra_context=extra)
+
+
 @click.group()
 def cli():
     pass

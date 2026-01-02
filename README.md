@@ -88,6 +88,30 @@ This will create the following structure:
 ```
 
 
+### Create minimal services
+
+Use the following commands to create a microservice inside services directory:
+
+```bash
+cd <my-project>/services
+pigal create-service <my-domain> <my-version>
+```
+
+This will create the following structure:
+
+```
+/services
+│   
+├── /<service_name>       # new microservice
+│   ├── /store            # new microservice files
+│   ├── __init__.py       # microservice initialization
+│   ├── models.py         # domain database models
+│   ├── routes.py         # domain Rest API
+│   ├── utils.py          # domain utilities
+│   
+
+```
+
 
 
 
