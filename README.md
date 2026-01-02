@@ -30,15 +30,46 @@ A Pigal project follow a modular architecture based on 03 components:
 *---(todo)---*
 
 ## Quickstart
-A Pigal Project has the minimal following structure:
+
+### Create minimal project
+
+Use the following command to create a new pigal project:
+
+```bash
+pigal create-project <my-project> <my-theme>
 ```
 
-/project
-├── /pages                # Front-ends or UIs
-├── /services             # Microservices or APIs
-├── /app                  # Core App
+This will create a pigal project with the following structure:
+```
+
+/<my-project>
+│   
+├── /app                  # core app
+│   ├── /static           # theme static files
+│   ├── /templates        # theme jinja templates
+│   ├── __init__.py       # app initialization
+│   ├── config.py         # app configurations
+│   ├── extensions.py     # app flask extensions
+│   
+├── /pages                # front-ends or UIs
+│   ├── /home             # home front-end or UI
+│   ├── __init__.py       # global UI initialisation
+│   
+├── /services             # microservices or APIs
+│   ├── /auth             # Authentification microservice
+│   ├── __init__.py       # global API initialisation
+│   
+
 
 ```
+
+
+
+
+
+
+
+
 
 >[!IMPORTANT]
 > This structure is required for any Pigal project
@@ -146,6 +177,35 @@ Some examples with `payments` and `students` blueprints:
 
 > [!NOTE]
 > `ui` objects which are in any `pages/<page_id>/routes.py` module are automatically discovered and registered by `Pigal` extension.
+
+> [!IMPORTANT]
+> To avoid conflict with others pages templates, in each we must identify its specific templates either by creating a directory or by using prefix
+
+Examples of templates organisation with **Page Template Directory**:
+
+```
+/pages
+├── /payments                  # Payments page directory
+│   ├── /templates             # Jinja Templates
+│   │   ├── /payments          # Page Template Directory
+│   │   │   ├── page1.html
+│   │   │   ├── page2.html
+│   │   │   ├── page3.html
+│   ...
+```
+
+Examples of templates organisation with **Page Template Prefix**:
+
+```
+/pages
+├── /payments                    # Payments page directory
+│   ├── /templates               # Jinja Templates with Page Prefix
+│   │   ├── payments-page1.html
+│   │   │── payments-page2.html
+│   │   │── payments-page3.html
+│   ...
+```
+
 
 
 ### Create minimal service (backend)
@@ -305,6 +365,62 @@ class PersonsApi(Resource):
         return new_person
 
 ```
+
+
+### Create minimal home page
+
+A real app need a home UI (*User Interface*). This is done by creating a `home` page in `/app` directory. This `home` page has the same minimal structure than any page in Pigal-Flask:
+
+```
+/app
+├── /home                # Home page directory
+│   ├── /static          # Static files (Flask directory)
+│   ├── /templates       # Jinja Templates (Flask directory)
+│   ├── routes.py        # Page routing (Flask Blueprint)
+│   ...
+```
+
+The `home` page must provides 04 required UI:
+
+| blueprint routes | urls         | methods | roles                          |
+| ---------------- | ------------ | ------- | ------------------------------ |
+| `home.index`     | `/`          | `GET`   | Display landing home page      |
+| `home.dashboard` | `/dashboard` | `GET`   | Display dashboard home page    |
+| `home.login`     | `/login`     | `GET`   | Display login form page        |
+| `home.login`     | `/login`     | `POST`  | Handle login form submission   |
+| `home.logout`    | `/logout`    | `POST`  | Handling logout process        |
+
+
+So, as for any page, we must create `PigalUi` instance and routes in `app/home/routes.py`. For example, we can write:
+
+```python
+from flask import render_template, redirect
+from pigal_flask import PigalUi
+
+ui = PigalUi(__file__)
+
+@ui.route('/')
+def index():
+    return render_template('home-index.html')
+    
+@ui.route('/dashboard')
+def dashboard():
+    return render_template('home-dashboard.html')
+
+@ui.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # ... authentification
+        return redirect(url_for('home.dashboard'))
+    return render_template('home-login.html')
+    
+@ui.route('/logout', methods=['POST'])
+def logout():
+    # ... logout
+    return redirect(url_for('home.index'))
+
+```
+
 
 
 ## Contributions
