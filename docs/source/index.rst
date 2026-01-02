@@ -6,22 +6,37 @@
 Pigal-Flask documentation
 =========================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+Pigal-Flask is an Flask extension which facilitates the development of Pigal projects.
+A **Pigal project** is a modular web portal for an organisation. 
+This will help an organisation to build progressively an integrated information system. 
+**Pigal** means in french ("Portail d'information et de gestion des activites en ligne").
 
+.. image:: ../diagrams/pigal_project_architecture.drawio.svg
+
+A Pigal project follow a modular architecture based on 03 components as shown above:
+
+* **app** which provide global Flask configuration, extensions and theme
+* **pages** which provide specific frontends or UI (User Interface)
+* **services** which provide specific backends or API (Application Programming Interface)
+
+The rest of this documentation will help you to use Pigal-Flask...
+
+
+User Guide
+----------
 
 .. toctree::
-   :maxdepth: 3
-   :caption: Contents:
+   :maxdepth: 2
 
-   modules
-
+   intro
+   tuto
+   api 
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+

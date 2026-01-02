@@ -6,6 +6,10 @@ from flask_restx import Namespace
 from sqlalchemy.orm import declared_attr
 
 
+class TestUI:
+    pass
+
+
 def __find_key(cls):
     name_parts = cls.__module__.split('.')
     i = name_parts.index('models')
@@ -27,8 +31,17 @@ class InvalidPageUi(Exception):
 
 
 class PigalUi(Blueprint):
-    
+    """This is a extended Flask Blueprint whose name and url_prefix 
+    are automatically created.
+
+    Parameters
+    ----------
+    import_file: str
+        The file where the Ui is created
+    """
+        
     def __init__(self, import_file):
+        """"""
         # split path components
         path_components = []
         current_file = import_file
@@ -161,3 +174,4 @@ class PigalApi(Namespace):
 #     #             return f(*args, **kwargs)
 #     #         return decorated_function
 #     #     return decorator
+
