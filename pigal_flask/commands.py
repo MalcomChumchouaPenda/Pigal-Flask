@@ -32,6 +32,10 @@ def create_pages(domain):
 @click.argument('domain')
 @click.argument('version')
 def create_service(domain, version):
+    if os.path.basename(os.getcwd()) != 'services':
+        msg = "This command must be executed from \\services"
+        raise click.ClickException(msg)
+
     name = f"{domain}_v{version.replace('.', '_')}"
     extra = {'project_name': name}
     template = os.path.join(template_dir, 'cookiecutter_service')
@@ -44,6 +48,7 @@ def cli():
 
 cli.add_command(create_project)
 cli.add_command(create_pages)
+cli.add_command(create_service)
 
 
 if __name__ == "__main__":

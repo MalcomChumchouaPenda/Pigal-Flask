@@ -87,6 +87,9 @@ This will create the following structure:
 
 ```
 
+> [!IMPORTANT]
+> pages can only be created inside the `pages` directory of a pigal project
+
 
 ### Create minimal services
 
@@ -112,6 +115,8 @@ This will create the following structure:
 
 ```
 
+> [!IMPORTANT]
+> Service can only be created inside the `services` directory of a pigal project
 
 
 

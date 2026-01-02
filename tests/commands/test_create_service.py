@@ -28,3 +28,14 @@ def test_create_basic_structure(change_dir, fake_dir):
     assert os.path.isfile(os.path.join(test_dir, 'routes.py'))
     assert os.path.isfile(os.path.join(test_dir, 'utils.py'))
 
+
+@pytest.mark.parametrize('name', ['foo', 'service', 'pages'])
+def test_cannot_create_service_outside_services(change_dir, tmpdir, name):
+    test_dir = tmpdir / name
+    test_dir.mkdir()
+    runner = CliRunner()
+    with change_dir(test_dir.strpath):
+        result = runner.invoke(create_service, ['foo', '1.0'])
+
+    assert result.exit_code != 0
+    assert "This command must be executed from \\services" in result.output
