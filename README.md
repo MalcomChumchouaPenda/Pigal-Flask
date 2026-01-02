@@ -27,86 +27,86 @@ pip install Pigal-Flask
 Use the following command to create a new pigal project:
 
 ```bash
-pigal create-project <my-project> <my-theme>
+pigal create-project <project-name> <theme-file>
 ```
 
 This will create a pigal project with the following structure:
 
 ```
-/<my-project>
-│   
-├── /app                  # core app
-│   ├── /static           # theme static files
-│   ├── /templates        # theme jinja templates
-│   ├── __init__.py       # app initialization
-│   ├── config.py         # app configurations
-│   ├── extensions.py     # app flask extensions
-│   
-├── /pages                # front-ends or UIs
-│   ├── /home             # home front-end or UI
-│   ├── __init__.py       # global UI initialisation
-│   
-├── /services             # microservices or APIs
-│   ├── /auth             # Authentification microservice
-│   ├── __init__.py       # global API initialisation
-│   
+/<project-name>
+|   
+|-- /app                  # CORE APP SUB-DIRECTORY
+|   |-- /static           # theme static files
+|   |-- /templates        # theme jinja templates
+|   |-- __init__.py       # app initialization
+|   |-- config.py         # app configurations
+|   |-- extensions.py     # app flask extensions
+|   
+|-- /pages                # FRONT-ENDS AND UI SUB-DIRECTORY
+|   |-- /home             # home front-end or UI
+|   |-- __init__.py       # global UI initialisation
+|   
+|-- /services             # MICROSERVICES AND API SUB-DIRECTORY
+|   |-- /auth             # Authentification microservice
+|   |-- __init__.py       # global API initialisation
+|   
 
 ```
 
 ### Create minimal pages
 
-Use the following commands to create domain specific pages inside pages:
+Use the following commands to create domain specific pages inside `/<project-name>/pages`:
 
 ```bash
-cd <my-project>/pages
-pigal create-pages <my-domain>
+pigal create-pages <domain>
 ```
 
 This will create the following structure:
 
 ```
 /pages
-│   
-├── /<my-domain>          # domain pages
-│   ├── /static           # domain static files
-│   ├── /templates        # domain jinja templates
-│   ├── __init__.py       # domain initialization
-│   ├── forms.py          # domain WTF-forms
-│   ├── routes.py         # domain flask routes
-│   
+|   
+|-- /<domain>             # CREATED PAGES DIRECTORY
+|   |-- /static           # domain static files
+|   |-- /templates        # domain jinja templates
+|   |   |-- /<domain>     # specific pages templates
+|   |
+|   |-- __init__.py       # domain initialization
+|   |-- forms.py          # domain WTF-forms
+|   |-- routes.py         # domain flask routes
+|   
 
 ```
 
 > [!IMPORTANT]
-> pages can only be created inside the `pages` directory of a pigal project
+> pages can only be created inside the `/pages` directory of a pigal project
 
 
 ### Create minimal services
 
-Use the following commands to create a microservice inside services directory:
+Use the following commands to create a microservice inside `/<project-name>/services` directory:
 
 ```bash
-cd <my-project>/services
-pigal create-service <my-domain> <my-version>
+pigal create-service <domain> <version>
 ```
 
 This will create the following structure:
 
 ```
 /services
-│   
-├── /<service_name>       # new microservice
-│   ├── /store            # new microservice files
-│   ├── __init__.py       # microservice initialization
-│   ├── models.py         # domain database models
-│   ├── routes.py         # domain Rest API
-│   ├── utils.py          # domain utilities
-│   
+|   
+|-- /<service_name>       # CREATED SERVICE DIRECTORY
+|   |-- /store            # new microservice files
+|   |-- __init__.py       # microservice initialization
+|   |-- models.py         # domain database models
+|   |-- routes.py         # domain Rest API
+|   |-- utils.py          # domain utilities
+|   
 
 ```
 
 > [!IMPORTANT]
-> Service can only be created inside the `services` directory of a pigal project
+> Service can only be created inside the `/services` directory of a pigal project
 
 
 
@@ -187,34 +187,6 @@ Some examples with `payments` and `students` blueprints:
 > [!NOTE]
 > `ui` objects which are in any `pages/<page_id>/routes.py` module are automatically discovered and registered by `Pigal` extension.
 
-> [!IMPORTANT]
-> To avoid conflict with others pages templates, in each we must identify its specific templates either by creating a directory or by using prefix
-
-Examples of templates organisation with **Page Template Directory**:
-
-```
-/pages
-├── /payments                  # Payments page directory
-│   ├── /templates             # Jinja Templates
-│   │   ├── /payments          # Page Template Directory
-│   │   │   ├── page1.html
-│   │   │   ├── page2.html
-│   │   │   ├── page3.html
-│   ...
-```
-
-Examples of templates organisation with **Page Template Prefix**:
-
-```
-/pages
-├── /payments                    # Payments page directory
-│   ├── /templates               # Jinja Templates with Page Prefix
-│   │   ├── payments-page1.html
-│   │   │── payments-page2.html
-│   │   │── payments-page3.html
-│   ...
-```
-
 
 
 ### Create minimal service (backend)
@@ -224,8 +196,8 @@ We can create services in `services` directory. Each service has the following m
 ```
 
 /service             # A service directory
-├── /store           # Data store (Pigal directory)
-├── routes.py        # Service routing (Flask-Restx Namespace)
+|-- /store           # Data store (Pigal directory)
+|-- routes.py        # Service routing (Flask-Restx Namespace)
 
 ```
 
@@ -307,10 +279,10 @@ Now we can create *database*. each *database* is created inside one *service*. A
 
 ```
 /service             
-├── /store           # Data store (Pigal directory)
-├── routes.py        # Service routing (Flask-Restx Namespace)
-├── models.py        # Database modelling (Flask-SqlAlchemy Model)
-├── ...   
+|-- /store           # Data store (Pigal directory)
+|-- routes.py        # Service routing (Flask-Restx Namespace)
+|-- models.py        # Database modelling (Flask-SqlAlchemy Model)
+|-- ...   
 
 ```
 
@@ -382,11 +354,11 @@ A real app need a home UI (*User Interface*). This is done by creating a `home` 
 
 ```
 /app
-├── /home                # Home page directory
-│   ├── /static          # Static files (Flask directory)
-│   ├── /templates       # Jinja Templates (Flask directory)
-│   ├── routes.py        # Page routing (Flask Blueprint)
-│   ...
+|-- /home                # Home page directory
+|   |-- /static          # Static files (Flask directory)
+|   |-- /templates       # Jinja Templates (Flask directory)
+|   |-- routes.py        # Page routing (Flask Blueprint)
+|   ...
 ```
 
 The `home` page must provides 04 required UI:

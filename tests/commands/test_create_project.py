@@ -70,6 +70,7 @@ def test_create_default_home_page(tmpdir, change_dir, fake_theme):
     home_path = os.path.join(tmpdir, 'test', 'pages', 'home')
     assert os.path.isdir(os.path.join(home_path, 'static'))
     assert os.path.isdir(os.path.join(home_path, 'templates'))
+    assert os.path.isdir(os.path.join(home_path, 'templates', 'home'))
     assert os.path.isfile(os.path.join(home_path, 'forms.py'))
     assert os.path.isfile(os.path.join(home_path, 'routes.py'))
 

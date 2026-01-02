@@ -24,6 +24,7 @@ def test_create_basic_structure(change_dir, fake_dir):
     assert os.path.isdir(test_dir)
     assert os.path.isdir(os.path.join(test_dir, 'static'))
     assert os.path.isdir(os.path.join(test_dir, 'templates'))
+    assert os.path.isdir(os.path.join(test_dir, 'templates', 'foo'))
     assert os.path.isfile(os.path.join(test_dir, '__init__.py'))
     assert os.path.isfile(os.path.join(test_dir, 'forms.py'))
     assert os.path.isfile(os.path.join(test_dir, 'routes.py'))
