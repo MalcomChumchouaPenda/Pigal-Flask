@@ -40,8 +40,8 @@ pigal create-project <my-project> <my-theme>
 ```
 
 This will create a pigal project with the following structure:
-```
 
+```
 /<my-project>
 │   
 ├── /app                  # core app
@@ -63,8 +63,29 @@ This will create a pigal project with the following structure:
 
 ```
 
+### Create minimal pages
 
+Use the following commands to create domain specific pages inside pages:
 
+```bash
+cd <my-project>/pages
+pigal create-pages <my-domain>
+```
+
+This will create the following structure:
+
+```
+/pages
+│   
+├── /<my-domain>          # domain pages
+│   ├── /static           # domain static files
+│   ├── /templates        # domain jinja templates
+│   ├── __init__.py       # domain initialization
+│   ├── forms.py          # domain WTF-forms
+│   ├── routes.py         # domain flask routes
+│   
+
+```
 
 
 

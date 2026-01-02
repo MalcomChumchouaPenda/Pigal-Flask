@@ -20,11 +20,20 @@ def create_project(name, theme):
         file.extractall(output_dir)
 
 
+@click.command('create-pages')
+@click.argument('domain')
+def create_pages(domain):
+    extra = {'project_name': domain}
+    template = os.path.join(template_dir, 'cookiecutter_pages')
+    cookiecutter(template, no_input=True, extra_context=extra)
+
+
 @click.group()
 def cli():
     pass
 
 cli.add_command(create_project)
+cli.add_command(create_pages)
 
 
 if __name__ == "__main__":
