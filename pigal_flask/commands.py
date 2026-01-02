@@ -44,16 +44,4 @@ def create_service(domain, version):
     extra = {'project_name': name}
     template = os.path.join(template_dir, 'cookiecutter_service')
     cookiecutter(template, no_input=True, extra_context=extra)
-
-
-@click.group()
-def cli():
-    pass
-
-cli.add_command(create_project)
-cli.add_command(create_pages)
-cli.add_command(create_service)
-
-
-if __name__ == "__main__":
-    cli()
+    
