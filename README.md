@@ -11,14 +11,13 @@ Pigal-Flask is an Flask extension which facilitates the creation and management 
 6. [Licences](#licences)
 
 
-
 ## Principles
 Pigal-Flask facilitates the development of Pigal project. A Pigal project aims to create an modular web portal for an organisation which need to build progressively an integrated information system. **Pigal** means in french ("**P**ortail d'**i**nformation et de **g**estion des **a**ctivites en **l**igne").
 
 A Pigal project follow a modular architecture based on 03 components:
-- *app* which provide home pages, auth services and global theme
-- *pages* which provide domain specific frontend or UI
-- *services* which provide domain specific backend or API
+- *app* which provide global theme, configuration and flask extensions
+- *pages* which provide domain specific frontend or UI (User Interface)
+- *services* which provide domain specific backend or API (Application Programming Interface)
 
 
 
@@ -27,7 +26,11 @@ A Pigal project follow a modular architecture based on 03 components:
 
 ## Installation
 
-*---(todo)---*
+Use the following command to install `Pigal-Flask` extension:
+
+```bash
+pip install Pigal-Flask
+```
 
 ## Quickstart
 
