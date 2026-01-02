@@ -23,6 +23,10 @@ def create_project(name, theme):
 @click.command('create-pages')
 @click.argument('domain')
 def create_pages(domain):
+    if os.path.basename(os.getcwd()) != 'pages':
+        msg = "This command must be executed from \pages"
+        raise click.ClickException(msg)
+    
     extra = {'project_name': domain}
     template = os.path.join(template_dir, 'cookiecutter_pages')
     cookiecutter(template, no_input=True, extra_context=extra)

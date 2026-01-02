@@ -28,3 +28,15 @@ def test_create_basic_structure(change_dir, fake_dir):
     assert os.path.isfile(os.path.join(test_dir, 'forms.py'))
     assert os.path.isfile(os.path.join(test_dir, 'routes.py'))
 
+
+@pytest.mark.parametrize('name', ['foo', 'page', 'services'])
+def test_cannot_create_pages_outside_pages(change_dir, tmpdir, name):
+    test_dir = tmpdir / name
+    test_dir.mkdir()
+    runner = CliRunner()
+    with change_dir(test_dir.strpath):
+        result = runner.invoke(create_pages, ['foo'])
+
+    assert result.exit_code != 0
+    assert "This command must be executed from \\pages" in result.output
+
