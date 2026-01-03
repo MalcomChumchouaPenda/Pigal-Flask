@@ -18,8 +18,8 @@ THEME_FILES = [
     ('templates', 'home', 'dashboard.jinja'),
     ('templates', 'home', 'login.jinja'),
     ('templates', 'home', 'other.jinja'),
-    ('templates', 'examples', 'test1.jinja'),
-    ('templates', 'examples', 'test2.jinja'),
+    ('templates', 'demo', 'test1.jinja'),
+    ('templates', 'demo', 'test2.jinja'),
 ]
 
 
@@ -85,16 +85,16 @@ def test_unzip_home_templates_into_pages(tmpdir, change_dir):
             assert os.path.isfile(file_name)
 
 
-def test_unzip_examples_templates_into_pages(tmpdir, change_dir):
+def test_unzip_demo_templates_into_pages(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    home_path = os.path.join(tmpdir, 'test', 'pages', 'home')
+    demo_path = os.path.join(tmpdir, 'test', 'pages', 'demo')
     for file_names in THEME_FILES:
-        if 'examples' == file_names[1]:
-            file_name = os.path.join(home_path, *file_names)
+        if 'demo' == file_names[1]:
+            file_name = os.path.join(demo_path, *file_names)
             assert os.path.isfile(file_name)
     
 
@@ -162,6 +162,7 @@ def test_create_pages_structure(tmpdir, change_dir):
 
     pages_path = os.path.join(tmpdir, 'test', 'pages')
     assert os.path.isdir(os.path.join(pages_path, 'home'))
+    assert os.path.isdir(os.path.join(pages_path, 'demo'))
     assert os.path.isfile(os.path.join(pages_path, '__init__.py'))
 
 
@@ -177,6 +178,20 @@ def test_create_default_home_page(tmpdir, change_dir):
     assert os.path.isdir(os.path.join(home_path, 'templates', 'home'))
     assert os.path.isfile(os.path.join(home_path, 'forms.py'))
     assert os.path.isfile(os.path.join(home_path, 'routes.py'))
+
+
+def test_create_theme_demo_page(tmpdir, change_dir):
+    runner = CliRunner()
+    with change_dir(tmpdir):
+        theme = create_valid_theme(tmpdir)
+        runner.invoke(create_project, ['test', theme])
+
+    demo_path = os.path.join(tmpdir, 'test', 'pages', 'demo')
+    assert os.path.isdir(os.path.join(demo_path, 'static'))
+    assert os.path.isdir(os.path.join(demo_path, 'templates'))
+    assert os.path.isdir(os.path.join(demo_path, 'templates', 'demo'))
+    assert os.path.isfile(os.path.join(demo_path, 'forms.py'))
+    assert os.path.isfile(os.path.join(demo_path, 'routes.py'))
 
 
 def test_create_services_structure(tmpdir, change_dir):
@@ -217,7 +232,7 @@ def create_invalid_theme(tmpdir, ignored):
     'static/',
     'templates/layouts/',
     'templates/home/',
-    'templates/examples/'
+    'templates/demo/'
 ])
 def test_requires_theme_with_specific_folder(tmpdir, change_dir, required):    
     runner = CliRunner()

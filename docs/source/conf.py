@@ -28,6 +28,7 @@ if src_path not in sys.path:
 extensions = [
     'sphinx.ext.todo', 
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosectionlabel',
     'pallets_sphinx_themes', 
     ]
 

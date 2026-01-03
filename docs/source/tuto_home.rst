@@ -20,7 +20,6 @@ with the following structure:
     |-- /static           # static files
     |-- /templates        # jinja templates
     |   |-- /home         # home pages templates
-    |   |-- /examples     # examples pages templates
     |
     |-- __init__.py       # home initialization
     |-- forms.py          # home WTF-forms

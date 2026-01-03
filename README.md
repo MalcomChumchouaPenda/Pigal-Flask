@@ -35,20 +35,21 @@ This will create a pigal project with the following structure:
 ```
 /<project-name>
 |   
-|-- /app                  # CORE APP SUB-DIRECTORY
+|-- /app                  # APP SUB-DIRECTORY
 |   |-- /static           # theme static files
 |   |-- /templates        # theme jinja templates
 |   |-- __init__.py       # app initialization
 |   |-- config.py         # app configurations
 |   |-- extensions.py     # app flask extensions
 |   
-|-- /pages                # FRONT-ENDS AND UI SUB-DIRECTORY
-|   |-- /home             # home front-end or UI
-|   |-- __init__.py       # global UI initialisation
+|-- /pages                # FRONTENDS SUB-DIRECTORY
+|   |-- /demo             # theme demo frontend
+|   |-- /home             # home frontend 
+|   |-- __init__.py       # global frontend initialisation
 |   
-|-- /services             # MICROSERVICES AND API SUB-DIRECTORY
-|   |-- /auth             # Authentification microservice
-|   |-- __init__.py       # global API initialisation
+|-- /services             # MICROSERVICES SUB-DIRECTORY
+|   |-- /auth             # authentification microservice
+|   |-- __init__.py       # global api initialisation
 |   
 
 ```

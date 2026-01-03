@@ -18,7 +18,7 @@ theme_required_paths = (
     'templates/home/login.jinja',
     'templates/home/dashboard.jinja',
     'templates/home/index.jinja',
-    'templates/examples/',
+    'templates/demo/',
 )
 
 
@@ -48,10 +48,12 @@ def create_project(name, theme):
         file.extractall(output_dir)
     
     # move home and example directories
-    for key in ('home', 'examples'):
-        src_dir = os.path.abspath(f'./{name}/app/templates/{key}')
-        dest_dir = os.path.abspath(f'./{name}/pages/home/templates/{key}')
+    for key in ('home', 'demo'):
+        src_dir = f'./{name}/app/templates/{key}'
+        src_dir = os.path.abspath(src_dir)
         if os.path.isdir(src_dir):
+            dest_dir = f'./{name}/pages/{key}/templates/{key}'
+            dest_dir = os.path.abspath(dest_dir)
             if os.path.isdir(dest_dir):
                 shutil.rmtree(dest_dir)
             shutil.move(src_dir, dest_dir)

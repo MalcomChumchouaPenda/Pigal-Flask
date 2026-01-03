@@ -1,6 +1,6 @@
 
-Creating domain microservice
-============================
+Creating domain services
+========================
 
 Use the following commands to create a microservice inside 
 ``/<project-name>/services`` directory:
