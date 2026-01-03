@@ -2,6 +2,7 @@
 import os
 import click
 import zipfile as zpf
+import shutil
 from cookiecutter.main import cookiecutter
 
 
@@ -18,6 +19,15 @@ def create_project(name, theme):
     with zpf.ZipFile(theme, 'r') as file:
         output_dir = os.path.abspath(f'./{name}/app')
         file.extractall(output_dir)
+    
+    # move home and example directories
+    for key in ('home', 'examples'):
+        src_dir = os.path.abspath(f'./{name}/app/templates/{key}')
+        dest_dir = os.path.abspath(f'./{name}/pages/home/templates/{key}')
+        if os.path.isdir(src_dir):
+            if os.path.isdir(dest_dir):
+                shutil.rmtree(dest_dir)
+            shutil.move(src_dir, dest_dir)
 
 
 @click.command('create-pages')

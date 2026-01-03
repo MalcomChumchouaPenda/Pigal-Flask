@@ -3,7 +3,7 @@ API Reference
 
 
 ``pigal_flask.extensions``
-*************************
+**************************
 
 .. automodule:: pigal_flask.extensions
    :members:
