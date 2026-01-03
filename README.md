@@ -111,44 +111,6 @@ This will create the following structure:
 
 
 
-### Create minimal app (core)
-
-
-
-Lets define project configuration in `app/config.py`.
-
-```python
-
-class Config:
-    PIGAL_PROJECT_NAME = 'Demo'
-    PIGAL_PROJECT_VERSION = '1.0'
-
-```
-
-Lets create `Pigal` extension in `app/extensions.py`.
-
-```python
-
-from pigal_flask import Pigal, PigalDb
-
-pigal = Pigal()
-
-```
-
-Finally in `app/__init__.py`, create Flask `app` :
-
-```python
-
-from flask import Flask
-from .extensions import db, pigal
-from .config import Config
-
-app = Flask(__name__)
-app.config.from_object(Config)  # configure app
-pigal.init_app(app)             # init pigal extension
-
-```
-
 ### Create minimal page (frontend)
 
 

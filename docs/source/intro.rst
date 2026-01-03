@@ -4,7 +4,7 @@ Introduction to Pigal-Flask
 
 Installation
 ------------
-Use the following command to install `Pigal-Flask` extension:
+Use the following command to install ``Pigal-Flask`` extension:
 
 .. code-block:: bash
 
@@ -53,7 +53,8 @@ This will create a pigal project with the following structure:
 Creating new domain pages
 -------------------------
 
-Use the following commands to create domain specific pages inside `/<project-name>/pages`:
+Use the following commands to create domain specific pages 
+inside ``/<project-name>/pages``:
 
 .. code-block:: bash
 
@@ -78,7 +79,7 @@ This will create the following structure:
 
 
 .. IMPORTANT::
-    pages can only be created inside the `/pages` directory of a pigal project
+    pages can only be created inside the ``/pages`` directory of a pigal project
 
 
 
@@ -86,7 +87,7 @@ Creating new domain service
 ---------------------------
 
 Use the following commands to create a microservice inside 
-`/<project-name>/services` directory:
+``/<project-name>/services`` directory:
 
 .. code-block:: bash
 
@@ -109,4 +110,5 @@ This will create the following structure:
 
 
 .. IMPORTANT::
-    Service can only be created inside the `/services` directory of a pigal project
+    Service can only be created inside the ``/services`` 
+    directory of a pigal project

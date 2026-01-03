@@ -52,6 +52,47 @@ def test_create_app_structure(tmpdir, change_dir, fake_theme):
     assert os.path.isfile(os.path.join(app_path, '__init__.py'))
 
 
+def test_create_app_config_file(tmpdir, change_dir, fake_theme):
+    runner = CliRunner()
+    with change_dir(tmpdir):
+        runner.invoke(create_project, ['test', fake_theme])
+
+    file_path = os.path.join(tmpdir, 'test', 'app', 'config.py')
+    with open(file_path, 'rt') as file:
+        code = file.read()
+        assert 'class Config:' in code
+        assert "    PIGAL_PROJECT_NAME = 'test'" in code
+
+
+def test_create_app_extensions_file(tmpdir, change_dir, fake_theme):
+    runner = CliRunner()
+    with change_dir(tmpdir):
+        runner.invoke(create_project, ['test', fake_theme])
+
+    file_path = os.path.join(tmpdir, 'test', 'app', 'extensions.py')
+    with open(file_path, 'rt') as file:
+        code = file.read()
+        assert 'from pigal_flask import Pigal, PigalDb' in code
+        assert 'db = PigalDb()' in code
+        assert 'pigal = Pigal()' in code
+
+
+def test_create_app_init_file(tmpdir, change_dir, fake_theme):
+    runner = CliRunner()
+    with change_dir(tmpdir):
+        runner.invoke(create_project, ['test', fake_theme])
+
+    file_path = os.path.join(tmpdir, 'test', 'app', '__init__.py')
+    with open(file_path, 'rt') as file:
+        code = file.read()
+        assert 'from flask import Flask' in code
+        assert 'from .extensions import db, pigal' in code
+        assert 'from .config import Config' in code
+        assert 'app = Flask(__name__)' in code
+        assert 'app.config.from_object(Config)' in code
+        assert 'pigal.init_app(app)' in code
+
+
 def test_create_pages_structure(tmpdir, change_dir, fake_theme):
     runner = CliRunner()
     with change_dir(tmpdir):
