@@ -22,6 +22,16 @@ A Pigal project follow a modular architecture based on 03 components as shown ab
 The rest of this documentation will help you to use Pigal-Flask...
 
 
+Installation
+------------
+
+Use the following command to install ``Pigal-Flask`` extension:
+
+.. code-block:: bash
+
+    pip install Pigal-Flask
+
+
 User Guide
 ----------
 

@@ -4,9 +4,22 @@ import click
 import zipfile as zpf
 import shutil
 from cookiecutter.main import cookiecutter
+from .exceptions import InvalidCommandContext, InvalidThemeFile
 
 
 template_dir = os.path.dirname(__file__)
+theme_required_paths = (
+    'static/',
+    'templates/layouts/',
+    'templates/layouts/auth.jinja',
+    'templates/layouts/admin.jinja',
+    'templates/layouts/landing.jinja',
+    'templates/home/',
+    'templates/home/login.jinja',
+    'templates/home/dashboard.jinja',
+    'templates/home/index.jinja',
+    'templates/examples/',
+)
 
 
 @click.command('create-project')
@@ -16,7 +29,21 @@ def create_project(name, theme):
     extra = {'project_name': name, 'project_theme': theme}
     template = os.path.join(template_dir, 'cookiecutter_project')
     cookiecutter(template, no_input=True, extra_context=extra)
+
     with zpf.ZipFile(theme, 'r') as file:
+        # check zipfile
+        for required_path in theme_required_paths:
+            found = False
+            for file_name in file.namelist():
+                if required_path in file_name:
+                    found = True
+                    break
+            if not found:
+                theme_name = os.path.basename(theme)
+                msg = f'{theme_name} does not contain valid theme'
+                raise InvalidThemeFile(msg)
+
+        # extract files into project
         output_dir = os.path.abspath(f'./{name}/app')
         file.extractall(output_dir)
     
@@ -35,7 +62,7 @@ def create_project(name, theme):
 def create_pages(domain):
     if os.path.basename(os.getcwd()) != 'pages':
         msg = "This command must be executed from \pages"
-        raise click.ClickException(msg)
+        raise InvalidCommandContext(msg)
     
     extra = {'project_name': domain}
     template = os.path.join(template_dir, 'cookiecutter_pages')
@@ -48,7 +75,7 @@ def create_pages(domain):
 def create_service(domain, version):
     if os.path.basename(os.getcwd()) != 'services':
         msg = "This command must be executed from \\services"
-        raise click.ClickException(msg)
+        raise InvalidCommandContext(msg)
 
     name = f"{domain}_v{version.replace('.', '_')}"
     extra = {'project_name': name}
