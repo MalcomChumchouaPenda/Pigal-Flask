@@ -26,9 +26,6 @@ def tablename(cls):
     return f'{key}_{name}'
 
 
-class InvalidPageUi(Exception):
-    pass
-
 
 class PigalUi(Blueprint):
     """This is a extended Flask Blueprint whose name and url_prefix 
@@ -73,9 +70,6 @@ class PigalUi(Blueprint):
                          static_url_path=static_url_path)
         # self.login_required = login_required
 
-
-class InvalidServiceApi(Exception):
-    pass
 
 
 class PigalApi(Namespace):

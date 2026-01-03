@@ -1,13 +1,19 @@
 
 import os
 import sys
+
 import pytest
 from flask import Flask, Blueprint
 from flask_restx import Api, Namespace
-from pigal_flask import utils
-from pigal_flask.utils import InvalidPageUi, InvalidServiceApi
-from pigal_flask.extensions import Pigal, InvalidProjectStructure, InvalidProjectConfig
 
+from pigal_flask import utils
+from pigal_flask.extensions import Pigal
+from pigal_flask.exceptions import (
+    InvalidPageUi, 
+    InvalidServiceApi,
+    InvalidProjectStructure,
+    InvalidProjectConfig
+)
 
 
 @pytest.fixture

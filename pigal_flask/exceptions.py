@@ -2,6 +2,21 @@
 from click import ClickException
 
 
+class InvalidProjectStructure(Exception):
+    pass
+
+class InvalidProjectConfig(Exception):
+    pass
+
+
+class InvalidPageUi(Exception):
+    pass
+
+class InvalidServiceApi(Exception):
+    pass
+
+
+
 class InvalidCommandContext(ClickException):
     """This exception is raised when a command is executed
     in the wrong directory. Theses wrong cases of command execution 

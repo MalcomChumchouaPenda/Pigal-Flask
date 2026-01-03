@@ -5,7 +5,8 @@ import importlib
 import pytest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from pigal_flask.extensions import PigalDb, InvalidProjectConfig
+from pigal_flask.extensions import PigalDb
+from pigal_flask.exceptions import InvalidProjectConfig
 
 
 def test_is_sqlachemy_instance():

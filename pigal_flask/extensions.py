@@ -5,18 +5,14 @@ import sys
 import inspect
 import warnings
 from importlib import import_module
+
 from flask import Blueprint
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SAWarning
+
 from . import utils
-
-
-class InvalidProjectStructure(Exception):
-    pass
-
-class InvalidProjectConfig(Exception):
-    pass
+from .exceptions import InvalidProjectConfig, InvalidProjectStructure
 
 
 class Pigal:
