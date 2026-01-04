@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Pigal-Flask documentation
-=========================
+Pigal-Flask
+===========
 
 Pigal-Flask is an Flask extension which facilitates the development of Pigal projects.
 A **Pigal project** is a modular web portal for an organisation. 
@@ -38,9 +38,9 @@ User Guide
 .. toctree::
    :maxdepth: 2
 
-   intro
-   tuto
-   api 
+   basic
+   advanced
+   api
 
 
 Indices and tables

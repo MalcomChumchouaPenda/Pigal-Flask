@@ -24,16 +24,16 @@ pip install Pigal-Flask
 
 ### Create minimal project
 
-Use the following command to create a new pigal project:
+Use the following command to create a new pigal project ``mysite`` with a theme ``mytheme.zip``:
 
 ```bash
-pigal create-project <project-name> <theme-file>
+pigal create-project mysite C:/mytheme.zip
 ```
 
 This will create a pigal project with the following structure:
 
 ```
-/<project-name>
+/mysite
 |   
 |-- /app                  # APP SUB-DIRECTORY
 |   |-- /static           # theme static files
@@ -43,7 +43,7 @@ This will create a pigal project with the following structure:
 |   |-- extensions.py     # app flask extensions
 |   
 |-- /pages                # FRONTENDS SUB-DIRECTORY
-|   |-- /demo             # theme demo frontend
+|   |-- /demo             # theme live demo frontend
 |   |-- /home             # home frontend 
 |   |-- __init__.py       # global frontend initialisation
 |   
@@ -54,12 +54,21 @@ This will create a pigal project with the following structure:
 
 ```
 
-### Create minimal pages
-
-Use the following commands to create domain specific pages inside `/<project-name>/pages`:
+You can now run the Flask App to see the project in `debug` mode:
 
 ```bash
-pigal create-pages <domain>
+flask run --debug
+```
+
+Go to http://127.0.0.1:5000 to see the default pages of the project. Go to http://127.0.0.1:5000/api to see the default API of the project.
+
+
+### Create minimal pages
+
+To create specific pages related to `mydomain`, use the following commands inside `mysite/pages`:
+
+```bash
+pigal create-pages mydomain
 ```
 
 This will create the following structure:
@@ -67,10 +76,10 @@ This will create the following structure:
 ```
 /pages
 |   
-|-- /<domain>             # CREATED PAGES DIRECTORY
+|-- /mydomain             # CREATED PAGES DIRECTORY
 |   |-- /static           # domain static files
 |   |-- /templates        # domain jinja templates
-|   |   |-- /<domain>     # specific pages templates
+|   |   |-- /mydomain     # specific pages templates
 |   |
 |   |-- __init__.py       # domain initialization
 |   |-- forms.py          # domain WTF-forms
@@ -80,15 +89,18 @@ This will create the following structure:
 ```
 
 > [!IMPORTANT]
-> pages can only be created inside the `/pages` directory of a pigal project
+> pages can only be created inside the `pages` directory of a pigal project
+
+Go to http://127.0.0.1:5000/mydomain to see the default mydomain pages. you can modify theses pages (see [Documentation](#)).
 
 
 ### Create minimal services
 
-Use the following commands to create a microservice inside `/<project-name>/services` directory:
+In Pigal project, any microservice must have 
+a **domain name** and a **version number**. Use the following commands to create a microservice ``mydomain 1.0`` inside `mysite/services` directory:
 
 ```bash
-pigal create-service <domain> <version>
+pigal create-service mydomain 1.0
 ```
 
 This will create the following structure:
@@ -96,7 +108,7 @@ This will create the following structure:
 ```
 /services
 |   
-|-- /<service_name>       # CREATED SERVICE DIRECTORY
+|-- /mydomain_v1_0        # CREATED SERVICE DIRECTORY
 |   |-- /store            # new microservice files
 |   |-- __init__.py       # microservice initialization
 |   |-- models.py         # domain database models
@@ -107,264 +119,11 @@ This will create the following structure:
 ```
 
 > [!IMPORTANT]
-> Service can only be created inside the `/services` directory of a pigal project
+> Service can only be created inside the `services` directory of a pigal project
 
+Go to http://127.0.0.1:5000/api to see the new mydomain API. 
 
-
-
-### Create minimal page (frontend)
-
-
-To create a page, we must create a `PigalUi` instance in its `routes.py`. For example, for a `demo` page, we can write in `pages/demo/routes.py`:
-
-```python
-from pigal_flask import PigalUi
-
-ui = PigalUi(__file__)
-
-@ui.route('/')
-def index():
-    return "Hello Word"
-
-```
-
-A `PigalUi` is a extended Flask Blueprint whose `name` and `url_prefix` are automatically created. For examples:
-
-| page name  | blueprint name | url prefix  |
-| ---        | ---            | ---         |
-| `payments` | `payments`     | `/payments` |
-| `students` | `students`     | `/students` |
-
-
-Some examples with `payments` and `students` blueprints:
-
-```html
-
-<body>
-    <a href="{{ url_for('payments.index') }}">payments index page</a>
-    <a href="{{ url_for('payments.some') }}">payments some page</a>
-    <a href="{{ url_for('students.some') }}">students some page</a>
-</body>
-```
-
-> [!NOTE]
-> `ui` objects which are in any `pages/<page_id>/routes.py` module are automatically discovered and registered by `Pigal` extension.
-
-
-
-### Create minimal service (backend)
-
-We can create services in `services` directory. Each service has the following minimal structure:
-
-```
-
-/service             # A service directory
-|-- /store           # Data store (Pigal directory)
-|-- routes.py        # Service routing (Flask-Restx Namespace)
-
-```
-
-To create a service, we must create a `PigalApi` instance in its `routes.py`. For example, for a `demo_v0` service, we can write in `services/demo_v0/routes.py`:
-
-```python
-
-from flask_restx import Resource
-from pigal_flask import PigalApi
-
-api = PigalApi(__file__)
-
-@api.route('/hello')
-class HelloApi(Resource):
-    def get(self):
-        return {'message':'Hello World'}
-
-```
-
-> [!NOTE]
-> `api` objects which are in any `services/<service_id>/routes.py` module are automatically discovered and registered by `Pigal` instance.
-
-A `PigalApi` is a extended Flask-Restx `Namespace` whose `name` and `url_prefix` are automatically created. For examples:
-
-| service name  | namespace id | url prefix         |
-| ---           | ---          | ---                |
-| `payments_v0` | `payments`   | `/api/payments/v0` |
-| `students_v2` | `students`   | `/api/students/v2` |
-
-
-## Customization
-
-### Create minimal database
-
-Before creating any database, we must first specify a template for database URI in `app/config.py`:
-
-```python
-
-class Config:
-    # ... other constants
-    PIGAL_DB_URI_TEMPLATE = 'sqlite:///{root_dir}/{service_id}.db'
-
-```
-
-> [!NOTE]
-> In the previous example, we use a template which use `root_dir` and `service_id` variables to create a `sqlite` database URI.
-
-Then, in `app/extensions.py` create a `PigalDb` extension:
-
-```python
-
-from pigal_flask import Pigal, PigalDb
-
-db = PigalDb()
-pigal = Pigal()
-# ... others extensions
-
-```
-
-Finally in `app/__init__.py` file, init `PigalDb` instance with `app` and create tables:
-
-```python
-
-from flask import Flask
-from .extensions import pigal, db
-from .config import Config
-
-app = Flask(__name__)
-app.config.from_object(Config) # configure app
-db.init_app(app)               # init db extension
-pigal.init_app(app)            # init pigal extension
-
-with app.app_context():
-    db.create_all()            # create all tables
-
-```
-
-Now we can create *database*. each *database* is created inside one *service*. A *service* with *database* must have a `models.py` file:
-
-```
-/service             
-|-- /store           # Data store (Pigal directory)
-|-- routes.py        # Service routing (Flask-Restx Namespace)
-|-- models.py        # Database modelling (Flask-SqlAlchemy Model)
-|-- ...   
-
-```
-
-With `db` you can define models in any `models.py`. This is an example of model in `services/persons_v0/models.py`:
-
-```python
-
-from app.extensions import db
-
-class Person(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-
-```
-
-> [!IMPORTANT]
-> A `PigalDb` is a subclass of `SQLAlchemy` provided by *Flask-SQLAlchemy*.
-
-Now, in `services/persons_v0/routes.py` for example, we can create an api and model:
-
-```python
-
-from flask_restx import Resource, fields
-from pigal_flask import PigalApi
-from app.extensions import db
-from services.persons_v0.models import Person
-
-api = PigalApi(__file__)
-
-person_model = api.model('Person', {
-    'id': fields.Integer(readonly=True),
-    'name': fields.String(required=True)
-})
-```
-
-> [!NOTE]
-> `PigalApi` will automatically prefix marshall `Model.name` to avoid conflict between models created inside differents versions of the same service. In the example above, the name of `person_model` will be `persons_v0.Person` instead of `Person`
-
-Then in `services/persons_v0/routes.py`, we can create CRUD routes for `Person`:
-
-```python
-
-# ...
-
-@api.route('/persons')
-class PersonsApi(Resource):
-
-    @api.marshal_list_with(person_model)
-    def get(self):
-        '''list all persons'''
-        return Person.query.all()
-    
-    @api.expect(person_model)
-    @api.marshal_with(person_model)
-    def post(self):
-        '''add new person'''
-        data = api.payload
-        new_person = Person(name=data['name'])
-        db.session.add(new_person)
-        db.session.commit()
-        return new_person
-
-```
-
-
-### Create minimal home page
-
-A real app need a home UI (*User Interface*). This is done by creating a `home` page in `/app` directory. This `home` page has the same minimal structure than any page in Pigal-Flask:
-
-```
-/app
-|-- /home                # Home page directory
-|   |-- /static          # Static files (Flask directory)
-|   |-- /templates       # Jinja Templates (Flask directory)
-|   |-- routes.py        # Page routing (Flask Blueprint)
-|   ...
-```
-
-The `home` page must provides 04 required UI:
-
-| blueprint routes | urls         | methods | roles                          |
-| ---------------- | ------------ | ------- | ------------------------------ |
-| `home.index`     | `/`          | `GET`   | Display landing home page      |
-| `home.dashboard` | `/dashboard` | `GET`   | Display dashboard home page    |
-| `home.login`     | `/login`     | `GET`   | Display login form page        |
-| `home.login`     | `/login`     | `POST`  | Handle login form submission   |
-| `home.logout`    | `/logout`    | `POST`  | Handling logout process        |
-
-
-So, as for any page, we must create `PigalUi` instance and routes in `app/home/routes.py`. For example, we can write:
-
-```python
-from flask import render_template, redirect
-from pigal_flask import PigalUi
-
-ui = PigalUi(__file__)
-
-@ui.route('/')
-def index():
-    return render_template('home-index.html')
-    
-@ui.route('/dashboard')
-def dashboard():
-    return render_template('home-dashboard.html')
-
-@ui.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        # ... authentification
-        return redirect(url_for('home.dashboard'))
-    return render_template('home-login.html')
-    
-@ui.route('/logout', methods=['POST'])
-def logout():
-    # ... logout
-    return redirect(url_for('home.index'))
-
-```
-
+you can now create databases, change default API or create utilities for pages and others services (see [Documentation](#)).
 
 
 ## Contributions

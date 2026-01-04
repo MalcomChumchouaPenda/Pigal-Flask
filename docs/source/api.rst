@@ -1,9 +1,10 @@
+
 API Reference
-====================
+=============
 
 
-``pigal_flask.extensions``
-**************************
+Extensions
+**********
 
 .. automodule:: pigal_flask.extensions
    :members:
@@ -11,20 +12,19 @@ API Reference
    :show-inheritance:
 
 
-``pigal_flask.utils``
-*********************
+Utils
+*****
 
 .. automodule:: pigal_flask.utils
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-``pigal_flask.exceptions``
-**************************
+   
+Exceptions
+**********
 
 .. automodule:: pigal_flask.exceptions
    :members:
    :undoc-members:
    :show-inheritance:
-

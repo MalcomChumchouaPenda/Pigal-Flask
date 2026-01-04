@@ -1,6 +1,6 @@
 
-Customizing App component
-=========================
+Adding new extensions
+=====================
 
 There are a couple of ways to improve or extend:
 
@@ -8,10 +8,6 @@ There are a couple of ways to improve or extend:
 2. change App configurations for testing, development or production
 
 So how would you then actually implement that?
-
-
-Default App component
----------------------
 
 To illustrate this, we suppose that 
 we have created a project called ``demo``.
@@ -58,9 +54,10 @@ The ``__init__.py`` contains the following code:
     db.init_app(app)
     pigal.init_app(app)
 
+    # create all databases tables
+    with app.app_context():
+        db.create_all()            
 
-Add new extensions
-------------------
 
 To illustrate this, we suppose that 
 we have to add two flask-extension to the ``demo`` project:
