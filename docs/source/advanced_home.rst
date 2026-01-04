@@ -3,6 +3,10 @@
 Customizing home pages
 ======================
 
+
+Default home structure
+----------------------
+
 ``home`` pages has similar structure as other domain pages:
 
 .. code-block::
@@ -95,11 +99,19 @@ By default, ``home/routes.py`` provides this roles and routes:
         password = PasswordField("Password", validators=[DataRequired()])
 
 
+Adding or editing home views
+----------------------------
+
 So, you can customize this default ``home`` by adding or editing:
 
 * flask routes inside ``routes.py`` to modify navigation
 * jinja templates inside ``templates/home`` to modify page contents
 * flask forms inside ``forms.py`` to modify user input validation 
+
+
+
+Deleting home views
+-------------------
 
 However, unlike usual pages, in ``home`` pages you shall not remove:
 

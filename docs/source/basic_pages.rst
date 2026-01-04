@@ -3,18 +3,25 @@
 Creating domain pages
 =====================
 
-To create ``mydomain`` pages, 
+
+``create-pages`` command
+------------------------
+
+To create ``MyDomain`` pages, 
 use the ``create-pages`` command 
-inside ``mysite/pages``:
+inside ``myproject/pages``:
 
 .. code-block:: bash
 
-    pigal create-pages mydomain
+    pigal create-pages MyDomain
 
 
 .. IMPORTANT::
     pages can only be created inside the ``pages`` directory
 
+
+Default Pages structure
+-----------------------
 
 This command will create the following structure:
 
@@ -60,15 +67,15 @@ Some examples of name and url_prefix generated:
 .. table:: 
     :align: left
 
-    +---------------------------+----------------+----------------+
-    | domain path               | blueprint name | url prefix     |
-    +===========================+================+================+
-    | ``mysite/pages/home``     | ``home``       | ``/``          |
-    +---------------------------+----------------+----------------+
-    | ``mysite/pages/demo``     | ``demo``       | ``/demo``      |
-    +---------------------------+----------------+----------------+
-    | ``mysite/pages/mydomain`` | ``mydomain``   | ``/mydomain``  |
-    +---------------------------+----------------+----------------+
+    +------------------------------+----------------+----------------+
+    | domain path                  | blueprint name | url prefix     |
+    +==============================+================+================+
+    | ``myproject/pages/home``     | ``home``       | ``/``          |
+    +------------------------------+----------------+----------------+
+    | ``myproject/pages/demo``     | ``demo``       | ``/demo``      |
+    +------------------------------+----------------+----------------+
+    | ``myproject/pages/mydomain`` | ``mydomain``   | ``/mydomain``  |
+    +------------------------------+----------------+----------------+
 
 
 The command ``create-pages`` also create a minimal ``index.jinja`` 
@@ -77,12 +84,19 @@ template inside ``templates/mydomain``:
 .. code-block:: HTML
 
     {% extends 'layouts/default.jinja' %}
-    {% set title = 'Welcome in mydomain' %}
+    {% set title = 'Welcome in MyDomain' %}
     {% set sub_title = 'This is the default page' %}
 
 
-Go to http://127.0.0.1:5000/mydomain to see this default page of ``mydomain``.
+Running the Frontend
+--------------------
 
+Go to http://127.0.0.1:5000/mydomain to see this default page of ``MyDomain``.
+
+
+
+Customizing Frontend
+--------------------
 
 With this pages structure, you can then:
 

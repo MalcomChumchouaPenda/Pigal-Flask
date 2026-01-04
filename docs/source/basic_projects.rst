@@ -3,18 +3,18 @@
 Creating minimal project
 ========================
 
-Using command
--------------
+``create-project`` command
+--------------------------
 
 Before creating a new project, you must download a theme.
 
 
-To create a new pigal project ``mysite`` 
-with a theme ``mytheme.zip``, use the following command:
+To create a new pigal project ``MyProject`` 
+with a theme ``MyTheme.zip``, use the following command:
 
 .. code-block:: bash
 
-    pigal create-project mysite C:/mytheme.zip
+    pigal create-project MyProject C:/MyTheme.zip
 
 
 
@@ -25,17 +25,17 @@ This will create a pigal project with the following structure:
 
 .. code-block::
 
-    /mysite
+    /myproject
     |   
     |-- /app                  # APP SUB-DIRECTORY
-    |   |-- /static           # mytheme static files
-    |   |-- /templates        # mytheme jinja templates
+    |   |-- /static           # theme static files
+    |   |-- /templates        # theme jinja templates
     |   |-- __init__.py       # app initialization
     |   |-- config.py         # app configurations
     |   |-- extensions.py     # app flask extensions
     |   
     |-- /pages                # FRONTENDS SUB-DIRECTORY
-    |   |-- /demo             # mytheme live demo
+    |   |-- /demo             # theme live demo
     |   |-- /home             # home frontend 
     |   |-- __init__.py       # global frontend initialisation
     |   
@@ -58,18 +58,19 @@ Navigate to the project directory and run the flask app:
 
 .. code-block:: bash
 
-    cd mysite
+    cd myproject
     flask run
 
-By default, the app will run at ``http://localhost:5000``.
+By default, the app will run at http://localhost:5000.
 
 You should see the default "Hello World!" page.
 
 
 
-Next steps
-----------
+Next steps in project
+---------------------
 
 Within this structure, we can now:
+
 * create specific pages (see :ref:`Creating domain pages`)
 * create microservices (see :ref:`Creating domain services`)

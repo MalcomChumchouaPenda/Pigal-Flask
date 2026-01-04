@@ -24,16 +24,16 @@ pip install Pigal-Flask
 
 ### Create minimal project
 
-Use the following command to create a new pigal project ``mysite`` with a theme ``mytheme.zip``:
+Use the following command to create a new pigal project ``MyProject`` with a theme ``MyTheme.zip``:
 
 ```bash
-pigal create-project mysite C:/mytheme.zip
+pigal create-project MyProject C:/MyTheme.zip
 ```
 
 This will create a pigal project with the following structure:
 
 ```
-/mysite
+/myproject
 |   
 |-- /app                  # APP SUB-DIRECTORY
 |   |-- /static           # theme static files
@@ -60,15 +60,17 @@ You can now run the Flask App to see the project in `debug` mode:
 flask run --debug
 ```
 
-Go to http://127.0.0.1:5000 to see the default pages of the project. Go to http://127.0.0.1:5000/api to see the default API of the project.
+Go to http://127.0.0.1:5000 to see the default pages of the project.
+
+Go to http://127.0.0.1:5000/api to see the default API of the project.
 
 
 ### Create minimal pages
 
-To create specific pages related to `mydomain`, use the following commands inside `mysite/pages`:
+To create specific pages related to `MyDomain`, use the following commands inside `myproject/pages`:
 
 ```bash
-pigal create-pages mydomain
+pigal create-pages MyDomain
 ```
 
 This will create the following structure:
@@ -91,16 +93,16 @@ This will create the following structure:
 > [!IMPORTANT]
 > pages can only be created inside the `pages` directory of a pigal project
 
-Go to http://127.0.0.1:5000/mydomain to see the default mydomain pages. you can modify theses pages (see [Documentation](#)).
+Go to http://127.0.0.1:5000/mydomain to see the default MyDomain pages. you can modify theses pages (see [Documentation](#)).
 
 
 ### Create minimal services
 
 In Pigal project, any microservice must have 
-a **domain name** and a **version number**. Use the following commands to create a microservice ``mydomain 1.0`` inside `mysite/services` directory:
+a **domain name** and a **version number**. Use the following commands to create a microservice ``MyDomain 1.0`` inside `myproject/services` directory:
 
 ```bash
-pigal create-service mydomain 1.0
+pigal create-service MyDomain 1.0
 ```
 
 This will create the following structure:
@@ -121,7 +123,7 @@ This will create the following structure:
 > [!IMPORTANT]
 > Service can only be created inside the `services` directory of a pigal project
 
-Go to http://127.0.0.1:5000/api to see the new mydomain API. 
+Go to http://127.0.0.1:5000/api to see the new MyDomain API. 
 
 you can now create databases, change default API or create utilities for pages and others services (see [Documentation](#)).
 

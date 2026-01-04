@@ -19,6 +19,11 @@ A Pigal project follow a modular architecture based on 03 components as shown ab
 * **pages** which provide specific frontends or UI (User Interface)
 * **services** which provide specific backends or API (Application Programming Interface)
 
+This architecture provides the following benefits:
+* **Easier collaboration**: Frontend and Backend developers can easily collaborate
+* **Easier scalability**: Developers can easily add and remove features to projects
+* **Easier maintainability**: Projects can easily be maintained, tested and refactored
+
 The rest of this documentation will help you to use Pigal-Flask...
 
 
