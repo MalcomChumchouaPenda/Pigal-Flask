@@ -8,6 +8,6 @@ Quickstart
    :caption: Next steps
 
    basic_projects
-   basic_pages
-   basic_services
+   basic_frontends
+   basic_backends
    

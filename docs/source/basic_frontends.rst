@@ -1,46 +1,46 @@
 
 
-Creating domain pages
-=====================
+Creating frontend
+=================
 
 
-``create-pages`` command
-------------------------
+``create-frontend`` command
+---------------------------
 
-To create ``MyDomain`` pages, 
-use the ``create-pages`` command 
-inside ``myproject/pages``:
+To create ``MyDomain`` frontend, 
+navigate to ``myproject/frontends`` directory
+then use the ``create-frontend`` command :
 
 .. code-block:: bash
 
-    pigal create-pages MyDomain
+    cd frontends
+    pigal create-frontend MyDomain
 
 
 .. IMPORTANT::
-    pages can only be created inside the ``pages`` directory
+    frontend can only be created inside ``frontends`` directory
 
 
-Default Pages structure
------------------------
+Default frontend structure
+--------------------------
 
 This command will create the following structure:
 
 .. code-block::
 
-    /pages
+    /frontends
     |   
-    |-- /mydomain             # CREATED PAGES DIRECTORY
+    |-- /mydomain             # CREATED DIRECTORY
     |   |-- /static           # domain static files
-    |   |-- /templates        # domain jinja templates
-    |   |   |-- /mydomain     # specific pages templates
+    |   |-- /templates        # jinja templates
+    |   |   |-- /mydomain     # domain templates
     |   |
     |   |-- __init__.py       # domain initialization
     |   |-- forms.py          # domain WTF-forms
     |   |-- routes.py         # domain flask routes
-    |   
 
-Inside ``routes.py``, a minimal flask routing system
-is automatically created like this:
+
+Inside ``routes.py``, a default routing system is created:
 
 .. code-block:: python
 
@@ -67,18 +67,18 @@ Some examples of name and url_prefix generated:
 .. table:: 
     :align: left
 
-    +------------------------------+----------------+----------------+
-    | domain path                  | blueprint name | url prefix     |
-    +==============================+================+================+
-    | ``myproject/pages/home``     | ``home``       | ``/``          |
-    +------------------------------+----------------+----------------+
-    | ``myproject/pages/demo``     | ``demo``       | ``/demo``      |
-    +------------------------------+----------------+----------------+
-    | ``myproject/pages/mydomain`` | ``mydomain``   | ``/mydomain``  |
-    +------------------------------+----------------+----------------+
+    +----------------------------------+----------------+----------------+
+    | domain path                      | blueprint name | url prefix     |
+    +==================================+================+================+
+    | ``myproject/frontends/home``     | ``home``       | ``/``          |
+    +----------------------------------+----------------+----------------+
+    | ``myproject/frontends/demo``     | ``demo``       | ``/demo``      |
+    +----------------------------------+----------------+----------------+
+    | ``myproject/frontends/mydomain`` | ``mydomain``   | ``/mydomain``  |
+    +----------------------------------+----------------+----------------+
 
 
-The command ``create-pages`` also create a minimal ``index.jinja`` 
+The command ``create-frontend`` also create a default ``index.jinja`` 
 template inside ``templates/mydomain``:
 
 .. code-block:: HTML
@@ -91,14 +91,14 @@ template inside ``templates/mydomain``:
 Running the Frontend
 --------------------
 
-Go to http://127.0.0.1:5000/mydomain to see this default page of ``MyDomain``.
+Go to http://127.0.0.1:5000/mydomain to see default page of ``MyDomain``.
 
 
 
 Customizing Frontend
 --------------------
 
-With this pages structure, you can then:
+With this frontend structure, you can then:
 
 * modify default page template (see `Jinja Templates documentation`_)
 * add or deletes views to ``ui`` blueprint (see `Flask blueprint documentation`_)

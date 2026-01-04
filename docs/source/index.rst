@@ -16,10 +16,11 @@ This will help an organisation to build progressively an integrated information 
 A Pigal project follow a modular architecture based on 03 components as shown above:
 
 * **app** which provide global Flask configuration, extensions and theme
-* **pages** which provide specific frontends or UI (User Interface)
-* **services** which provide specific backends or API (Application Programming Interface)
+* **frontends** which provide specific domain frontends
+* **backends** which provide specific domain backends
 
 This architecture provides the following benefits:
+
 * **Easier collaboration**: Frontend and Backend developers can easily collaborate
 * **Easier scalability**: Developers can easily add and remove features to projects
 * **Easier maintainability**: Projects can easily be maintained, tested and refactored

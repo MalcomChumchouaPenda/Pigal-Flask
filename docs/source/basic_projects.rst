@@ -1,7 +1,8 @@
 
 
-Creating minimal project
-========================
+Creating project
+================
+
 
 ``create-project`` command
 --------------------------
@@ -10,7 +11,9 @@ Before creating a new project, you must download a theme.
 
 
 To create a new pigal project ``MyProject`` 
-with a theme ``MyTheme.zip``, use the following command:
+with a theme ``MyTheme.zip``, 
+use ``create-project`` command:
+
 
 .. code-block:: bash
 
@@ -27,26 +30,25 @@ This will create a pigal project with the following structure:
 
     /myproject
     |   
-    |-- /app                  # APP SUB-DIRECTORY
+    |-- /app                  # APP DIRECTORY
     |   |-- /static           # theme static files
     |   |-- /templates        # theme jinja templates
     |   |-- __init__.py       # app initialization
     |   |-- config.py         # app configurations
     |   |-- extensions.py     # app flask extensions
     |   
-    |-- /pages                # FRONTENDS SUB-DIRECTORY
+    |-- /frontends            # FRONTENDS DIRECTORY
     |   |-- /demo             # theme live demo
     |   |-- /home             # home frontend 
     |   |-- __init__.py       # global frontend initialisation
     |   
-    |-- /services             # MICROSERVICES SUB-DIRECTORY
-    |   |-- /auth             # authentification microservice
+    |-- /backends             # BACKENDS DIRECTORY
+    |   |-- /auth             # authentification backend
     |   |-- __init__.py       # global api initialisation
-    |   
 
 
 .. IMPORTANT::
-    The directories ``app``, ``pages/home``, ``services/auth``
+    The directories ``app``, ``frontends/home``, ``backends/auth``
     are required for any Pigal project.
 
 
@@ -72,5 +74,5 @@ Next steps in project
 
 Within this structure, we can now:
 
-* create specific pages (see :ref:`Creating domain pages`)
-* create microservices (see :ref:`Creating domain services`)
+* create specific frontend (see :ref:`Creating frontend`)
+* create specific backend (see :ref:`Creating backend`)

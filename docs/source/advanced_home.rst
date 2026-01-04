@@ -1,13 +1,13 @@
 
 
-Customizing home pages
-======================
+Customizing home frontend
+=========================
 
 
 Default home structure
 ----------------------
 
-``home`` pages has similar structure as other domain pages:
+``home`` frontend has similar structure as other frontends:
 
 .. code-block::
 
@@ -22,9 +22,9 @@ Default home structure
     |-- __init__.py                 # home initialization
     |-- forms.py                    # home WTF-forms
     |-- routes.py                   # home routing
-    |   
 
-But, the ``home`` pages must provides 04 specific routes with 5 roles:
+
+But, the ``home`` frontend must provides 04 specific routes with 5 roles:
 
 .. table::
     :align: left
@@ -52,7 +52,7 @@ By default, ``home/routes.py`` provides this roles and routes:
     from flask_login import login_user, logout_user
     from pigal_flask import PigalUi
     from .forms import LoginForm
-    from services.auth.models import User
+    from backends.auth.models import User
 
 
     ui = PigalUi(__file__)
@@ -113,7 +113,7 @@ So, you can customize this default ``home`` by adding or editing:
 Deleting home views
 -------------------
 
-However, unlike usual pages, in ``home`` pages you shall not remove:
+However, unlike usual frontends, in ``home`` frontend you shall not remove:
 
 * required routes: ``index``, ``dashboard``, ``login`` and ``logout``
 * required templates: ``index.jinja``, ``login.jinja`` and ``dashboard.jinja``

@@ -1,50 +1,49 @@
 
 
-Creating domain services
-========================
+Creating backend
+================
 
 
-``create-service`` command
+``create-backend`` command
 --------------------------
 
-In Pigal project, 
-any microservice must have a **domain name** and a **version number**.
+Any backend must have a **domain name** and a **version number**.
 
-To create a MyDomain 1.0 microservice, navigate to ``services`` directory:
-
-.. code-block:: bash
-
-    cd myproject/services
-
-
-use the command ``create-service``:
+To create a ``MyDomain 1.0`` backend, navigate to ``backends`` directory:
 
 .. code-block:: bash
 
-    pigal create-service MyDomain 1.0
+    cd myproject/backends
+
+
+use the command ``create-backend``:
+
+.. code-block:: bash
+
+    pigal create-backend MyDomain 1.0
 
 
 .. IMPORTANT::
-    Service can only be created inside the ``services`` directory
+    Service can only be created inside the ``backends`` directory
 
 
 
-Default Services structure
+Default backend structure
 --------------------------
 
 This command will create the following structure:
 
 .. code-block::
 
-    /services
+    /backends
     |   
-    |-- /mydomain_v1_0        # CREATED SERVICE DIRECTORY
-    |   |-- /store            # new microservice files
-    |   |-- __init__.py       # microservice initialization
+    |-- /mydomain_v1_0        # CREATED DIRECTORY
+    |   |-- /store            # new backend files
+    |   |-- __init__.py       # backend initialization
     |   |-- models.py         # domain database models
     |   |-- routes.py         # domain Rest API
     |   |-- utils.py          # domain utilities
-    |   
+
 
 
 Inside ``routes.py``, a minimal REST API is automatically created:
@@ -77,13 +76,13 @@ Some examples of id and url_prefix generated:
     :align: left
 
     +--------------------------------------+--------------+------------------------+
-    | service path                         | namespace id | url prefix             |
+    | backend directory                    | namespace id | url prefix             |
     +======================================+==============+========================+
-    | ``myproject/services/auth``          | ``auth``     | ``/api/auth``          |
+    | ``myproject/backends/auth``          | ``auth``     | ``/api/auth``          |
     +--------------------------------------+--------------+------------------------+
-    | ``myproject/services/mydomain_v1``   | ``mydomain`` | ``/api/mydomain/v1``   |
+    | ``myproject/backends/mydomain_v1``   | ``mydomain`` | ``/api/mydomain/v1``   |
     +--------------------------------------+--------------+------------------------+
-    | ``myproject/services/mydomain_v1_2`` | ``mydomain`` | ``/api/mydomain/v1.2`` |
+    | ``myproject/backends/mydomain_v1_2`` | ``mydomain`` | ``/api/mydomain/v1.2`` |
     +--------------------------------------+--------------+------------------------+
 
 
@@ -95,9 +94,9 @@ A sqlite database is automatically created for each app execution mode:
     +--------------------+---------------------------------------------+
     | execution context  | created database                            |
     +====================+=============================================+
-    | production mode    | ``services/mydomain_v1/store/data.db``      |
+    | production mode    | ``backends/mydomain_v1/store/data.db``      |
     +--------------------+---------------------------------------------+
-    | development mode   | ``services/mydomain_v1/store/temp/data.db`` |
+    | development mode   | ``backends/mydomain_v1/store/temp/data.db`` |
     +--------------------+---------------------------------------------+
     | testing mode       | ``:memory:``                                |
     +--------------------+---------------------------------------------+
@@ -108,7 +107,7 @@ The ``app.extensions`` module will provide a ``db`` object which permits to:
 * model your database without conflict with other database (see :ref:`Modelling Databases`)
 * use this database to provide utilities (see :ref:`Using database inside utils`)
 * use this database to provide an api (see :ref:`Using database inside api`)
-* use this database inside pages (see :ref:`Using database inside pages`)
+* use this database inside frontends (see :ref:`Using database inside frontends`)
 
 .. NOTE::
     ``db`` is an instance of :any:`PigalDb` class. 
@@ -139,7 +138,7 @@ Models ``__tablename__`` and ``__bind_key__`` are automatically generated:
     :align: left
 
     +-------------+--------------+------------------------+-------------------+
-    | model class | service name | ``__tablename__``      | ``__bind_key__``  |
+    | model class | backend name | ``__tablename__``      | ``__bind_key__``  |
     +=============+==============+========================+===================+
     | ``Item``    | MyDomain 1.0 | ``mydomain_v1_0_item`` | ``mydomain_v1_0`` |
     +-------------+--------------+------------------------+-------------------+
@@ -151,7 +150,7 @@ Models ``__tablename__`` and ``__bind_key__`` are automatically generated:
 
 .. DANGER::
     To avoid conflict between databases 
-    from different versions of the same service,
+    from different versions of the same backend,
     don't edit generated ``__tablename__`` and ``__bind_key__``
 
 
@@ -195,6 +194,6 @@ to provide **CRUD** functionnalities. For example:
 
 
 
-Using database inside pages
----------------------------
+Using database inside frontends
+-------------------------------
 

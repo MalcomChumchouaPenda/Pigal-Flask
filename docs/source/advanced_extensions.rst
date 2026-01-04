@@ -1,6 +1,6 @@
 
-Adding new extensions
-=====================
+Adding flask extensions
+=======================
 
 
 You can improve a pigal project, you can add new Flask extensions by:
@@ -85,17 +85,15 @@ by default ``app/__init__.py`` contains the following code:
     from .config import Config
 
 
-    # create Flask app
-    app = Flask(__name__)
-    app.config.from_object(Config)
+    def create_app():
+        app = Flask(__name__)
+        app.config.from_object(Config)
 
-    # initialize Flask extensions
-    db.init_app(app)
-    pigal.init_app(app)
+        db.init_app(app)         # initialize PigalDb extension
+        pigal.init_app(app)      # initialize Pigal extension
 
-    # create all databases tables
-    with app.app_context():
-        db.create_all()            
+        with app.app_context():
+            db.create_all()      # create all databases tables           
 
 
 
