@@ -36,21 +36,25 @@ This will create a pigal project with the following structure:
 ```
 /myproject
 |   
-|-- /app                  # APP SUB-DIRECTORY
+|-- /app                  # APP DIRECTORY
 |   |-- /static           # theme static files
 |   |-- /templates        # theme jinja templates
 |   |-- __init__.py       # app initialization
 |   |-- config.py         # app configurations
 |   |-- extensions.py     # app flask extensions
 |   
-|-- /frontends                # FRONTENDS SUB-DIRECTORY
-|   |-- /demo             # theme live demo frontend
+|-- /backends             # BACKENDS DIRECTORY
+|   |-- /auth             # authentification backend
+|   |-- __init__.py       # global api initialisation
+|   
+|-- /frontends            # FRONTENDS DIRECTORY
+|   |-- /demo             # theme live demo
 |   |-- /home             # home frontend 
 |   |-- __init__.py       # global frontend initialisation
 |   
-|-- /backends             # MICROSERVICES SUB-DIRECTORY
-|   |-- /auth             # authentification backend
-|   |-- __init__.py       # global api initialisation
+|-- /migrations           # databases migration files
+|-- /tests                # project tests  
+|-- /translations         # internationalisation files
 
 
 ```
@@ -65,6 +69,11 @@ flask run --debug
 Go to http://127.0.0.1:5000 to see the default project page.
 
 Go to http://127.0.0.1:5000/api to see the default project Rest API.
+
+Go to http://127.0.0.1:5000/demo to see examples of theme frontend pages.
+
+Go to http://127.0.0.1:5000/demo/docs to see documentation page of theme used.
+
 
 
 ### Create minimal frontend

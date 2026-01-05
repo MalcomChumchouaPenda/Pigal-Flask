@@ -57,8 +57,11 @@ by default, ``app/config.py`` contains the following code:
 .. code-block:: python
 
     class Config:
-        PIGAL_PROJECT_NAME = 'demo'
-        PIGAL_PROJECT_VERSION = '1.0'
+        PIGAL_PROJECT_NAME = 'MyProject'
+        PIGAL_THEME_UI_SYSTEM = 'MyUISystem'
+        PIGAL_THEME_LIVE_DEMO = True
+
+    # ... OTHER CONFIG CLASSES
 
 
 we can modify to add parameters of new extensions:
@@ -66,11 +69,11 @@ we can modify to add parameters of new extensions:
 .. code-block:: python
 
     class Config:
+        # ... PREVIOUS PARAMETERS
+        FOO_PARAMETER = 'foo_option'
+        BAR_PARAMETER = 'bar_option'
 
-        # ... other parameters
-        FOO_PARAMS1 = 'a1'
-        BAR_PARAMS1 = 'b1'
-        BAR_PARAMS2 = 'b2'
+    # ... OTHER CONFIG CLASSES
 
 
 Initialize extension with App

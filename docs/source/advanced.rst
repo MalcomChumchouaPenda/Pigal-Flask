@@ -9,4 +9,5 @@ Advanced Features
    advanced_home
    advanced_extensions
    advanced_databases
+   advanced_themes
 
