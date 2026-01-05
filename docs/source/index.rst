@@ -6,18 +6,17 @@
 Pigal-Flask
 ===========
 
-Pigal-Flask is an Flask extension which facilitates the development of Pigal projects.
-A **Pigal project** is a modular web portal for an organisation. 
-This will help an organisation to build progressively an integrated information system. 
-**Pigal** means in french ("Portail d'information et de gestion des activites en ligne").
+**Pigal-Flask** is an Flask extension that simplifies developing modular web portals
+for organisations building an integrated information systems.
+
+A **Pigal project** is a Flask application with a modular architecture based on 03 components:
+
+* **app** which provide global configuration, extensions and theme
+* **frontends** which provide specific domain frontends
+* **backends** which provide specific domain backends
 
 .. image:: ../diagrams/pigal_project_architecture.drawio.svg
 
-A Pigal project follow a modular architecture based on 03 components as shown above:
-
-* **app** which provide global Flask configuration, extensions and theme
-* **frontends** which provide specific domain frontends
-* **backends** which provide specific domain backends
 
 This architecture provides the following benefits:
 
@@ -25,7 +24,14 @@ This architecture provides the following benefits:
 * **Easier scalability**: Developers can easily add and remove features to projects
 * **Easier maintainability**: Projects can easily be maintained, tested and refactored
 
-The rest of this documentation will help you to use Pigal-Flask...
+**Pigal-Flask** allows web developpers to:
+
+* develop and share views, pages and themes
+* develop and share services and functionnalities
+* develop and manage multiple databases
+* quickly add common security mechanisms
+* easily implement multi-language support
+* enforce best conventions in development teams
 
 
 Installation

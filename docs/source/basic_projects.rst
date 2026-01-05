@@ -48,8 +48,11 @@ This will create a pigal project with the following structure:
 
 
 .. IMPORTANT::
-    The directories ``app``, ``frontends/home``, ``backends/auth``
-    are required for any Pigal project.
+    The following directories are required for any project:
+    
+    * ``app``
+    * ``backends/auth``
+    * ``frontends/home``
 
 
 

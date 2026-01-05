@@ -10,4 +10,6 @@ Quickstart
    basic_projects
    basic_frontends
    basic_backends
+   basic_collaboration
+
    
