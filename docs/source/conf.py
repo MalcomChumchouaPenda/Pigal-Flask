@@ -30,6 +30,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosectionlabel',
     'pallets_sphinx_themes', 
+    'sphinx_click.ext',
     ]
 
 templates_path = ['_templates']

@@ -26,6 +26,8 @@ theme_required_paths = (
 @click.argument('name')
 @click.argument('theme')
 def create_project(name, theme):
+    """Create new Pigal project
+    """
     extra = {'project_name': name, 'project_theme': theme}
     template = os.path.join(template_dir, 'cookiecutter_project')
     cookiecutter(template, no_input=True, extra_context=extra)
@@ -62,6 +64,8 @@ def create_project(name, theme):
 @click.command('create-pages')
 @click.argument('domain')
 def create_pages(domain):
+    """Create new frontend
+    """
     if os.path.basename(os.getcwd()) != 'pages':
         msg = "This command must be executed from \pages"
         raise InvalidCommandContext(msg)
@@ -75,6 +79,8 @@ def create_pages(domain):
 @click.argument('domain')
 @click.argument('version')
 def create_service(domain, version):
+    """Create new backend
+    """
     if os.path.basename(os.getcwd()) != 'services':
         msg = "This command must be executed from \\services"
         raise InvalidCommandContext(msg)
@@ -83,4 +89,5 @@ def create_service(domain, version):
     extra = {'project_name': name}
     template = os.path.join(template_dir, 'cookiecutter_service')
     cookiecutter(template, no_input=True, extra_context=extra)
+    
     

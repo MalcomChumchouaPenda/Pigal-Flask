@@ -91,6 +91,7 @@ API Reference
 .. toctree::
    :maxdepth: 1
 
+   api_commands
    api_extensions
    api_utils
    api_exceptions

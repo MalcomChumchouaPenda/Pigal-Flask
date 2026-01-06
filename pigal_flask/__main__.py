@@ -5,8 +5,8 @@ from . import commands
 
 @click.group()
 def cli():
-    pass
-
+    """Pigal command group"""
+    
 cli.add_command(commands.create_project)
 cli.add_command(commands.create_pages)
 cli.add_command(commands.create_service)
