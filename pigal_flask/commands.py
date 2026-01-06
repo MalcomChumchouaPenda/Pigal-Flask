@@ -12,7 +12,7 @@ theme_required_paths = (
     'static/',
     'templates/layouts/',
     'templates/layouts/auth.jinja',
-    'templates/layouts/admin.jinja',
+    'templates/layouts/dashboard.jinja',
     'templates/layouts/landing.jinja',
     'templates/home/',
     'templates/home/login.jinja',

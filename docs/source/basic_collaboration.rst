@@ -12,14 +12,6 @@ Any project can contain two type of components:
 * **org apps**, **frontends** and **backends** which implement real business functionnality
 
 
-.. image:: ../diagrams/pigal_development_cycle.drawio.svg
-
-
-The development cycle uses three project types:
-
-* **template projects** offer a reusable foundation and pre-configured structure to start new projects
-* **module projects** are customized from templates projects to address specific business domains
-* **application projects** integrate multiple modules projects to form a complete web application
 
 
 
@@ -64,3 +56,6 @@ The copied module will be automatically registered inside Flask app.
 
 .. IMPORTANT::
     A module can be shared without errors between project using same extensions.
+
+Integrating modules project into application project is a critical and complex task 
+(see :ref:`Projects integration`). 

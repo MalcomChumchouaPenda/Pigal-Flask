@@ -11,7 +11,7 @@ THEME_FILES = [
     ('static', 'js', 'custom.js'),
     ('static', 'other.txt'),
     ('templates', 'layouts', 'landing.jinja'),
-    ('templates', 'layouts', 'admin.jinja'),
+    ('templates', 'layouts', 'dashboard.jinja'),
     ('templates', 'layouts', 'auth.jinja'),
     ('templates', 'layouts', 'other.jinja'),
     ('templates', 'home', 'index.jinja'),
@@ -246,7 +246,7 @@ def test_requires_theme_with_specific_folder(tmpdir, change_dir, required):
 
 @pytest.mark.parametrize('required', [
     'templates/layouts/auth.jinja',
-    'templates/layouts/admin.jinja',
+    'templates/layouts/dashboard.jinja',
     'templates/layouts/landing.jinja',
     'templates/home/login.jinja',
     'templates/home/dashboard.jinja',

@@ -6,8 +6,25 @@
 Pigal-Flask
 ===========
 
-**Pigal-Flask** is an Flask extension that simplifies developing modular web portals
-for organisations building an integrated information systems.
+.. **Pigal-Flask** is a Flask extension that helps developers 
+   to develop, share and maintain web portals using modular approach.
+   It promotes conventions and best practices with minimal setup.
+   If you are familiar with Flask, **Pigal-Flask** is easy to adopt
+   and provides simple tools to build web projects and collaborate
+   among developers.
+
+.. **Pigal-Flask** is a Flask extension that helps to develop, share and maintain 
+   web portals using modular approach and best practices. **Pigal-Flask** is easy 
+   to adopt and provides simple tools to build web projects and collaborate
+   among web developers.
+
+**Pigal-Flask** is a Flask extension that simplifies the development of **Pigal projects**. 
+Pigal projects are **modular web portals** that facilitate the management of online information and activities.
+Pigal-Flask helps web developpers to collaborate using conventions and best practices.
+
+
+Basic Concepts
+--------------
 
 A **Pigal project** is a Flask application with a modular architecture based on 03 components:
 
@@ -24,14 +41,29 @@ This architecture provides the following benefits:
 * **Easier scalability**: Developers can easily add and remove features to projects
 * **Easier maintainability**: Projects can easily be maintained, tested and refactored
 
-**Pigal-Flask** allows web developpers to:
 
-* develop and share views, pages and themes
-* develop and share services and functionnalities
-* develop and manage multiple databases
-* quickly add common security mechanisms
-* easily implement multi-language support
-* enforce best conventions in development teams
+The development of Pigal project is based on three project types:
+
+* **template projects** offer a reusable foundation and pre-configured structure to start new projects
+* **module projects** are customized from templates projects to address specific business domains
+* **application projects** integrate multiple modules projects to form a complete web application
+
+
+.. image:: ../diagrams/pigal_development_cycle.drawio.svg
+
+
+In this cycle, template, module or application projects contain:
+
+* **demo apps**, **frontends** and **backends** which showcase examples and tutorials
+* **org apps**, **frontends** and **backends** which implement real business functionnality
+
+So application projects are built by assembling multiple module projects created from template projects:
+
+* **full-stack developers** can create and share template project
+* **frontend developpers** will create frontends in module projects
+* **backend developpers** will create backends in module projects
+* **project managers** can finally assemble these module into application projects
+
 
 
 Installation
@@ -42,6 +74,7 @@ Use the following command to install ``Pigal-Flask`` extension:
 .. code-block:: bash
 
     pip install Pigal-Flask
+
 
 
 User Guide

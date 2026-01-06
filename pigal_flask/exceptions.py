@@ -35,7 +35,7 @@ class InvalidThemeFile(ClickException):
     - a ``static`` folder
     - a ``layouts`` folder
     - a ``layouts/landing.jinja`` file
-    - a ``layouts/admin.jinja`` file
+    - a ``layouts/dashboard.jinja`` file
     - a ``layouts/auth.jinja`` file
     - a ``home`` folder
     - a ``home/login.jinja`` file

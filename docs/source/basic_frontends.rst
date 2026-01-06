@@ -8,17 +8,18 @@ Creating frontend
 ---------------------------
 
 To create ``MyDomain`` frontend, 
-navigate to ``myproject/frontends`` directory
-then use the ``create-frontend`` command :
+navigate to ``frontends`` directory :
 
 .. code-block:: bash
 
     cd frontends
+
+
+then use the ``create-frontend`` command :
+
+.. code-block:: bash
+
     pigal create-frontend MyDomain
-
-
-.. IMPORTANT::
-    frontend can only be created inside ``frontends`` directory
 
 
 Default frontend structure
@@ -28,16 +29,16 @@ This command will create the following structure:
 
 .. code-block::
 
-    /frontends
-    |   
-    |-- /mydomain             # CREATED DIRECTORY
-    |   |-- /static           # domain static files
-    |   |-- /templates        # jinja templates
-    |   |   |-- /mydomain     # domain templates
-    |   |
-    |   |-- __init__.py       # domain initialization
-    |   |-- forms.py          # domain WTF-forms
-    |   |-- routes.py         # domain flask routes
+    /mydomain
+    |
+    |-- /static                # static files
+    |-- /templates             # jinja templates
+    |   |-- /mydomain          # domain templates
+    |       |-- index.jinja    # default page file
+    |
+    |-- __init__.py            # domain initialization
+    |-- forms.py               # domain WTF-forms
+    |-- routes.py              # domain routes
 
 
 Inside ``routes.py``, a default routing system is created:
@@ -47,9 +48,7 @@ Inside ``routes.py``, a default routing system is created:
     from flask import render_template
     from pigal_flask import PigalUi
 
-
     ui = PigalUi(__file__)
-
 
     @ui.route('/')
     def index():
@@ -78,8 +77,7 @@ Some examples of name and url_prefix generated:
     +----------------------------------+----------------+----------------+
 
 
-The command ``create-frontend`` also create a default ``index.jinja`` 
-template inside ``templates/mydomain``:
+The command ``create-frontend`` also create a default ``index.jinja``:
 
 .. code-block:: HTML
 
@@ -91,21 +89,28 @@ template inside ``templates/mydomain``:
 Running the Frontend
 --------------------
 
-Go to http://127.0.0.1:5000/mydomain to see default page of ``MyDomain``.
+Run project and go to http://127.0.0.1:5000/mydomain to see ``MyDomain`` default page.
 
 
-
-Customizing Frontend
---------------------
+Customizing Frontends
+---------------------
 
 With this frontend structure, you can then:
 
-* modify default page template (see `Jinja Templates documentation`_)
-* add or deletes views to ``ui`` blueprint (see `Flask blueprint documentation`_)
-* create custom page inspired by ``demo`` templates (provided by choosen theme)
-* create WTF-forms inside ``forms.py`` and use it (see `Flask-WTF documentation`_)
+* create custom pages within ``templates`` (see `Jinja Templates documentation`_)
+* create custom views within ``routes.py`` (see `Flask blueprint documentation`_)
+* create custom WTF-forms within ``forms.py`` (see `Flask-WTF documentation`_)
 
 .. _Jinja Templates documentation: https://jinja.palletsprojects.com/en/stable/
 .. _Flask blueprint documentation: https://flask.palletsprojects.com/en/stable/tutorial/views/
 .. _Flask-WTF documentation: https://flask-wtf.readthedocs.io/en/1.2.x/
+
+
+To develop custom pages, you can also:
+
+* http://127.0.0.1:5000/demo to see examples of frontend pages.
+* http://127.0.0.1:5000/demo/docs to see tutorials on theme usage.
+
+
+**Next step in quickstart** : :ref:`Creating backend`
 

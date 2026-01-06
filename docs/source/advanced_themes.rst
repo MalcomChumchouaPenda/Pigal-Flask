@@ -36,10 +36,11 @@ Theme is configured in ``app/config.py``:
     class Config:
         # ... OTHER DEFAULT PARAMETERS
         PIGAL_THEME_LIVE_DEMO = True
-        PIGAL_THEME_UI_SYSTEM = 'MyUISystem'
+        PIGAL_THEME_UI_SYSTEM = 'xy'
         PIGAL_THEME_NAME = 'MyTheme'
 
     # ... OTHER CONFIG CLASSES
+
 
 These parameters allow to:
 
@@ -51,7 +52,7 @@ These parameters allow to:
     +============================+============================================+
     | ``PIGAL_THEME_LIVE_DEMO``  | enable or disable theme live demo          |
     +----------------------------+--------------------------------------------+
-    | ``PIGAL_THEME_UI_SYSTEM``  | get the name of UI system used by theme    |
+    | ``PIGAL_THEME_UI_SYSTEM``  | get the id of UI system used by theme      |
     +----------------------------+--------------------------------------------+
     | ``PIGAL_THEME_NAME``       | get the name of theme used                 |
     +----------------------------+--------------------------------------------+
@@ -59,11 +60,27 @@ These parameters allow to:
 .. DANGER::
     You must never edit manually ``PIGAL_THEME_UI_SYSTEM`` and ``PIGAL_THEME_NAME`` parameters
 
+.. NOTE::
+    The name of theme zip file has the format ``<theme_name>_<ui_system>.zip``. For examples:
+    
+    .. table::
+        :align: left
+
+        +------------+---------------+------------------------+
+        | Theme name | Ui System     | Zip file name          |
+        +============+===============+========================+
+        | MyTheme    | xy            | ``MyTheme_xy.zip``     |
+        +------------+---------------+------------------------+
+        | MyTheme    | abc           | ``MyTheme_abc.zip``    |
+        +------------+---------------+------------------------+
+        | OtherTheme | abc           | ``OtherTheme_abc.zip`` |
+        +------------+---------------+------------------------+
+
 
 Changing theme
 --------------
 
-Before changing theme, you must download the new theme (``MyNewTheme.zip`` for example).
+Before changing theme, you must download the new theme (``MyNewTheme_xy.zip`` for example).
 
 To replace ``MyTheme`` theme by ``MyNewTheme``, navigate to ``MyProject`` directory:
 
@@ -76,7 +93,7 @@ use ``change-theme`` command:
 
 .. code-block:: bash
 
-    pigal change-theme C:/MyNewTheme.zip
+    pigal change-theme C:/MyNewTheme_xy.zip
 
 
 Run the flask app to see the result:
@@ -86,11 +103,11 @@ Run the flask app to see the result:
     flask run
 
 
-Go to http://127.0.0.1:5000 to see the new project pages.
+Go to:
 
-Go to http://127.0.0.1:5000/demo to see examples of new theme frontend pages.
-
-Go to http://127.0.0.1:5000/demo/docs to see documentation page of new theme used.
+* http://127.0.0.1:5000 to see the new project pages.
+* http://127.0.0.1:5000/demo to see examples of new theme frontend pages.
+* http://127.0.0.1:5000/demo/docs to see documentation page of new theme used.
 
 
 .. IMPORTANT::

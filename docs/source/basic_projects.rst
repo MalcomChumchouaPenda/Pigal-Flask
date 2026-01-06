@@ -7,13 +7,13 @@ Creating project
 ``create-project`` command
 --------------------------
 
-Before creating a new project, you must download a theme (``MyTheme.zip`` for example). 
+Before creating a new project, you must download a theme (``MyTheme_xy.zip`` for example). 
 
 To create a project ``MyProject`` with ``MyTheme`` theme, use ``create-project`` command:
 
 .. code-block:: bash
 
-    pigal create-project MyProject C:/MyTheme.zip
+    pigal create-project MyProject C:/MyTheme_xy.zip
 
 
 
@@ -26,61 +26,57 @@ This will create a pigal project with the following structure:
 
     /myproject
     |   
-    |-- /app                  # APP DIRECTORY
-    |   |-- /static           # theme static files
-    |   |-- /templates        # theme jinja templates
-    |   |-- __init__.py       # app initialization
-    |   |-- config.py         # app configurations
-    |   |-- extensions.py     # app flask extensions
-    |   
-    |-- /backends             # BACKENDS DIRECTORY
-    |   |-- /auth             # authentification backend
-    |   |-- __init__.py       # global api initialisation
-    |   
-    |-- /frontends            # FRONTENDS DIRECTORY
-    |   |-- /demo             # theme live demo
-    |   |-- /home             # home frontend 
-    |   |-- __init__.py       # global frontend initialisation
-    |   
+    |-- /app                  # app system files
+    |-- /backends             # backend directories
+    |-- /frontends            # frontend directories 
     |-- /migrations           # databases migration files
-    |-- /tests                # project tests  
+    |-- /tests                # project tests files 
     |-- /translations         # internationalisation files
+    |-- requirements.txt      # required python package
 
 
 .. IMPORTANT::
-    The following directories are required for any project:
+    ``myproject`` directory contains special sub-directories:
     
-    * ``app``
-    * ``backends/auth``
-    * ``frontends/home``
+    * ``app`` which provide app configuration and execution
+    * ``backends/auth`` which provide security backend
+    * ``frontends/home`` which provide home frontend
+    * ``frontends/demo`` which provide theme demo frontend
+
+    **At beginner level, don't modify or delete these sub-directories**
 
 
+Running project
+---------------
 
-Running the Flask App
----------------------
-
-Navigate to the project directory and run the flask app:
+Navigate to ``myproject`` directory and run the Flask app:
 
 .. code-block:: bash
 
     cd myproject
     flask run
 
-By default, the app will run at http://localhost:5000.
 
-Go to http://127.0.0.1:5000 to see the default project page.
+Go to:
 
-Go to http://127.0.0.1:5000/api to see the default project Rest API.
-
-Go to http://127.0.0.1:5000/demo to see examples of theme frontend pages.
-
-Go to http://127.0.0.1:5000/demo/docs to see documentation page of theme used.
+* http://127.0.0.1:5000 to see the default project page.
+* http://127.0.0.1:5000/demo to see examples of theme pages.
+* http://127.0.0.1:5000/api to see the default project Rest API.
 
 
-Next steps in project
----------------------
+.. NOTE::
+    By default, Flask app run at http://127.0.0.1:5000.
+
+
+Customizing project
+-------------------
 
 Within this structure, we can now:
 
 * create specific frontend (see :ref:`Creating frontend`)
 * create specific backend (see :ref:`Creating backend`)
+* delete specific frontend (by deleting simply its directory)
+* delete specific backend (by deleting also its directory)
+
+
+**Next step in quickstart** : :ref:`Creating frontend`
