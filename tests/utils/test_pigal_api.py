@@ -10,7 +10,7 @@ def test_is_flask_rest_namespace():
 
 @pytest.fixture
 def import_file(tmpdir):
-    test_dir = tmpdir / 'services' / 'demo_v0' / 'routes.py'
+    test_dir = tmpdir / 'backends' / 'demo_v0' / 'routes.py'
     return test_dir.strpath
 
 def test_is_configured_by_import_file(import_file):

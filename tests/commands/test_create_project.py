@@ -42,8 +42,8 @@ def test_create_project_structure(tmpdir, change_dir):
     assert result.exit_code == 0
     assert os.path.isdir(project_path)
     assert os.path.isdir(os.path.join(project_path, 'app'))
-    assert os.path.isdir(os.path.join(project_path, 'pages'))
-    assert os.path.isdir(os.path.join(project_path, 'services'))
+    assert os.path.isdir(os.path.join(project_path, 'frontends'))
+    assert os.path.isdir(os.path.join(project_path, 'backends'))
 
 
 def test_unzip_theme_static_into_app_dir(tmpdir, change_dir):
@@ -72,26 +72,26 @@ def test_unzip_theme_layouts_into_app_dir(tmpdir, change_dir):
             assert os.path.isfile(file_name)
 
 
-def test_unzip_home_templates_into_pages(tmpdir, change_dir):
+def test_unzip_home_templates_into_frontends(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    home_path = os.path.join(tmpdir, 'test', 'pages', 'home')
+    home_path = os.path.join(tmpdir, 'test', 'frontends', 'home')
     for file_names in THEME_FILES:
         if 'home' == file_names[1]:
             file_name = os.path.join(home_path, *file_names)
             assert os.path.isfile(file_name)
 
 
-def test_unzip_demo_templates_into_pages(tmpdir, change_dir):
+def test_unzip_demo_templates_into_frontends(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    demo_path = os.path.join(tmpdir, 'test', 'pages', 'demo')
+    demo_path = os.path.join(tmpdir, 'test', 'frontends', 'demo')
     for file_names in THEME_FILES:
         if 'demo' == file_names[1]:
             file_name = os.path.join(demo_path, *file_names)
@@ -154,25 +154,25 @@ def test_create_app_init_file(tmpdir, change_dir):
         assert 'pigal.init_app(app)' in code
 
 
-def test_create_pages_structure(tmpdir, change_dir):
+def test_create_frontend_structure(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    pages_path = os.path.join(tmpdir, 'test', 'pages')
-    assert os.path.isdir(os.path.join(pages_path, 'home'))
-    assert os.path.isdir(os.path.join(pages_path, 'demo'))
-    assert os.path.isfile(os.path.join(pages_path, '__init__.py'))
+    frontends_path = os.path.join(tmpdir, 'test', 'frontends')
+    assert os.path.isdir(os.path.join(frontends_path, 'home'))
+    assert os.path.isdir(os.path.join(frontends_path, 'demo'))
+    assert os.path.isfile(os.path.join(frontends_path, '__init__.py'))
 
 
-def test_create_default_home_page(tmpdir, change_dir):
+def test_create_default_home_frontend(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    home_path = os.path.join(tmpdir, 'test', 'pages', 'home')
+    home_path = os.path.join(tmpdir, 'test', 'frontends', 'home')
     assert os.path.isdir(os.path.join(home_path, 'static'))
     assert os.path.isdir(os.path.join(home_path, 'templates'))
     assert os.path.isdir(os.path.join(home_path, 'templates', 'home'))
@@ -180,13 +180,13 @@ def test_create_default_home_page(tmpdir, change_dir):
     assert os.path.isfile(os.path.join(home_path, 'routes.py'))
 
 
-def test_create_theme_demo_page(tmpdir, change_dir):
+def test_create_theme_demo_frontend(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    demo_path = os.path.join(tmpdir, 'test', 'pages', 'demo')
+    demo_path = os.path.join(tmpdir, 'test', 'frontends', 'demo')
     assert os.path.isdir(os.path.join(demo_path, 'static'))
     assert os.path.isdir(os.path.join(demo_path, 'templates'))
     assert os.path.isdir(os.path.join(demo_path, 'templates', 'demo'))
@@ -194,24 +194,24 @@ def test_create_theme_demo_page(tmpdir, change_dir):
     assert os.path.isfile(os.path.join(demo_path, 'routes.py'))
 
 
-def test_create_services_structure(tmpdir, change_dir):
+def test_create_backends_structure(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    services_path = os.path.join(tmpdir, 'test', 'services')
-    assert os.path.isdir(os.path.join(services_path, 'auth'))
-    assert os.path.isfile(os.path.join(services_path, '__init__.py'))
+    backends_path = os.path.join(tmpdir, 'test', 'backends')
+    assert os.path.isdir(os.path.join(backends_path, 'auth'))
+    assert os.path.isfile(os.path.join(backends_path, '__init__.py'))
 
 
-def test_create_default_auth_service(tmpdir, change_dir):
+def test_create_default_auth_backend(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         theme = create_valid_theme(tmpdir)
         runner.invoke(create_project, ['test', theme])
 
-    auth_path = os.path.join(tmpdir, 'test', 'services', 'auth')
+    auth_path = os.path.join(tmpdir, 'test', 'backends', 'auth')
     assert os.path.isdir(os.path.join(auth_path, 'store'))
     assert os.path.isfile(os.path.join(auth_path, 'utils.py'))
     assert os.path.isfile(os.path.join(auth_path, 'models.py'))

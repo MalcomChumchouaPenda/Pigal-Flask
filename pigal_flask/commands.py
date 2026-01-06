@@ -54,40 +54,40 @@ def create_project(name, theme):
         src_dir = f'./{name}/app/templates/{key}'
         src_dir = os.path.abspath(src_dir)
         if os.path.isdir(src_dir):
-            dest_dir = f'./{name}/pages/{key}/templates/{key}'
+            dest_dir = f'./{name}/frontends/{key}/templates/{key}'
             dest_dir = os.path.abspath(dest_dir)
             if os.path.isdir(dest_dir):
                 shutil.rmtree(dest_dir)
             shutil.move(src_dir, dest_dir)
 
 
-@click.command('create-pages')
+@click.command('create-frontend')
 @click.argument('domain')
-def create_pages(domain):
+def create_frontend(domain):
     """Create new frontend
     """
-    if os.path.basename(os.getcwd()) != 'pages':
-        msg = "This command must be executed from \pages"
+    if os.path.basename(os.getcwd()) != 'frontends':
+        msg = "This command must be executed from frontends directory"
         raise InvalidCommandContext(msg)
     
     extra = {'project_name': domain}
-    template = os.path.join(template_dir, 'cookiecutter_pages')
+    template = os.path.join(template_dir, 'cookiecutter_frontend')
     cookiecutter(template, no_input=True, extra_context=extra)
 
 
-@click.command('create-service')
+@click.command('create-backend')
 @click.argument('domain')
 @click.argument('version')
-def create_service(domain, version):
+def create_backend(domain, version):
     """Create new backend
     """
-    if os.path.basename(os.getcwd()) != 'services':
-        msg = "This command must be executed from \\services"
+    if os.path.basename(os.getcwd()) != 'backends':
+        msg = "This command must be executed from backends directory"
         raise InvalidCommandContext(msg)
 
     name = f"{domain}_v{version.replace('.', '_')}"
     extra = {'project_name': name}
-    template = os.path.join(template_dir, 'cookiecutter_service')
+    template = os.path.join(template_dir, 'cookiecutter_backend')
     cookiecutter(template, no_input=True, extra_context=extra)
     
     

@@ -12,7 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SAWarning
 
 from . import utils
-from .exceptions import InvalidProjectConfig, InvalidProjectStructure
+from . import exceptions as exc
 
 
 class Pigal:
@@ -28,23 +28,23 @@ class Pigal:
         self._check_project_structure(app)
         self._check_project_config(app)
         self._setup_api(app)
-        self._register_pages(app)
-        self._register_services(app)
+        self._register_frontends(app)
+        self._register_backends(app)
 
 
     def _check_project_structure(self, app):
         project_dir = os.path.dirname(app.instance_path)
-        for required_name in ('app', 'pages', 'services'):
+        for required_name in ('app', 'frontends', 'backends'):
             required_dir = os.path.join(project_dir, required_name)
             if not os.path.isdir(required_dir):
                 msg = f"'{required_name}' directory is required but not found"
-                raise InvalidProjectStructure(msg)
+                raise exc.InvalidProjectStructure(msg)
     
     def _check_project_config(self, app):
         for name in ('PIGAL_PROJECT_NAME', 'PIGAL_PROJECT_VERSION'):
             if name not in app.config:
                 msg = f"Configuration parameter '{name}' is missing"
-                raise InvalidProjectConfig(msg)
+                raise exc.InvalidProjectConfig(msg)
 
     def _setup_api(self, app):
         config = app.config
@@ -56,19 +56,19 @@ class Pigal:
         self.api = api
 
         
-    def _register_pages(self, app):
-        app.logger.debug('looking for pages...')
+    def _register_frontends(self, app):
+        app.logger.debug('looking for frontends...')
         project_dir = os.path.dirname(app.instance_path)
-        pages_dir = os.path.join(project_dir, 'pages')
-        if os.path.isdir(pages_dir):
-            for name in os.listdir(pages_dir):
+        frontends_dir = os.path.join(project_dir, 'frontends')
+        if os.path.isdir(frontends_dir):
+            for name in os.listdir(frontends_dir):
                 if name.startswith('_'):
                     continue 
                 url_prefix = f'/{name}' 
-                ui_root = f'pages.{name}'
-                self._register_page(app, ui_root, url_prefix)
+                ui_root = f'frontends.{name}'
+                self._register_frontend(app, ui_root, url_prefix)
                 
-    def _register_page(self, app, ui_root, url_prefix):
+    def _register_frontend(self, app, ui_root, url_prefix):
         try:
             routes = import_module(f'{ui_root}.routes')
             ui = routes.ui
@@ -78,22 +78,22 @@ class Pigal:
         
         if not isinstance(ui, utils.PigalUi):
             name = url_prefix[1:]
-            msg = f"The object 'ui' of page '{name}' "
+            msg = f"The object 'ui' of frontend '{name}' "
             msg += "is not an instance of 'PigalUi'"
-            raise utils.InvalidPageUi(msg)
+            raise exc.InvalidUi(msg)
         
         # menus = import_module(f'{ui_root}.menus')
         app.register_blueprint(routes.ui, url_prefix=url_prefix)
-        app.logger.info(f'Register page: {ui_root} => {url_prefix}')
+        app.logger.info(f'Register frontend: {ui_root} => {url_prefix}')
         return True
 
 
-    def _register_services(self, app):
-        app.logger.debug('looking for services...')
+    def _register_backends(self, app):
+        app.logger.debug('looking for backends...')
         project_dir = os.path.dirname(app.instance_path)
-        services_dir = os.path.join(project_dir, 'services')
-        if os.path.isdir(services_dir):
-            for name in os.listdir(services_dir):
+        backends_dir = os.path.join(project_dir, 'backends')
+        if os.path.isdir(backends_dir):
+            for name in os.listdir(backends_dir):
                 if name.startswith('_'):
                     continue
                 # nameparts = re.findall(_SERVICE_PATTERN, name)
@@ -105,25 +105,25 @@ class Pigal:
                 # version = version.replace('_', '.')
                 # url_prefix = f'/{rootname}/{version}'
                 # url_prefix = '/test'
-                service_root = f'services.{name}'
-                self._register_service(app, service_root)
+                backend_root = f'backends.{name}'
+                self._register_backend(app, backend_root)
 
-    def _register_service(self, app, service_root):
+    def _register_backend(self, app, backend_root):
         try:
-            routes = import_module(f'{service_root}.routes')
+            routes = import_module(f'{backend_root}.routes')
             api = routes.api
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
             return False
 
         if not isinstance(api, utils.PigalApi):
-            _ , name = service_root.split('.')
-            msg = f"The object 'api' of service '{name}' "
+            _ , name = backend_root.split('.')
+            msg = f"The object 'api' of backend '{name}' "
             msg += "is not an instance of 'PigalApi'"
-            raise utils.InvalidServiceApi(msg)
+            raise exc.InvalidApi(msg)
         
         self.api.add_namespace(api)
-        app.logger.info(f'Register service: {service_root} => {api.path}')
+        app.logger.info(f'Register backend: {backend_root} => {api.path}')
         return True
 
 warnings.filterwarnings(
@@ -150,7 +150,7 @@ class PigalDb(SQLAlchemy):
         for name in ('PIGAL_DB_URI_TEMPLATE', ):
             if name not in app.config:
                 msg = f"Configuration parameter '{name}' is missing"
-                raise InvalidProjectConfig(msg)
+                raise exc.InvalidProjectConfig(msg)
 
     @classmethod
     def _minify_uri(cls, uri):
@@ -165,29 +165,29 @@ class PigalDb(SQLAlchemy):
         uri_args = {'project_dir':project_dir}
 
         # by default
-        uri_args['service_id'] = 'default'
+        uri_args['backend_id'] = 'default'
         uri = uri_template.format_map(uri_args)
         min_uri = self._minify_uri(uri)
         app.config['SQLALCHEMY_DATABASE_URI'] = uri
         app.logger.debug(f'Prepare database: default => {min_uri}')
 
-        # by services
-        services_dir = os.path.join(project_dir, 'services')
+        # by backends
+        backends_dir = os.path.join(project_dir, 'backends')
         bind_keys = {}
-        if os.path.isdir(services_dir):
-            for name in os.listdir(services_dir):
+        if os.path.isdir(backends_dir):
+            for name in os.listdir(backends_dir):
 #                 # check if has models
                 if name.startswith('_'):
                     continue
 #                 if not re.match(_SERVICE_PATTERN, name):
 #                     continue
-                modelspath = os.path.join(services_dir, name, 'models.py')
+                modelspath = os.path.join(backends_dir, name, 'models.py')
                 if not os.path.isfile(modelspath):
                     continue
-                _ = import_module(f'services.{name}.models') # important to load metada
+                _ = import_module(f'backends.{name}.models') # important to load metada
 
                 # create binds for sqlalchemy
-                uri_args['service_id'] = name
+                uri_args['backend_id'] = name
                 uri = uri_template.format_map(uri_args)
                 min_uri = self._minify_uri(uri)
                 bind_keys[name] = uri

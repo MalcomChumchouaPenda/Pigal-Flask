@@ -9,10 +9,10 @@ class InvalidProjectConfig(Exception):
     pass
 
 
-class InvalidPageUi(Exception):
+class InvalidUi(Exception):
     pass
 
-class InvalidServiceApi(Exception):
+class InvalidApi(Exception):
     pass
 
 
@@ -22,8 +22,8 @@ class InvalidCommandContext(ClickException):
     in the wrong directory. Theses wrong cases of command execution 
     are the following:
 
-    - execution of ``create-pages`` outside of a ``pages`` directory
-    - execution of ``create-service`` outside of a ``services`` directory
+    - execution of ``create-frontend`` outside of a ``frontends`` directory
+    - execution of ``create-backend`` outside of a ``backends`` directory
     
     """
 
