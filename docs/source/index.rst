@@ -11,23 +11,23 @@ Pigal projects are **modular web portals** that facilitate the management of onl
 Pigal-Flask helps web developpers to collaborate using conventions and best practices.
 
 
-Basic Concepts
+Basic concepts
 --------------
 
 A **Pigal project** is a Flask application with a modular architecture based on 03 components:
 
-* **app** which provide global configuration, extensions and theme
-* **frontends** which provide specific domain frontends
-* **backends** which provide specific domain backends
+* **app** which provide global theme, configuration and Flask extensions
+* **frontends** which provide home and specific domain frontends
+* **backends** which provide security and specific domain backends
 
 .. image:: ../diagrams/pigal_project_architecture.drawio.svg
 
 
 This architecture provides the following benefits:
 
-* **Easier collaboration**: Frontend and Backend developers can easily collaborate
-* **Easier scalability**: Developers can easily add and remove features to projects
-* **Easier maintainability**: Projects can easily be maintained, tested and refactored
+* **easier collaboration**: frontend and backend developers can easily collaborate
+* **easier scalability**: developers can easily add and remove features to projects
+* **easier maintainability**: projects can easily be maintained, tested and refactored
 
 
 The development of Pigal project is based on three project types:
@@ -40,18 +40,12 @@ The development of Pigal project is based on three project types:
 .. image:: ../diagrams/pigal_development_cycle.drawio.svg
 
 
-In this cycle, template, module or application projects contain:
-
-* **demo apps**, **frontends** and **backends** showcase examples and tutorials
-* **org apps**, **frontends** and **backends** implement real business functionnalities
-
 Application projects are built by assembling multiple module projects created from template projects. So:
 
-* **Template developers** create template project to help other developers
-* **Frontend developpers** create module projects by customizing frontends of template project
-* **Backend developpers** create module projects by customizing backends of template project
-* **Application developers** finally integrate customized frontends and backends into application projects
-
+* **template developers** create template project to help other developers
+* **frontend developpers** create module projects by customizing frontends of template project
+* **backend developpers** create module projects by customizing backends of template project
+* **application developers** finally integrate customized frontends and backends into application projects
 
 
 Installation
