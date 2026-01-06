@@ -6,18 +6,6 @@
 Pigal-Flask
 ===========
 
-.. **Pigal-Flask** is a Flask extension that helps developers 
-   to develop, share and maintain web portals using modular approach.
-   It promotes conventions and best practices with minimal setup.
-   If you are familiar with Flask, **Pigal-Flask** is easy to adopt
-   and provides simple tools to build web projects and collaborate
-   among developers.
-
-.. **Pigal-Flask** is a Flask extension that helps to develop, share and maintain 
-   web portals using modular approach and best practices. **Pigal-Flask** is easy 
-   to adopt and provides simple tools to build web projects and collaborate
-   among web developers.
-
 **Pigal-Flask** is a Flask extension that simplifies the development of **Pigal projects**. 
 Pigal projects are **modular web portals** that facilitate the management of online information and activities.
 Pigal-Flask helps web developpers to collaborate using conventions and best practices.

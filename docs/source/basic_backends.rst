@@ -75,7 +75,7 @@ Some examples of id and url_prefix generated:
     +======================================+==============+========================+
     | ``myproject/backends/auth``          | ``auth``     | ``/api/auth``          |
     +--------------------------------------+--------------+------------------------+
-    | ``myproject/backends/mydomain_v1``   | ``mydomain`` | ``/api/mydomain/v1``   |
+    | ``myproject/backends/mydomain_v1_0`` | ``mydomain`` | ``/api/mydomain/v1.0`` |
     +--------------------------------------+--------------+------------------------+
     | ``myproject/backends/mydomain_v1_2`` | ``mydomain`` | ``/api/mydomain/v1.2`` |
     +--------------------------------------+--------------+------------------------+
@@ -102,3 +102,5 @@ With this backend structure, you can then:
 
 .. _Flask-Restx documentation: https://flask-wtf.readthedocs.io/en/1.2.x/
 
+
+**Next step in quickstart** : :ref:`Creating databases`

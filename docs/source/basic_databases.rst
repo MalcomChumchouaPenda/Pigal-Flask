@@ -8,15 +8,15 @@ A sqlite database is automatically created for each app execution mode:
 .. table:: 
     :align: left
 
-    +--------------------+---------------------------------------------+
-    | execution context  | created database                            |
-    +====================+=============================================+
-    | production mode    | ``backends/mydomain_v1/store/data.db``      |
-    +--------------------+---------------------------------------------+
-    | development mode   | ``backends/mydomain_v1/store/temp/data.db`` |
-    +--------------------+---------------------------------------------+
-    | testing mode       | ``:memory:``                                |
-    +--------------------+---------------------------------------------+
+    +--------------------+-----------------------------------------------+
+    | execution context  | created database                              |
+    +====================+===============================================+
+    | production mode    | ``backends/mydomain_v1_0/store/data.db``      |
+    +--------------------+-----------------------------------------------+
+    | development mode   | ``backends/mydomain_v1_0/store/temp/data.db`` |
+    +--------------------+-----------------------------------------------+
+    | testing mode       | ``:memory:``                                  |
+    +--------------------+-----------------------------------------------+
 
 
 
@@ -75,7 +75,7 @@ This will allow to:
 * use different default records depending of execution context.
 
 
-To initialise database of ``mydomain_v1`` backend, 
+To initialise database of ``mydomain_v1_0`` backend, 
 create a ``init_db`` method in its ``__init__.py`` file:
 
 .. code-block:: python
@@ -135,6 +135,14 @@ to provide **CRUD** functionnalities. For example:
 Run the project and go to http://127.0.0.1:5000/api to test this API.
 
 
+See `Flask-Restx documentation`_ for more details on :
+
+* API responses marshalling with database models (convert db record to json data)
+* API request parsing with database models (convert json data to valid db record)
+
+
+.. _Flask-Restx documentation: https://flask-wtf.readthedocs.io/en/1.2.x/
+
 
 Using databases within UI
 -------------------------
@@ -175,3 +183,5 @@ Let's define ``mydomain/items.html`` template:
 
 Run the project and go to http://127.0.0.1:5000/mydomain/items to see results.
 
+
+**Next step in quickstart** : :ref:`Sharing projects`

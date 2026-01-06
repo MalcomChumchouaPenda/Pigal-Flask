@@ -18,7 +18,7 @@ The dedicated database of each ``backend`` has an generated ``URI``:
     +=====================+=================================================================+
     | ``auth``            | ``sqlite:///D:/myproject/backends/auth/store/data.db``          |
     +---------------------+-----------------------------------------------------------------+
-    | ``mydomain_v1``     | ``sqlite:///D:/myproject/backends/mydomain_v1/store/data.db``   |
+    | ``mydomain_v1_0``   | ``sqlite:///D:/myproject/backends/mydomain_v1_0/store/data.db`` |
     +---------------------+-----------------------------------------------------------------+
     | ``mydomain_v1_2``   | ``sqlite:///D:/myproject/backends/mydomain_v1_2/store/data.db`` |
     +---------------------+-----------------------------------------------------------------+
@@ -85,11 +85,11 @@ So you can customize this ``PIGAL_DB_URI_TEMPLATE``. For examples:
     +--------------------------------------------------------+----------------------------------------------------------+
     | ``sqlite:///{project_dir}/somedir/data.db``            | ``sqlite:///D:/myproject/somedir/data.db``               |
     +--------------------------------------------------------+----------------------------------------------------------+
-    | ``sqlite:///{backend_dir}/data.db``                    | ``sqlite:///D:/myproject/backends/mydomain_v1/data.db``  |
+    | ``sqlite:///{backend_dir}/data.db``                    | ``sqlite:///D:/myproject/backends/mydomain_v1_0/data.db``|
     +--------------------------------------------------------+----------------------------------------------------------+
     | ``mysql+mysqldb://root:1234@localhost/{project_id}``   | ``mysql+mysqldb:///root:1234@localhost/myproject``       |
     +--------------------------------------------------------+----------------------------------------------------------+
-    | ``mysql+mysqldb://root:1234@localhost/{backend_id}``   | ``mysql+mysqldb:///root:1234@localhost/mydomain_v1``     |
+    | ``mysql+mysqldb://root:1234@localhost/{backend_id}``   | ``mysql+mysqldb:///root:1234@localhost/mydomain_v1_0``   |
     +--------------------------------------------------------+----------------------------------------------------------+
 
 

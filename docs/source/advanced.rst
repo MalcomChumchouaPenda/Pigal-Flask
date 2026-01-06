@@ -6,6 +6,7 @@ Advanced functionnalities
    :maxdepth: 1
    :caption: Next steps
 
+   advanced_rbac
    advanced_home
    advanced_auth
    advanced_extensions

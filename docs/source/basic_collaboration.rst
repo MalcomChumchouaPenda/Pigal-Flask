@@ -2,60 +2,85 @@
 Sharing projects
 ================
 
+Application projects are built by assembling modules projects created from template projects. So:
 
-Development cycle
------------------
+* **Template developers** create and share template projects to help other developers
+* **Module developers** create and share module projects to meet real business needs
+* **Application developers** collect and integrate module projects
 
-Any project can contain two type of components:
+Module developers can also need to share parts of their projects:
 
-* **demo apps**, **frontends** and **backends** which showcase examples and tutorials
-* **org apps**, **frontends** and **backends** which implement real business functionnality
+* frontends can be shared between frontend developers working on different projects
+* backends can also be shared between backend developers working on different projects
 
+So how can we share:
 
-
-
-
-Project collaboration
----------------------
-
-
-So application projects are built by assembling multiple module projects created from template projects:
-
-* **full-stack developers** can create and share template project
-* **frontend developpers** will create frontends in module projects
-* **backend developpers** will create backends in module projects
-* **project managers** can finally assemble these module into application projects
-
-.. TIP::
-    frontend developpers can also develop theme for projects.
+* template projects (see :ref:`Share template project`)
+* module projects (see :ref:`Share module project`)
+* frontend only (see :ref:`Share frontend`)
+* backend only (see :ref:`Share backend`)
 
 
-Share project directory
------------------------
-
-All these projects are directory that can be shared (as zip file or git repo for example). 
-Any developper will simple paste or unzip file into a project directory.
-
-.. IMPORTANT::
-    before project app execution, a **virtual env** must always be created. 
-    Developpers must then always provide a ``requirements.txt`` when sharing their project.
-    
-
-Share module directory
+Share template project
 ----------------------
 
-Even modules (backend or frontend) are directory that can be shared. 
+Template project are directory that can be shared in two steps:
 
-By simply **copying and pasting module directory** inside appropriate project sub-directory:
-
-* ``frontend`` directory must be copied inside ``frontends`` directory
-* ``backend`` directory must be copied inside ``backends`` directory
-
-The copied module will be automatically registered inside Flask app.
-
+* Template developer create the project **zip file or git repo**
+* Module developer clone or download the project **zip file or git repo**
 
 .. IMPORTANT::
-    A module can be shared without errors between project using same extensions.
+    It is required that:
 
-Integrating modules project into application project is a critical and complex task 
-(see :ref:`Projects integration`). 
+    * template developers share template projects with updated ``requirements.txt``
+    * module developers create **virtual env** with template projets ``requirements.txt``, before using them
+    
+
+Share module project
+--------------------
+
+Module project are also directory that can be shared in two steps:
+
+* Module developer create the project **zip file or git repo**
+* Application developer clone or download the project **zip file or git repo**
+
+Integrating modules project into application project 
+is a critical and complex task (see :ref:`Projects integration`). 
+
+.. IMPORTANT::
+    It is required that module developers share module projects with updated ``requirements.txt``
+
+
+
+Share frontend
+--------------
+
+Frontend are directory that can be shared in two steps:
+
+* copy the frontend from the ``frontends`` directory of a **source project** 
+* paste the frontend into the ``frontends`` directory of a **destination project**
+
+The copied frontend will be automatically registered inside Flask app.
+
+.. IMPORTANT::
+    a frontend can be shared without errors if source project and destination project have the **same UI System**. 
+    The UI System is indicated in theme filename (the theme ``MyTheme_xy.zip`` use ``xy`` ui system for example). So:
+
+    * a project using ``MyTheme_xy`` has the same ui system with a project using ``OtherTheme_xy``
+    * a project using ``MyTheme_xy`` has not the same ui system with a project using ``MyTheme_abc``
+
+
+
+Share backend
+--------------
+
+As frontend, backend can be shared in two steps:
+
+* copy the backend from the ``backends`` directory of a **source project** 
+* paste the backend into the ``backends`` directory of a **destination project**
+
+The copied backend will be automatically registered inside Flask app.
+
+Pigal-Flask provides advanced functionnalities for other usual problems 
+(see :ref:`Advanced functionnalities`).
+
