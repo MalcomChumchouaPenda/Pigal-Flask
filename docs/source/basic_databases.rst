@@ -3,7 +3,7 @@ Creating databases
 ==================
 
 
-A sqlite database is automatically created for each app execution mode: 
+A sqlite database is automatically created for each backend and Flask execution context: 
 
 .. table:: 
     :align: left
@@ -69,7 +69,7 @@ Databases initialisation
 ------------------------
 
 It can be necessary to **initialise databases with default data**.
-This will allow to:
+This allow to:
 
 * start project with default records.
 * use different default records depending of execution context.
@@ -82,7 +82,7 @@ create a ``init_db`` method in its ``__init__.py`` file:
 
     from .models import Item
 
-    def init_db(session):
+    def init_db(session, app):
         if not Item.query.first():
             session.add_all([
                 Item(name="Item A"),

@@ -4,12 +4,29 @@ Creating project
 ================
 
 
+Before creating a new project, you must download a theme (``MyTheme_xy.zip`` for example). 
+
+.. IMPORTANT::
+    The name of valid theme zip file has the format ``<theme_name>_<ui_system>.zip``. For examples:
+    
+    .. table::
+        :align: left
+
+        +------------+---------------+------------------------+
+        | Theme name | Ui System     | Zip file name          |
+        +============+===============+========================+
+        | MyTheme    | xy            | ``MyTheme_xy.zip``     |
+        +------------+---------------+------------------------+
+        | MyTheme    | abc           | ``MyTheme_abc.zip``    |
+        +------------+---------------+------------------------+
+        | OtherTheme | abc           | ``OtherTheme_abc.zip`` |
+        +------------+---------------+------------------------+
+
+
 ``create-project`` command
 --------------------------
 
-Before creating a new project, you must download a theme (``MyTheme_xy.zip`` for example). 
-
-To create a project ``MyProject`` with ``MyTheme`` theme, use ``create-project`` command:
+To create a project ``MyProject`` with ``MyTheme_xy`` theme, use ``create-project`` command:
 
 .. code-block:: bash
 

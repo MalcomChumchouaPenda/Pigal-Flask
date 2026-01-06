@@ -42,15 +42,15 @@ The development of Pigal project is based on three project types:
 
 In this cycle, template, module or application projects contain:
 
-* **demo apps**, **frontends** and **backends** which showcase examples and tutorials
-* **org apps**, **frontends** and **backends** which implement real business functionnality
+* **demo apps**, **frontends** and **backends** showcase examples and tutorials
+* **org apps**, **frontends** and **backends** implement real business functionnalities
 
-So application projects are built by assembling multiple module projects created from template projects:
+Application projects are built by assembling multiple module projects created from template projects. So:
 
-* **full-stack developers** can create and share template project
-* **frontend developpers** will create frontends in module projects
-* **backend developpers** will create backends in module projects
-* **project managers** can finally assemble these module into application projects
+* **Template developers** create template project to help other developers
+* **Frontend developpers** create module projects by customizing frontends of template project
+* **Backend developpers** create module projects by customizing backends of template project
+* **Application developers** finally integrate customized frontends and backends into application projects
 
 
 
@@ -64,16 +64,42 @@ Use the following command to install ``Pigal-Flask`` extension:
     pip install Pigal-Flask
 
 
-
-User Guide
+Quickstart
 ----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   basic
-   advanced
-   api
+   basic_projects
+   basic_frontends
+   basic_backends
+   basic_databases
+   basic_collaboration
+
+
+Advanced functionnalities
+-------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   advanced_rbac
+   advanced_home
+   advanced_auth
+   advanced_extensions
+   advanced_databases
+   advanced_themes
+
+
+API Reference
+-------------
+
+.. toctree::
+   :maxdepth: 1
+
+   api_extensions
+   api_utils
+   api_exceptions
 
 
 Indices and tables

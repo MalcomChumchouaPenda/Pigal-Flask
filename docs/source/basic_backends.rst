@@ -3,11 +3,11 @@
 Creating backend
 ================
 
+Any backend must have a **domain name** and a **version number**.
+
 
 ``create-backend`` command
 --------------------------
-
-Any backend must have a **domain name** and a **version number**.
 
 To create a ``MyDomain 1.0`` backend, navigate to ``backends`` directory:
 
@@ -86,7 +86,7 @@ Running backend
 Run project and go to:
 
 * http://127.0.0.1:5000/api to see and test default API with `Swagger UI`_.
-* http://127.0.0.1:5000/api/mydomain/v1/ping to see the default API results.
+* http://127.0.0.1:5000/api/mydomain/v1.0/ping to see the default API results.
 
 .. _Swagger UI: https://swagger.io/tools/swagger-ui/
 

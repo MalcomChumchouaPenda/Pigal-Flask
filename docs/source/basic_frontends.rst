@@ -4,6 +4,9 @@ Creating frontend
 =================
 
 
+In Pigal project, an frontend is always related to a specific **domain**.
+
+
 ``create-frontend`` command
 ---------------------------
 

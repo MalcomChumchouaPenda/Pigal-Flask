@@ -5,10 +5,10 @@ Sharing projects
 Application projects are built by assembling modules projects created from template projects. So:
 
 * **Template developers** create and share template projects to help other developers
-* **Module developers** create and share module projects to meet real business needs
+* **Frontend and backend developers** create and share module projects to meet real business needs
 * **Application developers** collect and integrate module projects
 
-Module developers can also need to share parts of their projects:
+Developers can also need to share only parts of their projects. So:
 
 * frontends can be shared between frontend developers working on different projects
 * backends can also be shared between backend developers working on different projects
@@ -44,12 +44,15 @@ Module project are also directory that can be shared in two steps:
 * Module developer create the project **zip file or git repo**
 * Application developer clone or download the project **zip file or git repo**
 
-Integrating modules project into application project 
-is a critical and complex task (see :ref:`Projects integration`). 
 
 .. IMPORTANT::
     It is required that module developers share module projects with updated ``requirements.txt``
 
+
+Before integrating modules project into application project, developer must check that:
+
+* module and application project share the same UI system
+* application project contains all extensions used by module project
 
 
 Share frontend
