@@ -1,6 +1,6 @@
 
 
-Customizing home frontend
+Customizing home module
 =========================
 
 

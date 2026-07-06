@@ -1,6 +1,6 @@
 
-Sharing projects
-================
+Sharing modules
+===============
 
 Application projects are built by assembling modules projects created from template projects. So:
 

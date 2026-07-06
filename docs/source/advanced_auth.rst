@@ -1,3 +1,3 @@
 
-Customizing auth backend
+Customizing auth module
 ========================

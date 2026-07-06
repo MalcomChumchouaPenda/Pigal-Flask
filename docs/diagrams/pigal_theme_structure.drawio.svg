@@ -1,4 +1,4 @@
-<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" style="background: transparent; background-color: transparent;" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="386px" height="261px" viewBox="-0.5 -0.5 386 261" content="&lt;mxfile pages=&quot;6&quot; scale=&quot;1&quot; border=&quot;0&quot;&gt;&lt;diagram id=&quot;MBzIz4SFfKtPcn2xvrDM&quot; name=&quot;Architecture Synoptique&quot;&gt;5Vldb5swFP01eVwVMCHkcaFNp03TNlXa1kcPnOANMDLOB/31s8EOdkzSpCVppahSxT3+wD7n+t4bMwBhtrmnsEi+khilA3cYbwbgduC6gTvk/wVQNQAIJg2woDhuIKcFHvATkqAct1jiGJVGR0ZIynBhghHJcxQxA4OUkrXZbU5S860FXCALeIhgaqO/cMySBvXUtgT+CeFFIt8M1LozqPpKoExgTNYaBO4GIKSEsOYp24QoFdQpWppxsz2t23VRlLNjBiT5tz8IoCqc3X+Zz+dPvr/58QE0s6xgupT7lYtllSKAkmUeIzHJcACm6wQz9FDASLSuueIcS1iWcsvhj3OcpiFJCa3HgjC8G834gqYlo+Qf0lqCsfgTI0jOpOoO52Rqb0vudIUoQxsNktu8RyRDjFa8i2xVjFemuW7lcwKJJZp0ri9BKF1msZ25pZU/SGZPYHlsscwSlCGLar4/ZvJp8paTHO2QLCGY4kXOzYizhjg+FWxh7sUfZUOG41i8plNAU+JaEbko5zwKAWAoBMaWQr5jCwR60EetVWMdxfzAS1PSqSmANpj9FszcjKT1qLXcbiRptVEpI+er0gYJ81Fva4fVlhoXwzKpZainz+OPIn5xkxQob5AZFjurO++VoSRLGqnoJYlmkC6Q6uY1mNj3QbEoSiHDKzMQvoZ8JeDJ5Dsa9a0QlyFfrsok3zwx0ZKutkbJuWY7ytVYH9q5k761k0O/E8yXoh1Q1zihE2DO0KxJDmodgG8bVlq3QnQoD7zGN0P1xNtxp2bC1rm2OzzO30an+tvWdwzPaR1pj+9sg8QJfnrAhS4UB4Kz+NKpPjA65ALP9Xa9fj3GsQuiFFZk2Wygn7pIZXEtzYKdNDs8WDI1LaoaradPcfFTPveQnsdjg+TALqAmHenZHfeQIU5Ozy88se8v2nuXiPbH6qBWo50DWJboqo+BM/Iudg7cl2cus+pxXngOXpFqgndVcto/aC9L5NsFlA4dLlc+OjtpGtwolz5zCdl7RRBYkTAiWcFVza86GvKy4GZ0VDzs5Wf7xFIhI/GS89RcwfWoBCd1Npu5YfjMVcgbywGckZmdPPsSZdJxy+X1EVR9S43POP8LRbRBWcFDR5+CdBwN91kt5KBjZLA471Bm/12ja8rg27Vy511jH7Wyfa3IEwXDEcc4f1crgQP8jsjkn0sFOz+os5DBiJJrVWH7AUfTYNyPBtxsP5s0Kb399ATu/gM=&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" style="background: transparent; background-color: transparent;" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="386px" height="261px" viewBox="-0.5 -0.5 386 261" content="&lt;mxfile pages=&quot;6&quot; scale=&quot;1&quot; border=&quot;0&quot;&gt;&lt;diagram id=&quot;MBzIz4SFfKtPcn2xvrDM&quot; name=&quot;Architecture Synoptique&quot;&gt;5Vldb5swFP01eVwVMCHkcaFNp03TNlXa1kcPnOANMDLOB/31s8EGO6Zp05K0UlSp4h5/YJ9zfe+NGYEw291SWCRfSYzSkTuOdyNwPXLdwB3z/wKoGgAEswZYURw3kNMBd/gBSVCOW61xjEqjIyMkZbgwwYjkOYqYgUFKydbstiSp+dYCrpAF3EUwtdFfOGZJg3pqWwL/hPAqkW8Gat0ZVH0lUCYwJlsNAjcjEFJCWPOU7UKUCuoULc24xSOt7booytlzBiT5tz8IoCpc3H5ZLpcPvr/78QE0s2xgupb7lYtllSKAknUeIzHJeATm2wQzdFfASLRuueIcS1iWcsvhj0ucpiFJCa3HgjC8mSz4guYlo+Qf0lqCqfgTI0jOpOoO52Rub0vudIMoQzsNktu8RSRDjFa8i2xVjFemue3kcwKJJZp0ri9BKF1m1c7c0cofJLNHsDy1WGYJypBFNd8fM/k0ectJjvZIlhBM8SrnZsRZQxyfC7Yw9+KPsiHDcSxe0yugKXGtiFyUcxqFADAUAlNLId+xBQID6KPWqrGOYn7gpSnp1BRAO8x+C2auJtK611qud5K02qiUkfNVaYOEea+3dcNqS42LYZnUMtTT5/FHEb+4SQqUN8gCi53VnR+VoSRrGqnoJYlmkK6Q6uY1mNj3QbEoSiHDGzMQvoZ8JeDR5Dsa9Z0Q5yFfrsok3zwx0ZpuWqPkXLM95WpsCO3c2dDayaHfCeZL0Q6oa5zQGTBnaNYkB3UOwLcNK61bITqUB17jm6F65u25UzNh51ztDp/nb5Nj/a31HcNzOkd6xHfaIHGEnx5woTPFgeAkvnSsD0wOucBTvV1vWI9x7IIohRVZNxsYpi5SWVxLs2AvzY4PlkxNi6pG6+lTXPyUzwOk58A3SA7sAmoKeuqn6QAZ4uj0/MIT+/6ivXeOaP9cHdRqtHMAyxJd9DFwJt7ZzoH78sxlVj3OC8/BK1JN8K5KTvsH7XmJfLuA0qPD+cpHZy9Ngyvl0icuIQevCAIrEkYkK7iq+WVFw+nU5NkNriZWPJyd6mf7zFIhI/Ga89RcwQ2oBCd1sVi4YfjEVcgbywGciZmdPPsSZdZzy+UNEVR9S43POP8LRbRBWcFDx5CC9BwN90kt5KCTy9BmaimDb9fKvXeNQ9TK9rUiTxQMRxzj/F2sBA7weyKTfyoV7PygzkIGI0ouVYX2A45eLQ+jATe7zyZNSu8+PYGb/w==&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <g>
@@ -30,21 +30,21 @@
             <path d="M 99 125.88 L 102.5 132.88 L 106 125.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
         </g>
         <g>
-            <path d="M 150.24 73.51 L 340 74 L 340 127" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
-            <path d="M 156.13 70.02 L 149.12 73.5 L 156.11 77.02" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
+            <path d="M 141.24 73.51 L 340 74 L 340 127" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
+            <path d="M 147.13 70.02 L 140.12 73.5 L 147.11 77.02" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
         </g>
         <g>
-            <path d="M 57 73.5 L 30 74 L 30 224 L 54.76 223.54" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
+            <path d="M 66 73.5 L 30 74 L 30 224 L 54.76 223.54" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
             <path d="M 48.95 227.15 L 55.88 223.52 L 48.82 220.15" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
         </g>
         <g>
-            <rect x="57" y="60" width="91" height="27" fill="none" stroke="#878787" transform="translate(0,73.5)scale(1,-1)translate(0,-73.5)" pointer-events="all" style="stroke: light-dark(rgb(135, 135, 135), rgb(121, 121, 121));"/>
+            <rect x="66" y="60" width="73" height="27" fill="none" stroke="#878787" transform="translate(0,73.5)scale(1,-1)translate(0,-73.5)" pointer-events="all" style="stroke: light-dark(rgb(135, 135, 135), rgb(121, 121, 121));"/>
         </g>
         <g>
             <g transform="translate(-0.5 -0.5)">
                 <switch>
                     <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
-                        <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 89px; height: 1px; padding-top: 74px; margin-left: 58px;">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 71px; height: 1px; padding-top: 74px; margin-left: 67px;">
                             <div style="box-sizing: border-box; font-size: 0; text-align: center; color: #000000; ">
                                 <div style="display: inline-block; font-size: 10px; font-family: &quot;Helvetica&quot;; color: light-dark(#000000, #ffffff); line-height: 1.2; pointer-events: all; font-weight: bold; font-style: italic; white-space: normal; word-wrap: normal; ">
                                     layouts
@@ -59,17 +59,17 @@
             </g>
         </g>
         <g>
-            <path d="M 150.24 147.5 L 295 147.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
-            <path d="M 156.12 144 L 149.12 147.5 L 156.12 151" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
+            <path d="M 141.24 147.5 L 295 147.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
+            <path d="M 147.12 144 L 140.12 147.5 L 147.12 151" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
         </g>
         <g>
-            <rect x="57" y="134" width="91" height="27" fill="none" stroke="#878787" transform="translate(0,147.5)scale(1,-1)translate(0,-147.5)" pointer-events="all" style="stroke: light-dark(rgb(135, 135, 135), rgb(121, 121, 121));"/>
+            <rect x="66" y="134" width="73" height="27" fill="none" stroke="#878787" transform="translate(0,147.5)scale(1,-1)translate(0,-147.5)" pointer-events="all" style="stroke: light-dark(rgb(135, 135, 135), rgb(121, 121, 121));"/>
         </g>
         <g>
             <g transform="translate(-0.5 -0.5)">
                 <switch>
                     <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
-                        <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 89px; height: 1px; padding-top: 148px; margin-left: 58px;">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 71px; height: 1px; padding-top: 148px; margin-left: 67px;">
                             <div style="box-sizing: border-box; font-size: 0; text-align: center; color: #000000; ">
                                 <div style="display: inline-block; font-size: 10px; font-family: &quot;Helvetica&quot;; color: light-dark(#000000, #ffffff); line-height: 1.2; pointer-events: all; font-weight: bold; font-style: italic; white-space: normal; word-wrap: normal; ">
                                     assets

@@ -1,7 +1,7 @@
 
 
-Creating frontend
-=================
+Creating frontends (UI)
+=======================
 
 
 In Pigal project, an frontend is always related to a specific **domain**.
@@ -115,5 +115,5 @@ To develop custom pages, you can also:
 * http://127.0.0.1:5000/demo/docs to see tutorials on theme usage.
 
 
-**Next step in quickstart** : :ref:`Creating backend`
+**Next step in quickstart** : :ref:`Creating backends (API)`
 

@@ -184,4 +184,4 @@ Let's define ``mydomain/items.html`` template:
 Run the project and go to http://127.0.0.1:5000/mydomain/items to see results.
 
 
-**Next step in quickstart** : :ref:`Sharing projects`
+**Next step in quickstart** : :ref:`Sharing modules`

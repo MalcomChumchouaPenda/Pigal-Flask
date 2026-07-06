@@ -1,7 +1,7 @@
 
 
-Creating project
-================
+Creating projects
+=================
 
 
 Before creating a new project, you must download a theme (``MyTheme_xy.zip`` for example). 
@@ -90,10 +90,10 @@ Customizing project
 
 Within this structure, we can now:
 
-* create specific frontend (see :ref:`Creating frontend`)
-* create specific backend (see :ref:`Creating backend`)
+* create specific frontend (see :ref:`Creating frontends (UI)`)
+* create specific backend (see :ref:`Creating backends (API)`)
 * delete specific frontend (by deleting simply its directory)
 * delete specific backend (by deleting also its directory)
 
 
-**Next step in quickstart** : :ref:`Creating frontend`
+**Next step in quickstart** : :ref:`Creating modules`

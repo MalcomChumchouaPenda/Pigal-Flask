@@ -8,13 +8,18 @@ Pigal-Flask
 
 *Pigal-Flask* is a Flask extension that simplifies the collaborative development of **web portal projects** 
 that facilitate the management of online information and activities for any organisation.
-Indeed Pigal-Flask helps web developpers to collaborate using conventions and best practices.
+Indeed Pigal-Flask helps web developpers to collaborate using following conventions and best practices:
+
+* **modular monolith architecture** of web projects
+* **Role-Based Access Control** for the security
+* **Reusable and shareable themes** for frontend
+* **Internationalisation** native support
 
 
 Basic concepts
 --------------
 
-A **Project** is a Flask application with a modular architecture based on 02 components:
+A **Project** represent a web portal project. It is a ``Flask application`` with a modular architecture based on 02 components:
 
 * **app** which provide global theme, configuration and Flask extensions
 * **modules** which provide specific domain frontends, backends and databases
@@ -27,7 +32,7 @@ In any project, there is two specialized modules:
 * **home** which provide home frontend and backend
 * **auth** which provide authentification and authorization fonctionnalities
 
-A **module** is a Flask blueprint which provides:
+A **module** represent a domain. It is a ``Flask blueprint`` which provides:
 
 * a **Web UI** made of web pages and provides by ``controllers`` to client browser
 * a **Public API** provides by ``services`` to any other modules within project
@@ -47,9 +52,9 @@ Module pages use the global **theme** provided by app for their design:
 
 A theme provides:
 
-* **layouts** of pages
-* **macros** used to create page components
-* **assets** for page styling
+* **layouts** of pages as Jinja templates
+* **components** of pages as Jinja macros
+* **assets** for page styling with static files (imgs, csv, ...)
 
 
 With this architecture, *Pigal-Flask* aims to provide the following benefits:
@@ -92,10 +97,12 @@ Quickstart
    :maxdepth: 1
 
    basic_projects
+   basic_modules
    basic_frontends
    basic_backends
    basic_databases
-   basic_collaboration
+   sharing_modules
+   sharing_themes
 
 
 Advanced functionnalities

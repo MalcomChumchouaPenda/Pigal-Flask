@@ -1,7 +1,7 @@
 
 
-Creating backend
-================
+Creating backends (API)
+=======================
 
 Any backend must have a **domain name** and a **version number**.
 
