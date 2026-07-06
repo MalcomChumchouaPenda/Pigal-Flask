@@ -27,15 +27,38 @@ In any project, there is two specialized modules:
 * **home** which provide home frontend and backend
 * **auth** which provide authentification and authorization fonctionnalities
 
+A **module** is a Flask blueprint which provides:
 
-With this architecture, *Pigal-Flask* provides the following benefits:
+* a **Web UI** made of web pages and provides by ``controllers`` to client browser
+* a **Public API** provides by ``services`` to any other modules within project
+* a **Rest API** provides by ``ressources`` to any external client
 
-* **easier collaboration**: developers can easily collaborate
+.. image:: ../diagrams/pigal_module_structure.drawio.svg
+
+A module contains also:
+
+* ``pages`` which contains jinja templates
+* ``assets`` which contains static files
+* ``models`` which contains databases models and entities
+
+Module pages use the global **theme** provided by app for their design:
+
+.. image:: ../diagrams/pigal_theme_structure.drawio.svg
+
+A theme provides:
+
+* **layouts** of pages
+* **macros** used to create page components
+* **assets** for page styling
+
+
+With this architecture, *Pigal-Flask* aims to provide the following benefits:
+
+* **easier collaboration**: frontend and backend developers can easily collaborate
 * **easier scalability**: developers can easily add and remove features to projects
 * **easier maintainability**: projects can easily be maintained, tested and refactored
 
-
-web developpers can collaborate by exchanging modules. 
+Indeed, web developpers can collaborate by exchanging modules. 
 from a project, A **module** can be exported as ``.mopz`` files then imported in another project.
 this allow flexible collaboration between or within teams of developpers.
 
@@ -43,11 +66,12 @@ this allow flexible collaboration between or within teams of developpers.
 
 
 
-Any project must use a **theme**. Frontend developpers can create and publish themes. 
+Frontend developpers can create and publish themes. 
 A theme is published by exporting it as ``.thpz`` files from a project. 
 Then any other developper can import this theme in his project.
 
 .. image:: ../diagrams/pigal_theme_flows.drawio.svg
+
 
 
 
