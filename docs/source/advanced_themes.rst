@@ -1,5 +1,5 @@
 
-Theme configurations
+Theme customizations
 ====================
 
 
