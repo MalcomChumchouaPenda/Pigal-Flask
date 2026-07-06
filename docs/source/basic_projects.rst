@@ -4,63 +4,44 @@ Creating projects
 =================
 
 
-Before creating a new project, you must download a theme (``MyTheme_xy.zip`` for example). 
-
-.. IMPORTANT::
-    The name of valid theme zip file has the format ``<theme_name>_<ui_system>.zip``. For examples:
-    
-    .. table::
-        :align: left
-
-        +------------+---------------+------------------------+
-        | Theme name | Ui System     | Zip file name          |
-        +============+===============+========================+
-        | MyTheme    | xy            | ``MyTheme_xy.zip``     |
-        +------------+---------------+------------------------+
-        | MyTheme    | abc           | ``MyTheme_abc.zip``    |
-        +------------+---------------+------------------------+
-        | OtherTheme | abc           | ``OtherTheme_abc.zip`` |
-        +------------+---------------+------------------------+
-
-
-``create-project`` command
---------------------------
-
-To create a project ``MyProject`` with ``MyTheme_xy`` theme, use ``create-project`` command:
+To create a project ``MyProject`` use ``create-project`` command:
 
 .. code-block:: bash
 
-    pigal create-project MyProject C:/MyTheme_xy.zip
+    pigal create-project MyProject
 
 
 
-Default Project structure
--------------------------
+Project structure
+-----------------
 
-This will create a pigal project with the following structure:
+This will create a project with the following structure:
 
-.. code-block::
+.. code-block:: text
 
-    /myproject
-    |   
-    |-- /app                  # app system files
-    |-- /backends             # backend directories
-    |-- /frontends            # frontend directories 
-    |-- /migrations           # databases migration files
-    |-- /tests                # project tests files 
-    |-- /translations         # internationalisation files
-    |-- requirements.txt      # required python package
+    myproject/
+    ├── app/                  # app configuration and execution
+    ├── migrations/           # databases migration files
+    ├── modules/              # modules directory
+    │   ├── auth/             # security frontend and backend
+    │   └── home/             # home frontend and backend
+    ├── tests/                # tests files
+    ├── themes/               # themes directory
+    │   └── default/          # default design system
+    ├── translations/         # internationalisation files
+    └── requirements.txt      # required python package list
 
 
 .. IMPORTANT::
-    ``myproject`` directory contains special sub-directories:
-    
-    * ``app`` which provide app configuration and execution
-    * ``backends/auth`` which provide security backend
-    * ``frontends/home`` which provide home frontend
-    * ``frontends/demo`` which provide theme demo frontend
 
-    **At beginner level, don't modify or delete these sub-directories**
+    **At beginner level, don't modify or delete the following directories**:
+    
+    * ``app`` (to customize it see ...)
+    * ``modules/auth`` (to customize it see ...)
+    * ``modules/home`` (to customize it see ...)
+    * ``themes/default`` (to customize it see ...)
+
+    
 
 
 Running project

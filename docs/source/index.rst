@@ -19,10 +19,11 @@ Indeed Pigal-Flask helps web developpers to collaborate using following conventi
 Basic concepts
 --------------
 
-A **Project** represent a web portal project. It is a ``Flask application`` with a modular architecture based on 02 components:
+A **Project** represent a web portal project. It is a ``Flask application`` with a modular architecture based on 03 components:
 
-* **app** which provide global theme, configuration and Flask extensions
+* **app** which provide configuration and Flask extensions
 * **modules** which provide specific domain frontends, backends and databases
+* **themes** which provide global themes and styling for domain frontends
 
 .. image:: ../diagrams/pigal_project_architecture.drawio.svg
 
@@ -30,11 +31,11 @@ A **Project** represent a web portal project. It is a ``Flask application`` with
 In any project, there is two specialized modules:
 
 * **home** which provide home frontend and backend
-* **auth** which provide authentification and authorization fonctionnalities
+* **auth** which provide authentification and authorization functionnalities
 
 A **module** represent a domain. It is a ``Flask blueprint`` which provides:
 
-* a **Web UI** made of web pages and provides by ``controllers`` to client browser
+* a **Web UI** made of web pages and provides by ``routers`` to client browser
 * a **Public API** provides by ``services`` to any other modules within project
 * a **Rest API** provides by ``ressources`` to any external client
 
@@ -76,7 +77,6 @@ A theme is published by exporting it as ``.thpz`` files from a project.
 Then any other developper can import this theme in his project.
 
 .. image:: ../diagrams/pigal_theme_flows.drawio.svg
-
 
 
 

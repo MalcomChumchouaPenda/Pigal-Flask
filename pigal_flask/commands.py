@@ -24,41 +24,41 @@ theme_required_paths = (
 
 @click.command('create-project')
 @click.argument('name')
-@click.argument('theme')
-def create_project(name, theme):
-    """Create new Pigal project
+def create_project(name):
     """
-    extra = {'project_name': name, 'project_theme': theme}
+    Create new Pigal project
+    """
+    extra = {'project_name': name}
     template = os.path.join(template_dir, 'cookiecutter_project')
     cookiecutter(template, no_input=True, extra_context=extra)
 
-    with zpf.ZipFile(theme, 'r') as file:
-        # check zipfile
-        for required_path in theme_required_paths:
-            found = False
-            for file_name in file.namelist():
-                if required_path in file_name:
-                    found = True
-                    break
-            if not found:
-                theme_name = os.path.basename(theme)
-                msg = f'{theme_name} does not contain valid theme'
-                raise InvalidThemeFile(msg)
+    # with zpf.ZipFile(theme, 'r') as file:
+    #     # check zipfile
+    #     for required_path in theme_required_paths:
+    #         found = False
+    #         for file_name in file.namelist():
+    #             if required_path in file_name:
+    #                 found = True
+    #                 break
+    #         if not found:
+    #             theme_name = os.path.basename(theme)
+    #             msg = f'{theme_name} does not contain valid theme'
+    #             raise InvalidThemeFile(msg)
 
-        # extract files into project
-        output_dir = os.path.abspath(f'./{name}/app')
-        file.extractall(output_dir)
+    #     # extract files into project
+    #     output_dir = os.path.abspath(f'./{name}/app')
+    #     file.extractall(output_dir)
     
     # move home and example directories
-    for key in ('home', 'demo'):
-        src_dir = f'./{name}/app/templates/{key}'
-        src_dir = os.path.abspath(src_dir)
-        if os.path.isdir(src_dir):
-            dest_dir = f'./{name}/frontends/{key}/templates/{key}'
-            dest_dir = os.path.abspath(dest_dir)
-            if os.path.isdir(dest_dir):
-                shutil.rmtree(dest_dir)
-            shutil.move(src_dir, dest_dir)
+    # for key in ('home', 'demo'):
+    #     src_dir = f'./{name}/app/templates/{key}'
+    #     src_dir = os.path.abspath(src_dir)
+    #     if os.path.isdir(src_dir):
+    #         dest_dir = f'./{name}/frontends/{key}/templates/{key}'
+    #         dest_dir = os.path.abspath(dest_dir)
+    #         if os.path.isdir(dest_dir):
+    #             shutil.rmtree(dest_dir)
+    #         shutil.move(src_dir, dest_dir)
 
 
 @click.command('create-frontend')

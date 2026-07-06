@@ -1,110 +1,32 @@
 
 import os
 import pytest
-import zipfile as zpf
 from click.testing import CliRunner
 from pigal_flask.commands import create_project
-
-
-THEME_FILES = [
-    ('static', 'css', 'style.css'),
-    ('static', 'js', 'custom.js'),
-    ('static', 'other.txt'),
-    ('templates', 'layouts', 'landing.jinja'),
-    ('templates', 'layouts', 'dashboard.jinja'),
-    ('templates', 'layouts', 'auth.jinja'),
-    ('templates', 'layouts', 'other.jinja'),
-    ('templates', 'home', 'index.jinja'),
-    ('templates', 'home', 'dashboard.jinja'),
-    ('templates', 'home', 'login.jinja'),
-    ('templates', 'home', 'other.jinja'),
-    ('templates', 'demo', 'test1.jinja'),
-    ('templates', 'demo', 'test2.jinja'),
-]
-
-
-def create_valid_theme(tmpdir):
-    themezip = tmpdir / 'theme_1_0.zip'
-    with zpf.ZipFile(themezip, 'w') as file:
-        for filenames in THEME_FILES:
-            arcname = '/'.join(filenames)
-            file.writestr(arcname, 'test')            
-    return themezip.strpath
 
 
 def test_create_project_structure(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        result = runner.invoke(create_project, ['test', theme])
+        result = runner.invoke(create_project, ['myproj'])
 
-    project_path = os.path.join(tmpdir, 'test')
+    project_path = os.path.join(tmpdir, 'myproj')
     assert result.exit_code == 0
     assert os.path.isdir(project_path)
     assert os.path.isdir(os.path.join(project_path, 'app'))
-    assert os.path.isdir(os.path.join(project_path, 'frontends'))
-    assert os.path.isdir(os.path.join(project_path, 'backends'))
+    assert os.path.isdir(os.path.join(project_path, 'migrations'))
+    assert os.path.isdir(os.path.join(project_path, 'modules'))
+    assert os.path.isdir(os.path.join(project_path, 'tests'))
+    assert os.path.isdir(os.path.join(project_path, 'themes'))
+    assert os.path.isdir(os.path.join(project_path, 'translations'))
 
-
-def test_unzip_theme_static_into_app_dir(tmpdir, change_dir):
-    runner = CliRunner()
-    with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
-
-    app_path = os.path.join(tmpdir, 'test', 'app')
-    for file_names in THEME_FILES:
-        if 'static' == file_names[0]:
-            file_name = os.path.join(app_path, *file_names)
-            assert os.path.isfile(file_name)
-
-
-def test_unzip_theme_layouts_into_app_dir(tmpdir, change_dir):
-    runner = CliRunner()
-    with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
-
-    app_path = os.path.join(tmpdir, 'test', 'app')
-    for file_names in THEME_FILES:
-        if 'layouts' == file_names[1]:
-            file_name = os.path.join(app_path, *file_names)
-            assert os.path.isfile(file_name)
-
-
-def test_unzip_home_templates_into_frontends(tmpdir, change_dir):
-    runner = CliRunner()
-    with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
-
-    home_path = os.path.join(tmpdir, 'test', 'frontends', 'home')
-    for file_names in THEME_FILES:
-        if 'home' == file_names[1]:
-            file_name = os.path.join(home_path, *file_names)
-            assert os.path.isfile(file_name)
-
-
-def test_unzip_demo_templates_into_frontends(tmpdir, change_dir):
-    runner = CliRunner()
-    with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
-
-    demo_path = os.path.join(tmpdir, 'test', 'frontends', 'demo')
-    for file_names in THEME_FILES:
-        if 'demo' == file_names[1]:
-            file_name = os.path.join(demo_path, *file_names)
-            assert os.path.isfile(file_name)
-    
 
 def test_create_app_structure(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    app_path = os.path.join(tmpdir, 'test', 'app')
+    app_path = os.path.join(tmpdir, 'myproj', 'app')
     assert os.path.isfile(os.path.join(app_path, 'config.py'))
     assert os.path.isfile(os.path.join(app_path, 'extensions.py'))
     assert os.path.isfile(os.path.join(app_path, '__init__.py'))
@@ -113,23 +35,21 @@ def test_create_app_structure(tmpdir, change_dir):
 def test_create_app_config_file(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    file_path = os.path.join(tmpdir, 'test', 'app', 'config.py')
+    file_path = os.path.join(tmpdir, 'myproj', 'app', 'config.py')
     with open(file_path, 'rt') as file:
         code = file.read()
         assert 'class Config:' in code
-        assert "    PIGAL_PROJECT_NAME = 'test'" in code
+        assert "    PIGAL_PROJECT_NAME = 'myproj'" in code
 
 
 def test_create_app_extensions_file(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    file_path = os.path.join(tmpdir, 'test', 'app', 'extensions.py')
+    file_path = os.path.join(tmpdir, 'myproj', 'app', 'extensions.py')
     with open(file_path, 'rt') as file:
         code = file.read()
         assert 'from pigal_flask import Pigal, PigalDb' in code
@@ -140,10 +60,9 @@ def test_create_app_extensions_file(tmpdir, change_dir):
 def test_create_app_init_file(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    file_path = os.path.join(tmpdir, 'test', 'app', '__init__.py')
+    file_path = os.path.join(tmpdir, 'myproj', 'app', '__init__.py')
     with open(file_path, 'rt') as file:
         code = file.read()
         assert 'from flask import Flask' in code
@@ -154,109 +73,54 @@ def test_create_app_init_file(tmpdir, change_dir):
         assert 'pigal.init_app(app)' in code
 
 
-def test_create_frontend_structure(tmpdir, change_dir):
+def test_create_defaults_modules(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    frontends_path = os.path.join(tmpdir, 'test', 'frontends')
-    assert os.path.isdir(os.path.join(frontends_path, 'home'))
-    assert os.path.isdir(os.path.join(frontends_path, 'demo'))
-    assert os.path.isfile(os.path.join(frontends_path, '__init__.py'))
+    modules_path = os.path.join(tmpdir, 'myproj', 'modules')
+    assert os.path.isdir(os.path.join(modules_path, 'home'))
+    assert os.path.isdir(os.path.join(modules_path, 'auth'))
+    assert os.path.isfile(os.path.join(modules_path, '__init__.py'))
 
 
-def test_create_default_home_frontend(tmpdir, change_dir):
+def test_create_default_home_module(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    home_path = os.path.join(tmpdir, 'test', 'frontends', 'home')
-    assert os.path.isdir(os.path.join(home_path, 'static'))
-    assert os.path.isdir(os.path.join(home_path, 'templates'))
-    assert os.path.isdir(os.path.join(home_path, 'templates', 'home'))
-    assert os.path.isfile(os.path.join(home_path, 'forms.py'))
-    assert os.path.isfile(os.path.join(home_path, 'routes.py'))
+    home_path = os.path.join(tmpdir, 'myproj', 'modules', 'home')
+    assert os.path.isdir(os.path.join(home_path, 'assets'))
+    assert os.path.isdir(os.path.join(home_path, 'pages'))
+    assert os.path.isfile(os.path.join(home_path, 'pages', 'index.jinja'))
+    assert os.path.isfile(os.path.join(home_path, 'models.py'))
+    assert os.path.isfile(os.path.join(home_path, 'ressources.py'))
+    assert os.path.isfile(os.path.join(home_path, 'routers.py'))
+    assert os.path.isfile(os.path.join(home_path, 'services.py'))
 
 
-def test_create_theme_demo_frontend(tmpdir, change_dir):
+def test_create_default_auth_module(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    demo_path = os.path.join(tmpdir, 'test', 'frontends', 'demo')
-    assert os.path.isdir(os.path.join(demo_path, 'static'))
-    assert os.path.isdir(os.path.join(demo_path, 'templates'))
-    assert os.path.isdir(os.path.join(demo_path, 'templates', 'demo'))
-    assert os.path.isfile(os.path.join(demo_path, 'forms.py'))
-    assert os.path.isfile(os.path.join(demo_path, 'routes.py'))
-
-
-def test_create_backends_structure(tmpdir, change_dir):
-    runner = CliRunner()
-    with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
-
-    backends_path = os.path.join(tmpdir, 'test', 'backends')
-    assert os.path.isdir(os.path.join(backends_path, 'auth'))
-    assert os.path.isfile(os.path.join(backends_path, '__init__.py'))
-
-
-def test_create_default_auth_backend(tmpdir, change_dir):
-    runner = CliRunner()
-    with change_dir(tmpdir):
-        theme = create_valid_theme(tmpdir)
-        runner.invoke(create_project, ['test', theme])
-
-    auth_path = os.path.join(tmpdir, 'test', 'backends', 'auth')
-    assert os.path.isdir(os.path.join(auth_path, 'store'))
-    assert os.path.isfile(os.path.join(auth_path, 'utils.py'))
+    auth_path = os.path.join(tmpdir, 'myproj', 'modules', 'auth')
+    assert os.path.isdir(os.path.join(auth_path, 'assets'))
+    assert os.path.isdir(os.path.join(auth_path, 'pages'))
+    assert os.path.isfile(os.path.join(auth_path, 'pages', 'login.jinja'))
     assert os.path.isfile(os.path.join(auth_path, 'models.py'))
-    assert os.path.isfile(os.path.join(auth_path, 'routes.py'))
+    assert os.path.isfile(os.path.join(auth_path, 'ressources.py'))
+    assert os.path.isfile(os.path.join(auth_path, 'routers.py'))
+    assert os.path.isfile(os.path.join(auth_path, 'services.py'))
 
 
-def create_invalid_theme(tmpdir, ignored):
-    themezip = tmpdir / 'theme_2_0.zip'
-    with zpf.ZipFile(themezip, 'w') as file:
-        for filenames in THEME_FILES:
-            arcname = '/'.join(filenames)
-            if not ignored in arcname:
-                file.writestr(arcname, 'test')            
-    return themezip.strpath
-
-
-@pytest.mark.parametrize('required', [
-    'static/',
-    'templates/layouts/',
-    'templates/home/',
-    'templates/demo/'
-])
-def test_requires_theme_with_specific_folder(tmpdir, change_dir, required):    
+def test_create_default_theme(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
-        theme = create_invalid_theme(tmpdir, required)
-        result = runner.invoke(create_project, ['test', theme])
+        runner.invoke(create_project, ['myproj'])
 
-    assert result.exit_code != 0
-    assert "theme_2_0.zip does not contain valid theme" in result.output
-    
-
-@pytest.mark.parametrize('required', [
-    'templates/layouts/auth.jinja',
-    'templates/layouts/dashboard.jinja',
-    'templates/layouts/landing.jinja',
-    'templates/home/login.jinja',
-    'templates/home/dashboard.jinja',
-    'templates/home/index.jinja',
-])
-def test_requires_theme_with_specific_file(tmpdir, change_dir, required):    
-    runner = CliRunner()
-    with change_dir(tmpdir):
-        theme = create_invalid_theme(tmpdir, required)
-        result = runner.invoke(create_project, ['test', theme])
-
-    assert result.exit_code != 0
-    assert "theme_2_0.zip does not contain valid theme" in result.output
+    theme_path = os.path.join(tmpdir, 'myproj', 'themes', 'default')
+    assert os.path.isdir(os.path.join(theme_path, 'assets'))
+    assert os.path.isdir(os.path.join(theme_path, 'layouts'))
+    assert os.path.isfile(os.path.join(theme_path, 'layouts', 'page.jinja'))
+    assert os.path.isfile(os.path.join(theme_path, 'components.jinja'))
