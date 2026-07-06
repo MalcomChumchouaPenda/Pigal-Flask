@@ -2,10 +2,6 @@
 Theme configurations
 ====================
 
-Any project must use a theme which can be change or configured:
-
-.. image:: ../diagrams/pigal_ui_system.drawio.svg
-
 
 The **UI System** define an **abstract sytem** of:
 

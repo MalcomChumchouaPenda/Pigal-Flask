@@ -6,46 +6,49 @@
 Pigal-Flask
 ===========
 
-**Pigal-Flask** is a Flask extension that simplifies the development of **Pigal projects**. 
-Pigal projects are **modular web portals** that facilitate the management of online information and activities.
-Pigal-Flask helps web developpers to collaborate using conventions and best practices.
+*Pigal-Flask* is a Flask extension that simplifies the collaborative development of **web portal projects** 
+that facilitate the management of online information and activities for any organisation.
+Indeed Pigal-Flask helps web developpers to collaborate using conventions and best practices.
 
 
 Basic concepts
 --------------
 
-A **Pigal project** is a Flask application with a modular architecture based on 03 components:
+A **Project** is a Flask application with a modular architecture based on 02 components:
 
 * **app** which provide global theme, configuration and Flask extensions
-* **frontends** which provide home and specific domain frontends
-* **backends** which provide security and specific domain backends
+* **modules** which provide specific domain frontends, backends and databases
 
 .. image:: ../diagrams/pigal_project_architecture.drawio.svg
 
 
-This architecture provides the following benefits:
+In any project, there is two specialized modules:
 
-* **easier collaboration**: frontend and backend developers can easily collaborate
+* **home** which provide home frontend and backend
+* **auth** which provide authentification and authorization fonctionnalities
+
+
+With this architecture, *Pigal-Flask* provides the following benefits:
+
+* **easier collaboration**: developers can easily collaborate
 * **easier scalability**: developers can easily add and remove features to projects
 * **easier maintainability**: projects can easily be maintained, tested and refactored
 
 
-The development of Pigal project is based on three project types:
+web developpers can collaborate by exchanging modules. 
+from a project, A **module** can be exported as ``.mopz`` files then imported in another project.
+this allow flexible collaboration between or within teams of developpers.
 
-* **template projects** offer a reusable foundation and pre-configured structure to start new projects
-* **module projects** are customized from templates projects to address specific business domains
-* **application projects** integrate multiple modules projects to form a complete web application
-
-
-.. image:: ../diagrams/pigal_development_cycle.drawio.svg
+.. image:: ../diagrams/pigal_module_flows.drawio.svg
 
 
-Application projects are built by assembling multiple module projects created from template projects. So:
 
-* **template developers** create template project to help other developers
-* **frontend developpers** create module projects by customizing frontends of template project
-* **backend developpers** create module projects by customizing backends of template project
-* **application developers** finally integrate customized frontends and backends into application projects
+Any project must use a **theme**. Frontend developpers can create and publish themes. 
+A theme is published by exporting it as ``.thpz`` files from a project. 
+Then any other developper can import this theme in his project.
+
+.. image:: ../diagrams/pigal_theme_flows.drawio.svg
+
 
 
 Installation

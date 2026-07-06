@@ -1,8 +1,8 @@
-<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" style="background: transparent; background-color: transparent;" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="221px" height="281px" viewBox="-0.5 -0.5 221 281" content="&lt;mxfile pages=&quot;6&quot; scale=&quot;1&quot; border=&quot;0&quot;&gt;&lt;diagram id=&quot;MBzIz4SFfKtPcn2xvrDM&quot; name=&quot;Architecture Synoptique&quot;&gt;7Vhbk9o2GP01PHrH8p3HxSybhjbJZkO725eO1vpsq9gWscXF/PrIIIONTGFa3GnawgwjHd2sc74jfXhg+unmMceL+CdGIBkYOtkMzPHAMNyhKX4roNwDlmPvgSinZA+hI/BMtyBBXaJLSqBodeSMJZwu2mDAsgwC3sJwnrN1u1vIkvaqCxyBAjwHOFHRXyjhsdyFrh/xd0CjWK5s2rIhxXVfCRQxJmzdgMyHgennjPF9Kd34kFTU1bTsx03OtB6eK4eMXzMgzj6+gQmlP3mchmG4dZzNkybFWeFkKfcrH5aXNQE5W2YEqkn0gTlax5TD8wIHVetaKC6wmKeJqCFRDGmS+Cxh+W6sKdYxgkDgBc/ZHBotnlt9qxEs41J1JDgZqduSO11BzmHTgOQ2H4GlwPNSdKljTjIuIw7Z1r6+Pup3UCVuaIccR8aNjJnoMPWRV1GQ1HbTHG118lUfZ6P50ks5f91+JZ81hC7QynIes4hlOPmRsYUk83fgvJTc4CVnbaoJLuLd+KoCGbmvgl1U2QKyPTKh1VPu5j9lueA45/WIjGVQY40xsKH8pSrfGbasvtbLifJ40+g3LmXlrHxAWj5TxcshwZyu2rbrUkIO/cSoWOIgOvK8turWsD2F2F0EXI5q+uTSRHWo1BMVbJkHoEy0C4zDfq6KlSn4MMY/rF+21J1FT/7nD5O5htx+PUkweGFQx4ScE3XGyDnP3t6jln6dRT39fFxc61B9/la8G71qs3v/1SZ49v7X8ItmKKSnjCwTcfOcci82yNsEt4mSbmqyLiGc0EhYcxwI2kDgo4ouKq6ae9mQUkKqZToVbWt+SbwbSORZF49RG6kSmX1JZCkSEZZimgnshg6p5Wvwa57wq3eaQ6++h5Y6V0C30QINUUsMw3QVMRz9zlblMNy/Lof/Xgu2mj4sUzSdP3+YpKuncYdj8GLxv1vOH2im3aXPLezijabIfFlN38JZOZ3fT/LsU6HZ5+1yKRv5/u2it+/wTruY/ZgFp+XTz5Pf/C/jrZX5s+JjuQENKWKI/yshjfq/2a9Sw9l9elPDclpquJ4ihuX+jWKoJ5c4pCArKMvU6/7fKIih25cEcYb9CKJyz2NI4T9Bu+fdXeTdcvq6xNX7IGY3Jj70Agj+FPE9Xwfo5I3A0O7Invqh3VHTpKVY85a0Tzz/wff/gbSfJK1dtNs9nTPe+ezH/A6yH4XkDin+IPtx29mPpyajN8p+RPX4BnP/BuT4Fth8+AY=&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" style="background: transparent; background-color: transparent;" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="221px" height="291px" viewBox="-0.5 -0.5 221 291" content="&lt;mxfile pages=&quot;6&quot; scale=&quot;1&quot; border=&quot;0&quot;&gt;&lt;diagram id=&quot;MBzIz4SFfKtPcn2xvrDM&quot; name=&quot;Architecture Synoptique&quot;&gt;7Vhdk5s2FP01fmQHIb78uMbLpnGbZLNxu9uXjBYJUA3IAfkD//oKI2yw8NgzMZ02qT3jkY50r9A590rXjKCXbh9ztIx/Y5gkI0PH2xGcjgzDNnTxWwFlDUB3XANRTnENgSPwTHdEgtIuWlFMis5EzljC6bILBizLSMA7GMpztulOC1nSXXWJIqIAzwFKVPQPinlco6auH/F3hEaxXBlaciBFzVwJFDHCbNOC4MMIejljvG6lW48kFXUNLbWdf2b08Fw5yfg1BnH28Y1AUnr+4ywMw51tb580WHtZo2Ql9ysflpcNATlbZZhUTvQRnGxiysnzEgXV6EYoLrCYp4noAdEMaZJ4LGH53haKdYwgEHjBc7YgrRHXqb6VBcu4VB0ITibqtuRO1yTnZNuC5DYfCUsJz0sxRY46knEZccAy6/7mqN9BlbilHXBsGTcyZqKD6yOvoiGp7ac52un4mz7NJouVm3L+uvuGP2sAXKCV5TxmEctQ8itjS0nmX4TzUnKDVpx1qcaoiPf2VYdk+L4KdtFlS5LViE+rp9z7P2W54CjnjUXGMtJgLRuypfylat8Zluy+NsuJ9nTbmjctZeesfAR38kwVLycJ4nTdTbs+JaTpJ0bFEgfRget2VTfHXRdidxHh0qqdJ5ccNaHSOCrYKg+I4mgfGIf9XBUrM+KRKfpl87Kjzjx68j5/8BcacIbNSYyIGwZNTEifoDdGzuXs7XPU1K9LUVc/HxfXZqi+eCveTV61+b33amE0f/9n+EUzFNJThleJuHlOuRcb5F2Cu0TJbGqzLiGU0Eik5jQQtBGBTyq6qLhq7uVASjGululVtKv5JfFuIJFrXjxGLaBKBIeSyFQkwixFNBPYDTOkka/FLzzhV+9NDr36HkaaWgHcRgswBh0xDOgoYtj6naXKYTjfL4f3Xgt2mj4uUzBbPH/w0/XTtCdj0HL5f7acP9Cg1afPLdLFncwAfFnP3sJ5OVvc+3n2qdCs8+lyqRr576eL3r3De9MFDpMsKC2ffve/el+mOzPz5sXHcks0oIgh/q+ENBr+Zr9KDXv/GUwN0+6o4biKGKbzD4qhnlzikCJZQVmmXvc/oiCGbl0SxB4PI4jKPY9JSn4K2l337iLvpj3UJa7eBzG7MfG+/2B73r/wOgAnbwTGVk/1NAzttlomrcSaPwXtJ0VrH+3WQOeMe776gT9+9eN0qx9XLUZvVP2I7vENZv0G5PgWGD78DQ==&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <g>
-            <rect x="0" y="114" width="220" height="166" fill="#fff2cc" stroke="#878787" pointer-events="all" style="fill: light-dark(rgb(255, 242, 204), rgb(40, 29, 0)); stroke: light-dark(rgb(135, 135, 135), rgb(121, 121, 121));"/>
+            <rect x="0" y="114" width="220" height="176" fill="#fff2cc" stroke="#878787" pointer-events="all" style="fill: light-dark(rgb(255, 242, 204), rgb(40, 29, 0)); stroke: light-dark(rgb(135, 135, 135), rgb(121, 121, 121));"/>
         </g>
         <g>
             <path d="M 118 80 L 118 106.76" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-dasharray="3 3" pointer-events="stroke" style="stroke: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));"/>
@@ -159,7 +159,7 @@
             </g>
         </g>
         <g>
-            <rect x="40" y="155" width="60" height="27" fill="#f8cecc" stroke="#808080" pointer-events="all" style="fill: light-dark(rgb(248, 206, 204), rgb(81, 45, 43)); stroke: light-dark(rgb(128, 128, 128), rgb(127, 127, 127));"/>
+            <rect x="40" y="155" width="60" height="27" fill="#ffe6cc" stroke="#808080" pointer-events="all" style="fill: light-dark(rgb(255, 230, 204), rgb(54, 33, 10)); stroke: light-dark(rgb(128, 128, 128), rgb(127, 127, 127));"/>
         </g>
         <g>
             <g transform="translate(-0.5 -0.5)">
@@ -180,7 +180,7 @@
             </g>
         </g>
         <g>
-            <rect x="121" y="155" width="59" height="27" fill="#f8cecc" stroke="#808080" pointer-events="all" style="fill: light-dark(rgb(248, 206, 204), rgb(81, 45, 43)); stroke: light-dark(rgb(128, 128, 128), rgb(127, 127, 127));"/>
+            <rect x="121" y="155" width="59" height="27" fill="#ffe6cc" stroke="#808080" pointer-events="all" style="fill: light-dark(rgb(255, 230, 204), rgb(54, 33, 10)); stroke: light-dark(rgb(128, 128, 128), rgb(127, 127, 127));"/>
         </g>
         <g>
             <g transform="translate(-0.5 -0.5)">
