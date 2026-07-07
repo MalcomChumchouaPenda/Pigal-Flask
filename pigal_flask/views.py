@@ -1,6 +1,7 @@
 
 import os
 from flask import Blueprint
+from flask.views import View
 
 
 class WebUi(Blueprint):
@@ -49,7 +50,7 @@ class WebUi(Blueprint):
                          static_folder=static_url_path,
                          static_url_path=static_url_path)
         
-        
+
     def route(self, rule, **options):
         def decorator(cls):
             if hasattr(cls, 'methods'):
@@ -72,15 +73,11 @@ class WebUi(Blueprint):
         return decorator
     
 
-class FileView:
+class FileView(View):
     """ A File-based routing view for module/domain
 
     This is View which implement file-based routing for a module Ui.
     """
 
-# ui = Blueprint('x', __file__)
+    methods = ['GET']
 
-# @ui.route('/hello')
-# class Demo:
-#     def get(self):
-#         return 'Hello World'

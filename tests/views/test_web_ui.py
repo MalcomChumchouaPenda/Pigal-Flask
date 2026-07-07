@@ -10,18 +10,18 @@ def test_is_flask_blueprint():
 
 
 @pytest.fixture
-def import_file(tmpdir):
+def views_file(tmpdir):
     test_dir = tmpdir / 'modules' / 'demo' / 'views.py'
     return test_dir.strpath
 
 
 
-def test_is_configured_with_import_file(import_file):
-    ui = WebUi(import_file)
+def test_is_configured_with_views_file(views_file):
+    ui = WebUi(views_file)
     assert ui.import_name == 'modules.demo.views'
     assert ui.template_folder == 'pages'
-    assert ui.static_folder == import_file.replace('views.py', 'assets')
-    assert ui.static_url_path == import_file.replace('views.py', 'assets')
+    assert ui.static_folder == views_file.replace('views.py', 'assets')
+    assert ui.static_url_path == views_file.replace('views.py', 'assets')
 
 
 @pytest.mark.parametrize('domain, url_prefix', [
@@ -31,8 +31,8 @@ def test_is_configured_with_import_file(import_file):
 ])
 def test_generate_name_and_url_prefix(tmpdir, domain, url_prefix):
     test_dir = tmpdir / 'modules' / domain / 'views.py'
-    import_file = test_dir.strpath
-    ui = WebUi(import_file)    
+    views_file = test_dir.strpath
+    ui = WebUi(views_file)    
     assert ui.name == domain
     assert ui.url_prefix == url_prefix
 
@@ -45,8 +45,8 @@ def app(tmpdir):
 
 
 @pytest.fixture
-def view_cls(app, import_file):
-    ui = WebUi(import_file)
+def view_cls(app, views_file):
+    ui = WebUi(views_file)
 
     @ui.route("/hello")
     class Demo(View):
@@ -75,8 +75,8 @@ def test_dispatch_request_to_class_based_view(app):
 
 
 @pytest.fixture
-def method_view_cls(app, import_file):
-    ui = WebUi(import_file)
+def method_view_cls(app, views_file):
+    ui = WebUi(views_file)
 
     @ui.route("/hello")
     class Demo(MethodView):
