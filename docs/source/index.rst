@@ -11,6 +11,7 @@ that facilitate the management of online information and activities for any orga
 Indeed Pigal-Flask helps web developpers to collaborate using following conventions and best practices:
 
 * **modular monolith architecture** of web projects
+* **File-based Routing** for web interface
 * **Role-Based Access Control** for the security
 * **Reusable and shareable themes** for frontend
 * **Internationalisation** native support
@@ -126,6 +127,7 @@ API Reference
    :maxdepth: 1
 
    api_commands
+   api_routers
    api_extensions
    api_utils
    api_exceptions

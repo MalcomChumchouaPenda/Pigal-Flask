@@ -58,7 +58,6 @@ Navigate to ``myproject`` directory and run the Flask app:
 Go to:
 
 * http://127.0.0.1:5000 to see the default project page.
-* http://127.0.0.1:5000/demo to see examples of theme pages.
 * http://127.0.0.1:5000/api to see the default project Rest API.
 
 
