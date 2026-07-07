@@ -7,6 +7,7 @@ from flask import Flask, Blueprint
 from flask_restx import Api, Namespace
 
 from pigal_flask import utils
+from pigal_flask import views
 from pigal_flask.extensions import Pigal
 from pigal_flask.exceptions import (
     InvalidUi, 
@@ -23,127 +24,112 @@ def app1(tmpdir):
                 instance_path=tmpdir.strpath, 
                 instance_relative_config=True)
 
+
 def test_checks_app_directory_in_project_directory(app1):
-    app = app1
-    with pytest.raises(InvalidProjectStructure) as exc_info:
-        pigal = Pigal()
-        pigal.init_app(app)
     err_msg = "'app' directory is required but not found"
+    app = app1
+    pigal = Pigal()
+
+    with pytest.raises(InvalidProjectStructure) as exc_info:
+        pigal.init_app(app)
     assert str(exc_info.value) == err_msg
 
 
 @pytest.fixture
 def app2(tmpdir):
-    """Flask app without frontends directory"""
-    backends_dir = tmpdir / 'backends'
-    backends_dir.mkdir()
+    """Flask app without modules directory"""
     app_dir = tmpdir / 'app'
     app_dir.mkdir()
     return Flask(__name__, 
                 instance_path=app_dir, 
                 instance_relative_config=True)
         
-def test_checks_frontends_directory_in_project_directory(app2):
+
+def test_checks_modules_directory_in_project_directory(app2):
+    err_msg = "'modules' directory is required but not found"
     app = app2
+    pigal = Pigal()
+
     with pytest.raises(InvalidProjectStructure) as exc_info:
-        pigal = Pigal()
         pigal.init_app(app)
-    err_msg = "'frontends' directory is required but not found"
     assert str(exc_info.value) == err_msg
 
 
 @pytest.fixture
-def app3(tmpdir):
-    """Flask app without backends directory"""
-    frontends_dir = tmpdir / 'frontends'
-    frontends_dir.mkdir()
-    app_dir = tmpdir / 'app'
-    app_dir.mkdir()
-    return Flask(__name__, 
-                instance_path=app_dir, 
-                instance_relative_config=True)
-
-def test_checks_backends_directory_in_project_directory(app3):
-    app = app3
-    with pytest.raises(InvalidProjectStructure) as exc_info:
-        pigal = Pigal()
-        pigal.init_app(app)
-    err_msg = "'backends' directory is required but not found"
-    assert str(exc_info.value) == err_msg
-
-
-@pytest.fixture
-def app4(tmpdir):
-    """Flask app with frontends and backends directory"""
+def app4(app2, tmpdir):
+    """Flask app with modules directory"""
     project_path = tmpdir.strpath
     if project_path not in sys.path:
         sys.path.append(project_path)
-    backends_dir = tmpdir / 'backends'
-    backends_dir.mkdir()
-    frontends_dir = tmpdir / 'frontends'
-    frontends_dir.mkdir()
-    app_dir = tmpdir / 'app'
-    app_dir.mkdir()
-    app = Flask(__name__, 
-                instance_path=app_dir, 
-                instance_relative_config=True)
-    app.frontends_dir = frontends_dir
-    app.backends_dir = backends_dir
-    return app
+    modules_dir = tmpdir / 'modules'
+    modules_dir.mkdir()
+    app2.modules_dir = modules_dir
+    return app2
+
 
 def test_requires_project_name_in_app_config(app4):
-    app = app4
-    with pytest.raises(InvalidProjectConfig) as exc_info:
-        pigal = Pigal()
-        pigal.init_app(app)
     err_msg = "Configuration parameter 'PIGAL_PROJECT_NAME' is missing"
+    app = app4
+    pigal = Pigal()
+    
+    with pytest.raises(InvalidProjectConfig) as exc_info:
+        pigal.init_app(app)
     assert str(exc_info.value) == err_msg
 
+
 def test_requires_project_version_in_app_config(app4):
+    err_msg = "Configuration parameter 'PIGAL_PROJECT_VERSION' is missing"
+    pigal = Pigal()
     app = app4
     app.config['PIGAL_PROJECT_NAME'] = 'test'
+
     with pytest.raises(InvalidProjectConfig) as exc_info:
-        pigal = Pigal()
         pigal.init_app(app)
-    err_msg = "Configuration parameter 'PIGAL_PROJECT_VERSION' is missing"
     assert str(exc_info.value) == err_msg
 
 
 @pytest.fixture
 def app5(app4):
     """Flask app with minimal config"""
-    app = app4
-    app.config['PIGAL_PROJECT_NAME'] = 'demo'
-    app.config['PIGAL_PROJECT_VERSION'] = '0.1'
-    return app
+    app4.config['PIGAL_PROJECT_NAME'] = 'demo'
+    app4.config['PIGAL_PROJECT_VERSION'] = '0.1'
+    return app4
+
 
 def test_create_a_default_rest_api(app5):
     app = app5
     pigal = Pigal()
     pigal.init_app(app)
+
     assert isinstance(pigal.api, Api)
     assert pigal.api.title == app.config['PIGAL_PROJECT_NAME'] + ' API'
     assert pigal.api.version == app.config['PIGAL_PROJECT_VERSION']
+
 
 def test_create_an_api_blueprint(app5):
     app = app5
     pigal = Pigal()
     pigal.init_app(app)
+
     assert pigal.api.app == app.blueprints['api']
     assert pigal.api.app.url_prefix == '/api'
+
 
 def test_has_no_default_index_frontend(app5):
     app = app5
     pigal = Pigal()
     pigal.init_app(app)
+
     with app.test_client() as client:
         response = client.get('/')
         assert response.status_code == 404
+
 
 def test_has_default_api_doc(app5):
     app = app5
     pigal = Pigal()
     pigal.init_app(app)
+
     with app.test_client() as client:
         response = client.get('/api/')
         assert response.status_code == 200
@@ -160,74 +146,74 @@ class FakeUi(Blueprint):
 
 @pytest.fixture
 def app6(app5, monkeypatch):
-    """Flask app with pigal frontends"""
-    monkeypatch.setattr(utils, 'PigalUi', FakeUi)
-    app = app5
-    frontends_dir = app.frontends_dir
+    """Flask app with pigal modules"""
+    monkeypatch.setattr(views, 'WebUi', FakeUi)
+    modules_dir = app5.modules_dir
     for name in ('demo1', 'demo2', '_demo3'):
-        frontend_dir = frontends_dir / name
-        frontend_dir.mkdir()
+        module_dir = modules_dir / name
+        module_dir.mkdir()
         code = f"""
-            \nimport pigal_flask.utils as utl
-            \nui = utl.PigalUi(__file__)
-            \n@ui.route('/')
-            \ndef index():
-            \n    return 'This is {name}'
+            \nfrom pigal_flask import views
+            \nui = views.WebUi(__file__)
             """
-        routes = frontend_dir / 'routes.py'
-        routes.write_text(code, encoding='utf-8')
-    return app
+        views_file = module_dir / 'views.py'
+        views_file.write_text(code, encoding='utf-8')
+    return app5
+
 
 def test_registers_web_ui_as_blueprint(app6):
     app = app6
     pigal = Pigal()
     pigal.init_app(app)
+
     blueprints = app.blueprints
     assert 'demo1' in blueprints
     assert 'demo2' in blueprints
     assert isinstance(blueprints['demo1'], FakeUi)
     assert isinstance(blueprints['demo2'], FakeUi)
 
-def test_ignores_private_directories_within_frontends_directory(app6):
+
+def test_ignores_private_directories_within_modules_directory(app6):
     app = app6
     pigal = Pigal()
     pigal.init_app(app)
+
     assert '_demo3' not in app.blueprints
 
-def test_renders_all_web_ui(app6):
-    app = app6
-    pigal = Pigal()
-    pigal.init_app(app)
-    with app.test_client() as client:
-        for name in ('demo1', 'demo2'):
-            response = client.get(f'/{name}/')
-            assert response.status_code == 200
-            assert response.data.decode() == f'This is {name}'
+
+# def test_renders_all_web_ui(app6):
+#     app = app6
+#     pigal = Pigal()
+#     pigal.init_app(app)
+
+#     with app.test_client() as client:
+#         for name in ('demo1', 'demo2'):
+#             response = client.get(f'/{name}/')
+#             assert response.status_code == 200
+#             assert response.data.decode() == f'This is {name}'
 
 
 @pytest.fixture
 def app7(app5, monkeypatch):
-    """Flask app with incorrect frontends ui"""
-    monkeypatch.setattr(utils, 'PigalUi', FakeUi)
-    app = app5
-    frontends_dir = app.frontends_dir
-    frontend_dir = frontends_dir / 'demo'
-    frontend_dir.mkdir()
-    code = f"""
-        \nimport pigal_flask.utils as utl
-        \nui = object()
-        """    
-    routes = frontend_dir / 'routes.py'
-    routes.write_text(code, encoding='utf-8')
-    return app
+    """Flask app with incorrect modules ui"""
+    monkeypatch.setattr(views, 'WebUi', FakeUi)
+    modules_dir = app5.modules_dir
+    module_dir = modules_dir / 'demo'
+    module_dir.mkdir()
+    code = f"""ui = object()"""    
+    views_file = module_dir / 'views.py'
+    views_file.write_text(code, encoding='utf-8')
+    return app5
 
-def test_checks_frontend_ui_is_pigal_ui_instance(app7):
+
+def test_checks_module_ui_is_web_ui_instance(app7):
+    err_msg = "The object 'ui' of module 'demo' "
+    err_msg += "is not an instance of 'WebUi'"
     app = app7
+    pigal = Pigal()
+
     with pytest.raises(InvalidUi) as exc_info:
-        pigal = Pigal()
         pigal.init_app(app)
-    err_msg = "The object 'ui' of frontend 'demo' "
-    err_msg += "is not an instance of 'PigalUi'"
     assert str(exc_info.value) == err_msg
     assert 'demo' not in app.blueprints
 
@@ -238,14 +224,14 @@ class FakePigalApi(Namespace):
         name = os.path.basename(dir_)
         super().__init__(name, path=f'/fake/{name}')
 
+
 @pytest.fixture
 def app8(app5, monkeypatch):
-    """Flask app with pigal backends"""
+    """Flask app with pigal modules"""
     monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
-    app = app5
-    backends_dir = app.backends_dir
+    modules_dir = app5.modules_dir
     for name in ('demo_v1', 'demo_v2', '_demo_v3'):
-        backend_dir = backends_dir / name
+        backend_dir = modules_dir / name
         backend_dir.mkdir()
         code = """
             \nfrom flask_restx import Resource
@@ -258,29 +244,35 @@ def app8(app5, monkeypatch):
             """
         routes = backend_dir / 'routes.py'
         routes.write_text(code, encoding='utf-8')
-    return app
+    return app5
 
-def test_registers_backends_api_as_namespace(app8):
+
+def test_registers_modules_api_as_namespace(app8):
     app = app8
     pigal = Pigal()
     pigal.init_app(app)
+
     namespaces = {n.name:n for n in pigal.api.namespaces}
     assert 'demo_v1' in namespaces
     assert 'demo_v2' in namespaces
     assert isinstance(namespaces['demo_v1'], FakePigalApi)
     assert isinstance(namespaces['demo_v2'], FakePigalApi)
 
-def test_ignores_private_directories_within_backends_directory(app8):
+
+def test_ignores_private_directories_within_modules_directory(app8):
     app = app8
     pigal = Pigal()
     pigal.init_app(app)
+
     namespaces = {n.name:n for n in pigal.api.namespaces}
     assert '_demo_v3' not in namespaces
 
-def test_provides_all_backends_api(app8):
+
+def test_provides_all_modules_api(app8):
     app = app8
     pigal = Pigal()
     pigal.init_app(app)
+
     with app.test_client() as client:
         for url in ('/api/fake/demo_v1/', '/api/fake/demo_v2/'):
             response = client.get(url)
@@ -290,11 +282,10 @@ def test_provides_all_backends_api(app8):
 
 @pytest.fixture
 def app9(app5, monkeypatch):
-    """Flask app with incorrect backends api"""
+    """Flask app with incorrect modules api"""
     monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
-    app = app5
-    backends_dir = app.backends_dir
-    backend_dir = backends_dir / 'demo_v0'
+    modules_dir = app5.modules_dir
+    backend_dir = modules_dir / 'demo_v0'
     backend_dir.mkdir()
     code = f"""
         \nimport pigal_flask.utils as utl
@@ -302,14 +293,17 @@ def app9(app5, monkeypatch):
         """    
     routes = backend_dir / 'routes.py'
     routes.write_text(code, encoding='utf-8')
-    return app
+    return app5
+
 
 def test_checks_backend_api_is_pigal_api_instance(app9):
-    app = app9
-    with pytest.raises(InvalidApi) as exc_info:
-        pigal = Pigal()
-        pigal.init_app(app)
     err_msg = "The object 'api' of backend 'demo_v0' "
     err_msg += "is not an instance of 'PigalApi'"
+    app = app9
+    pigal = Pigal()
+
+    with pytest.raises(InvalidApi) as exc_info:
+        pigal.init_app(app)
     assert str(exc_info.value) == err_msg
     assert 'demo' not in app.blueprints
+

@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SAWarning
 
 from . import utils
+from . import views
 from . import exceptions as exc
 
 
@@ -34,7 +35,7 @@ class Pigal:
 
     def _check_project_structure(self, app):
         project_dir = os.path.dirname(app.instance_path)
-        for required_name in ('app', 'frontends', 'backends'):
+        for required_name in ('app', 'modules'):
             required_dir = os.path.join(project_dir, required_name)
             if not os.path.isdir(required_dir):
                 msg = f"'{required_name}' directory is required but not found"
@@ -59,27 +60,27 @@ class Pigal:
     def _register_frontends(self, app):
         app.logger.debug('looking for frontends...')
         project_dir = os.path.dirname(app.instance_path)
-        frontends_dir = os.path.join(project_dir, 'frontends')
+        frontends_dir = os.path.join(project_dir, 'modules')
         if os.path.isdir(frontends_dir):
             for name in os.listdir(frontends_dir):
                 if name.startswith('_'):
                     continue 
                 url_prefix = f'/{name}' 
-                ui_root = f'frontends.{name}'
+                ui_root = f'modules.{name}'
                 self._register_frontend(app, ui_root, url_prefix)
                 
     def _register_frontend(self, app, ui_root, url_prefix):
         try:
-            routes = import_module(f'{ui_root}.routes')
+            routes = import_module(f'{ui_root}.views')
             ui = routes.ui
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
             return False
         
-        if not isinstance(ui, utils.PigalUi):
+        if not isinstance(ui, views.WebUi):
             name = url_prefix[1:]
-            msg = f"The object 'ui' of frontend '{name}' "
-            msg += "is not an instance of 'PigalUi'"
+            msg = f"The object 'ui' of module '{name}' "
+            msg += "is not an instance of 'WebUi'"
             raise exc.InvalidUi(msg)
         
         # menus = import_module(f'{ui_root}.menus')
@@ -91,21 +92,12 @@ class Pigal:
     def _register_backends(self, app):
         app.logger.debug('looking for backends...')
         project_dir = os.path.dirname(app.instance_path)
-        backends_dir = os.path.join(project_dir, 'backends')
+        backends_dir = os.path.join(project_dir, 'modules')
         if os.path.isdir(backends_dir):
             for name in os.listdir(backends_dir):
                 if name.startswith('_'):
                     continue
-                # nameparts = re.findall(_SERVICE_PATTERN, name)
-                # if len(nameparts) != 1:
-                #     app.logger.warning('Ignore folder: '+ name)
-                #     continue
-                # rootname, version = nameparts[0]
-                # rootname = rootname.replace('_', '-')
-                # version = version.replace('_', '.')
-                # url_prefix = f'/{rootname}/{version}'
-                # url_prefix = '/test'
-                backend_root = f'backends.{name}'
+                backend_root = f'modules.{name}'
                 self._register_backend(app, backend_root)
 
     def _register_backend(self, app, backend_root):
