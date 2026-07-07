@@ -36,7 +36,7 @@ In any project, there is two specialized modules:
 
 A **module** represent a domain. It is a ``Flask blueprint`` which provides:
 
-* a **Web UI** made of web pages and provides by ``routers`` to client browser
+* a **Web UI** made of web pages and provides by ``views`` to client browser
 * a **Public API** provides by ``services`` to any other modules within project
 * a **Rest API** provides by ``ressources`` to any external client
 
@@ -127,7 +127,7 @@ API Reference
    :maxdepth: 1
 
    api_commands
-   api_routers
+   api_views
    api_extensions
    api_utils
    api_exceptions
