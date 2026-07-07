@@ -1,5 +1,7 @@
 
 import os
+import re
+from pathlib import Path
 from flask import Blueprint
 from flask.views import View
 
@@ -11,14 +13,14 @@ class WebUi(Blueprint):
     It is automatically detected during app loading. It is required for web routing.
 
     Parameters:
-        views_file: The filepath of related views
+        location: The filepath of related views
 
     """
 
-    def __init__(self, views_file):
+    def __init__(self, location):
         # split path components
         path_components = []
-        current_file = views_file
+        current_file = location
         while current_file != os.path.dirname(current_file):
             path_components.append(os.path.basename(current_file))
             current_file = os.path.dirname(current_file)
@@ -62,7 +64,6 @@ class WebUi(Blueprint):
                     if hasattr(cls, name)
                 ]
 
-            print(cls, rule, options)
             self.add_url_rule(
                 rule,
                 cls.__name__.lower(),
@@ -73,11 +74,33 @@ class WebUi(Blueprint):
         return decorator
     
 
-class FileView(View):
-    """ A File-based routing view for module/domain
+class FileBasedView(View):
+    """ A File-based routing engine for module frontend
 
-    This is View which implement file-based routing for a module Ui.
+    This is python object which implement file-based routing for a module Ui.
     """
 
-    methods = ['GET']
+    @classmethod
+    def scan(cls, location):
+        routes = {}
+        template_dir = Path(location)
+        for file in sorted(template_dir.rglob("*.html")):
+            template = file.relative_to(template_dir).as_posix()
+            route = cls._template_to_route(template)
+            routes[route] = template
+        return routes
+    
+    @classmethod
+    def _template_to_route(cls, template):
+        route = re.sub(r"index\.html", "", template)
+        route = re.sub(r"\.html", "", route)
+        route = re.sub(
+            r"\[([a-zA-Z_][a-zA-Z0-9_]*)\]",
+            r"<\1>",
+            route,
+        )
+        if route.endswith('/'):
+            route = route[:-1]
+        return '/' + route
+
 

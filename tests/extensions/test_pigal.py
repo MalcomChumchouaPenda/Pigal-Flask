@@ -151,16 +151,17 @@ def test_has_default_api_doc(app5):
         assert 'swagger' in response.data.decode()
 
 
-class FakePigalUi(Blueprint):
+class FakeUi(Blueprint):
     def __init__(self, file):
         dir_ = os.path.dirname(file)
         name = os.path.basename(dir_)
-        super().__init__(name, f'frontends.{name}.routes')
+        super().__init__(name, f'modules.{name}.views')
+
 
 @pytest.fixture
 def app6(app5, monkeypatch):
     """Flask app with pigal frontends"""
-    monkeypatch.setattr(utils, 'PigalUi', FakePigalUi)
+    monkeypatch.setattr(utils, 'PigalUi', FakeUi)
     app = app5
     frontends_dir = app.frontends_dir
     for name in ('demo1', 'demo2', '_demo3'):
@@ -177,15 +178,15 @@ def app6(app5, monkeypatch):
         routes.write_text(code, encoding='utf-8')
     return app
 
-def test_registers_frontends_ui_as_blueprint(app6):
+def test_registers_web_ui_as_blueprint(app6):
     app = app6
     pigal = Pigal()
     pigal.init_app(app)
     blueprints = app.blueprints
     assert 'demo1' in blueprints
     assert 'demo2' in blueprints
-    assert isinstance(blueprints['demo1'], FakePigalUi)
-    assert isinstance(blueprints['demo2'], FakePigalUi)
+    assert isinstance(blueprints['demo1'], FakeUi)
+    assert isinstance(blueprints['demo2'], FakeUi)
 
 def test_ignores_private_directories_within_frontends_directory(app6):
     app = app6
@@ -193,7 +194,7 @@ def test_ignores_private_directories_within_frontends_directory(app6):
     pigal.init_app(app)
     assert '_demo3' not in app.blueprints
 
-def test_renders_all_frontends_ui(app6):
+def test_renders_all_web_ui(app6):
     app = app6
     pigal = Pigal()
     pigal.init_app(app)
@@ -207,7 +208,7 @@ def test_renders_all_frontends_ui(app6):
 @pytest.fixture
 def app7(app5, monkeypatch):
     """Flask app with incorrect frontends ui"""
-    monkeypatch.setattr(utils, 'PigalUi', FakePigalUi)
+    monkeypatch.setattr(utils, 'PigalUi', FakeUi)
     app = app5
     frontends_dir = app.frontends_dir
     frontend_dir = frontends_dir / 'demo'
