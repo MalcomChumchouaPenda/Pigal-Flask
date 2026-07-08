@@ -50,12 +50,12 @@ By default, ``home/routes.py`` provides this roles and routes:
 
     from flask import render_template, redirect, url_for
     from flask_login import login_user, logout_user
-    from pigal_flask import PigalUi
+    from pigal_flask import ModuleUi
     from .forms import LoginForm
     from backends.auth.models import User
 
 
-    ui = PigalUi(__file__)
+    ui = ModuleUi(__file__)
 
 
     @ui.route('/')

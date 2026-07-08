@@ -28,40 +28,15 @@ def tablename(cls):
     return f'{key}_{name}'
 
 
-class PigalUi:
+class ModuleUi:
     pass
 
 
-class PigalApi(Namespace):
-
-    def __init__(self, import_file):
-        # split path components
-        path_components = []
-        current_file = import_file
-        while current_file != os.path.dirname(current_file):
-            path_components.append(os.path.basename(current_file))
-            current_file = os.path.dirname(current_file)
-        path_components.append(current_file)
-        path_components.reverse()
-
-        # search root name
-        i = path_components.index('routes.py')
-        root_name = path_components[i-1]
-
-        # search api path
-        base_name, version = root_name.split('_v')
-        print(root_name)
-        super().__init__(root_name, path=f'/{base_name}/v{version}')
-
-    def model(self, name, *args, **kwargs):
-        args = list(args)
-        args.insert(0, f'{self.name}.{name}')
-        return super().model(*args, **kwargs)
 
 
 
 
-# class PigalUi(Blueprint):
+# class ModuleUi(Blueprint):
 #     """
 #     The Extended Flask Blueprint for Pigal Projects frontend
 
@@ -92,7 +67,7 @@ class PigalApi(Namespace):
 #     #     return decorator
 
 
-# class PigalApi(Namespace):
+# class ModuleApi(Namespace):
 #     """
 #     The Extended Flask-Restx Namespace for Pigal Projects backend
 

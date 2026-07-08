@@ -2,11 +2,11 @@
 import pytest
 from flask import Flask, Blueprint
 from flask.views import View, MethodView
-from pigal_flask.views import WebUi
+from pigal_flask import ModuleUi
 
 
 def test_is_flask_blueprint():
-    assert issubclass(WebUi, Blueprint)
+    assert issubclass(ModuleUi, Blueprint)
 
 
 @pytest.mark.parametrize('domain', [
@@ -17,7 +17,7 @@ def test_is_flask_blueprint():
 def test_is_configured_with_its_location(tmpdir, domain):
     test_dir = tmpdir / 'modules' / domain / 'views.py'
     location = test_dir.strpath
-    ui = WebUi(location)
+    ui = ModuleUi(location)
 
     assert ui.import_name == f'modules.{domain}.views'
     assert ui.template_folder == 'pages'
@@ -33,7 +33,7 @@ def test_is_configured_with_its_location(tmpdir, domain):
 def test_generate_name_and_url_prefix(tmpdir, domain, url_prefix):
     test_dir = tmpdir / 'modules' / domain / 'views.py'
     location = test_dir.strpath
-    ui = WebUi(location)  
+    ui = ModuleUi(location)  
 
     assert ui.name == domain
     assert ui.url_prefix == url_prefix
@@ -50,7 +50,7 @@ def app(tmpdir):
 def ui(tmpdir):
     test_dir = tmpdir / 'modules' / 'demo' / 'views.py'
     location = test_dir.strpath
-    return WebUi(location)
+    return ModuleUi(location)
 
 
 @pytest.fixture

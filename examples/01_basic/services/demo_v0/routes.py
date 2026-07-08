@@ -1,9 +1,9 @@
 
 from flask_restx import Resource
-from pigal_flask import PigalApi
+from pigal_flask importModuleApi
 
 
-api = PigalApi(__file__)
+api = ModuleApi(__file__)
 
 @api.route('/hello')
 class HelloApi(Resource):

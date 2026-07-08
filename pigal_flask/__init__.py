@@ -1,6 +1,6 @@
 
 from .extensions import Pigal, PigalDb
-from .utils import PigalApi
+from .__interfaces import ModuleApi, ModuleUi
 
 __version__ = '0.0.1'
 

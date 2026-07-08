@@ -48,9 +48,9 @@ Inside ``routes.py``, a minimal REST API is automatically created:
 .. code-block:: python
 
     from flask_restx import Resource
-    from pigal_flask import PigalApi
+    from pigal_flask importModuleApi
 
-    api = PigalApi(__file__)
+    api =ModuleApi(__file__)
 
     @api.route('/ping')
     class Ping(Resource):
@@ -60,7 +60,7 @@ Inside ``routes.py``, a minimal REST API is automatically created:
 
 This ``routes.py`` provides an ``api`` object :
 
-* which is an extended Flask-Restx Namespace ( :any:`PigalApi` )
+* which is an extended Flask-Restx Namespace ( :any:`Api` )
 * whose id and url_prefix are automatically created
 * which is automatically registered into Flask app
 

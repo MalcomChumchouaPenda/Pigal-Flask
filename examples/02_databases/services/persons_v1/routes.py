@@ -1,10 +1,10 @@
 
 from flask_restx import Resource, fields
-from pigal_flask import PigalApi
+from pigal_flask import ModuleApi
 from .models import db, Person
 
 
-api = PigalApi(__file__)
+api = ModuleApi(__file__)
 
 person_model = api.model('Person', {
     'id': fields.Integer(readonly=True),

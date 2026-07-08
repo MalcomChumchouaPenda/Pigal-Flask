@@ -107,12 +107,12 @@ to provide **CRUD** functionnalities. For example:
 
     from flask import request
     from flask_restx import Resource
-    from pigal_flask import PigalApi
+    from pigal_flask importModuleApi
     from app.extensions import db
     from . import models as mdl
 
 
-    api = PigalApi(__file__)
+    api =ModuleApi(__file__)
 
 
     @api.route('/items')
@@ -152,11 +152,11 @@ Go to ``mydomain`` frontend folder, and edit for example ``routes.py``:
 .. code-block:: python
 
     from flask import render_template
-    from pigal_flask import PigalUi
+    from pigal_flask import ModuleUi
     from backends.mydomain_v1 import models as mdl
 
 
-    ui = PigalUi(__file__)
+    ui = ModuleUi(__file__)
 
 
     @ui.route('/items')

@@ -9,6 +9,7 @@ from flask_restx import Api, Namespace
 
 from pigal_flask import utils
 from pigal_flask import views
+# from pigal_flask import extensions as pkg
 from pigal_flask.extensions import Pigal
 from pigal_flask.exceptions import (
     InvalidUi, 
@@ -157,24 +158,32 @@ def test_has_default_api_doc(app_with_config):
         assert 'swagger' in response.data.decode()
 
 
-class FakeUi(Blueprint):
-    def __init__(self, file):
-        dir_ = os.path.dirname(file)
-        name = os.path.basename(dir_)
-        super().__init__(name, f'modules.{name}.views')
+@pytest.fixture
+def ui_cls(monkeypatch):
+    import pigal_flask as pkg1
+    import pigal_flask.extensions as pkg2
+
+    class FakeUi(Blueprint):
+        def __init__(self, file):
+            dir_ = os.path.dirname(file)
+            name = os.path.basename(dir_)
+            super().__init__(name, f'modules.{name}.views')
+
+    monkeypatch.setattr(pkg1, 'ModuleUi', FakeUi)
+    monkeypatch.setattr(pkg2, 'ModuleUi', FakeUi)
+    return FakeUi
 
 
 VIEWS_CODE = """
-    \nfrom pigal_flask import views
-    \nui = views.WebUi(__file__)
+    \nfrom pigal_flask import ModuleUi
+    \nui = ModuleUi(__file__)
     """
 
 
 @pytest.fixture
-def demos_with_views(full_project_dir, monkeypatch):
-    monkeypatch.setattr(views, 'WebUi', FakeUi)
-    modules_dir = full_project_dir / 'modules'
+def demos_with_views(full_project_dir):
     created = []
+    modules_dir = full_project_dir / 'modules'
     for name in ('demo1', 'demo2', '_demo3'):
         module_dir = modules_dir / name
         module_dir.mkdir()
@@ -185,7 +194,7 @@ def demos_with_views(full_project_dir, monkeypatch):
 
 
 @pytest.mark.usefixtures('demos_with_views')
-def test_registers_web_ui_as_blueprint(app_with_config):
+def test_registers_web_ui_as_blueprint(app_with_config, ui_cls):
     app = app_with_config
     pigal = Pigal()
     pigal.init_app(app)
@@ -193,11 +202,11 @@ def test_registers_web_ui_as_blueprint(app_with_config):
     blueprints = app.blueprints
     assert 'demo1' in blueprints
     assert 'demo2' in blueprints
-    assert isinstance(blueprints['demo1'], FakeUi)
-    assert isinstance(blueprints['demo2'], FakeUi)
+    assert isinstance(blueprints['demo1'], ui_cls)
+    assert isinstance(blueprints['demo2'], ui_cls)
 
 
-@pytest.mark.usefixtures('demos_with_views')
+@pytest.mark.usefixtures('demos_with_views', 'ui_cls')
 def test_ignores_private_dirs_within_modules_dir(app_with_config):
     app = app_with_config
     pigal = Pigal()
@@ -206,8 +215,7 @@ def test_ignores_private_dirs_within_modules_dir(app_with_config):
 
 
 @pytest.fixture
-def demo_with_bad_views(full_project_dir, monkeypatch):
-    monkeypatch.setattr(views, 'WebUi', FakeUi)
+def demo_with_bad_views(full_project_dir):
     module_dir = full_project_dir / 'modules' / 'demo'
     module_dir.mkdir()
     views_file = module_dir / 'views.py'
@@ -215,10 +223,10 @@ def demo_with_bad_views(full_project_dir, monkeypatch):
     return module_dir
 
 
-@pytest.mark.usefixtures('demo_with_bad_views')
+@pytest.mark.usefixtures('demo_with_bad_views', 'ui_cls')
 def test_checks_module_ui_is_web_ui(app_with_config):
     err_msg = "The object 'ui' of modules.demo.views "
-    err_msg += "is not an instance of WebUi"
+    err_msg += "is not an instance of ModuleUi"
     app = app_with_config
     pigal = Pigal()
 
@@ -227,22 +235,31 @@ def test_checks_module_ui_is_web_ui(app_with_config):
     assert str(exc_info.value) == err_msg
 
 
-class FakePigalApi(Namespace):
-    def __init__(self, file):
-        dir_ = os.path.dirname(file)
-        name = os.path.basename(dir_)
-        super().__init__(name, path=f'/{name}')
+
+@pytest.fixture
+def api_cls(monkeypatch):
+    import pigal_flask as pkg1
+    import pigal_flask.extensions as pkg2
+
+    class FakeApi(Namespace):
+        def __init__(self, file):
+            dir_ = os.path.dirname(file)
+            name = os.path.basename(dir_)
+            super().__init__(name, path=f'/{name}')
+
+    monkeypatch.setattr(pkg1, 'ModuleApi', FakeApi)
+    monkeypatch.setattr(pkg2, 'ModuleApi', FakeApi)
+    return FakeApi
 
 
 SERVICES_CODE = '''
-    \nfrom pigal_flask.utils import PigalApi
-    \napi = PigalApi(__file__)
+    \nfrom pigal_flask import ModuleApi
+    \napi = ModuleApi(__file__)
     '''
 
 
 @pytest.fixture
-def demos_with_services(full_project_dir, monkeypatch):
-    monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
+def demos_with_services(full_project_dir):
     modules_dir = full_project_dir / 'modules'
     created = []
     for name in ('demo1', 'demo2', '_demo3'):
@@ -255,7 +272,7 @@ def demos_with_services(full_project_dir, monkeypatch):
 
 
 @pytest.mark.usefixtures('demos_with_services')
-def test_registers_modules_api_as_namespace(app_with_config):
+def test_registers_modules_api_as_namespace(app_with_config, api_cls):
     app = app_with_config
     pigal = Pigal()
     pigal.init_app(app)
@@ -263,11 +280,11 @@ def test_registers_modules_api_as_namespace(app_with_config):
     namespaces = {n.name:n for n in pigal.api.namespaces}
     assert 'demo1' in namespaces
     assert 'demo2' in namespaces
-    assert isinstance(namespaces['demo1'], FakePigalApi)
-    assert isinstance(namespaces['demo2'], FakePigalApi)
+    assert isinstance(namespaces['demo1'], api_cls)
+    assert isinstance(namespaces['demo2'], api_cls)
 
 
-@pytest.mark.usefixtures('demos_with_services')
+@pytest.mark.usefixtures('demos_with_services', 'api_cls')
 def test_ignores_private_dirs_within_modules_dir(app_with_config):
     app = app_with_config
     pigal = Pigal()
@@ -278,8 +295,7 @@ def test_ignores_private_dirs_within_modules_dir(app_with_config):
 
 
 @pytest.fixture
-def demo_with_bad_services(full_project_dir, monkeypatch):
-    monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
+def demo_with_bad_services(full_project_dir):
     module_dir = full_project_dir / 'modules' / 'demo'
     module_dir.mkdir()
     services_file = module_dir / 'services.py'
@@ -287,10 +303,10 @@ def demo_with_bad_services(full_project_dir, monkeypatch):
     return module_dir
 
 
-@pytest.mark.usefixtures('demo_with_bad_services')
+@pytest.mark.usefixtures('demo_with_bad_services', 'api_cls')
 def test_checks_module_api_is_pigal_api_instance(app_with_config):
     err_msg = "The object 'api' of modules.demo.services "
-    err_msg += "is not an instance of PigalApi"
+    err_msg += "is not an instance of ModuleApi"
     app = app_with_config
     pigal = Pigal()
 
@@ -312,8 +328,7 @@ RESOURCES_CODE = """
 
 
 @pytest.fixture
-def demo_with_resources(full_project_dir, monkeypatch):
-    monkeypatch.setattr(utils, 'PigalApi', FakePigalApi)
+def demo_with_resources(full_project_dir):
     module_dir = full_project_dir / 'modules' / 'demo'
     module_dir.mkdir()
     services_file = module_dir / 'services.py'
@@ -323,7 +338,7 @@ def demo_with_resources(full_project_dir, monkeypatch):
     return module_dir
 
 
-@pytest.mark.usefixtures('demo_with_resources')
+@pytest.mark.usefixtures('demo_with_resources', 'api_cls')
 def test_provides_all_modules_api(app_with_config):
     app = app_with_config
     pigal = Pigal()

@@ -7,13 +7,15 @@ import warnings
 import importlib
 
 from flask import Blueprint
-from flask_restx import Api
+from flask_restx import Api 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SAWarning
 
 from . import utils
 from . import views
 from . import exceptions as exc
+from .__interfaces import ModuleUi
+from .__interfaces import ModuleApi
 
 
 class Pigal:
@@ -87,9 +89,10 @@ class Pigal:
         # 
         # check ui parent class
         #  
-        if not isinstance(ui, views.WebUi):
+        if not isinstance(ui, ModuleUi):
+            print(ui, ModuleUi)
             msg = f"The object 'ui' of {root} "
-            msg += "is not an instance of WebUi"
+            msg += "is not an instance of ModuleUi"
             raise exc.InvalidUi(msg)
         
         #
@@ -123,9 +126,9 @@ class Pigal:
         # 
         # check api parent class
         #  
-        if not isinstance(api, utils.PigalApi):
+        if not isinstance(api, ModuleApi):
             msg = f"The object 'api' of {root} "
-            msg += "is not an instance of PigalApi"
+            msg += "is not an instance of ModuleApi"
             raise exc.InvalidApi(msg)
         
         self.api.add_namespace(api)
