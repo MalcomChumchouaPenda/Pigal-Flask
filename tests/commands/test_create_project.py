@@ -42,6 +42,7 @@ def test_create_app_config_file(tmpdir, change_dir):
         code = file.read()
         assert 'class Config:' in code
         assert "    PIGAL_PROJECT_NAME = 'myproj'" in code
+        assert "    PIGAL_PROJECT_VERSION = '0.0'" in code
 
 
 def test_create_app_extensions_file(tmpdir, change_dir):
@@ -52,8 +53,7 @@ def test_create_app_extensions_file(tmpdir, change_dir):
     file_path = os.path.join(tmpdir, 'myproj', 'app', 'extensions.py')
     with open(file_path, 'rt') as file:
         code = file.read()
-        assert 'from pigal_flask import Pigal, PigalDb' in code
-        assert 'db = PigalDb()' in code
+        assert 'from pigal_flask import Pigal' in code
         assert 'pigal = Pigal()' in code
 
 
@@ -66,7 +66,7 @@ def test_create_app_init_file(tmpdir, change_dir):
     with open(file_path, 'rt') as file:
         code = file.read()
         assert 'from flask import Flask' in code
-        assert 'from .extensions import db, pigal' in code
+        assert 'from .extensions import pigal' in code
         assert 'from .config import Config' in code
         assert 'app = Flask(__name__)' in code
         assert 'app.config.from_object(Config)' in code
@@ -84,7 +84,7 @@ def test_create_defaults_modules(tmpdir, change_dir):
     assert os.path.isfile(os.path.join(modules_path, '__init__.py'))
 
 
-def test_create_default_home_module(tmpdir, change_dir):
+def test_create_home_module(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         runner.invoke(create_project, ['myproj'])
@@ -92,14 +92,27 @@ def test_create_default_home_module(tmpdir, change_dir):
     home_path = os.path.join(tmpdir, 'myproj', 'modules', 'home')
     assert os.path.isdir(os.path.join(home_path, 'assets'))
     assert os.path.isdir(os.path.join(home_path, 'pages'))
-    assert os.path.isfile(os.path.join(home_path, 'pages', 'index.jinja'))
+    assert os.path.isfile(os.path.join(home_path, 'pages', 'index.html'))
     assert os.path.isfile(os.path.join(home_path, 'models.py'))
     assert os.path.isfile(os.path.join(home_path, 'resources.py'))
     assert os.path.isfile(os.path.join(home_path, 'views.py'))
     assert os.path.isfile(os.path.join(home_path, 'services.py'))
 
 
-def test_create_default_auth_module(tmpdir, change_dir):
+def test_create_home_views_file(tmpdir, change_dir):
+    runner = CliRunner()
+    with change_dir(tmpdir):
+        runner.invoke(create_project, ['myproj'])
+
+    home_path = os.path.join(tmpdir, 'myproj', 'modules', 'home')
+    file_path = os.path.join(home_path, 'views.py')
+    with open(file_path, 'rt') as file:
+        code = file.read()
+        assert 'from pigal_flask import ModuleUi' in code
+        assert 'ui = ModuleUi(__file__)' in code
+
+
+def test_create_auth_module(tmpdir, change_dir):
     runner = CliRunner()
     with change_dir(tmpdir):
         runner.invoke(create_project, ['myproj'])
@@ -107,7 +120,6 @@ def test_create_default_auth_module(tmpdir, change_dir):
     auth_path = os.path.join(tmpdir, 'myproj', 'modules', 'auth')
     assert os.path.isdir(os.path.join(auth_path, 'assets'))
     assert os.path.isdir(os.path.join(auth_path, 'pages'))
-    assert os.path.isfile(os.path.join(auth_path, 'pages', 'login.jinja'))
     assert os.path.isfile(os.path.join(auth_path, 'models.py'))
     assert os.path.isfile(os.path.join(auth_path, 'resources.py'))
     assert os.path.isfile(os.path.join(auth_path, 'views.py'))

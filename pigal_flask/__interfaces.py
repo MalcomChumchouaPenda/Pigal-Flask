@@ -58,9 +58,11 @@ class ModuleUi(Blueprint):
 
     def scan(self):
         file_based_view = FileBasedView(self.location)
+        print('\ncheck')
         file_based_view.scan()
         view_func = file_based_view.as_view("solve")
         for url in file_based_view.routes:
+            print('\n\tadd rule', url)
             self.add_url_rule(url, view_func=view_func)
         self.file_based_view = file_based_view
 

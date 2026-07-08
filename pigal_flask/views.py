@@ -19,8 +19,11 @@ class FileBasedView(View):
 
     def scan(self):
         routes = {}
-        template_dir = Path(self.location)
+        dirname = os.path.dirname(self.location)
+        pagesdir = os.path.join(dirname, 'pages')
+        template_dir = Path(pagesdir)
         for file in sorted(template_dir.rglob("*.html")):
+            print('\ntchecking', file)
             template = file.relative_to(template_dir).as_posix()
             route = self._template_to_route(template)
             routes[route] = template
