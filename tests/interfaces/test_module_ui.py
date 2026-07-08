@@ -54,6 +54,43 @@ def ui(tmpdir):
 
 
 @pytest.fixture
+def view_func(ui):
+    @ui.route("/hello")
+    def hello():
+        return "Hello World"
+    return hello
+
+
+@pytest.mark.usefixtures('view_func')
+def test_register_rules_for_simple_view_function(app, ui):
+    app.register_blueprint(ui)
+    rules = app.url_map.iter_rules()
+    rules = {r.rule:r for r in rules}
+
+    assert "/demo/hello" in rules
+    assert 'GET' in rules["/demo/hello"].methods
+
+    
+@pytest.fixture
+def view_func_with_methods(ui):
+    @ui.route("/hello", methods=['GET', 'POST'])
+    def hello():
+        return "Hello World"
+    return hello
+
+
+@pytest.mark.usefixtures('view_func_with_methods')
+def test_register_rules_for_class_based_view(app, ui):
+    app.register_blueprint(ui)
+    rules = app.url_map.iter_rules()
+    rules = {r.rule:r for r in rules}
+
+    assert "/demo/hello" in rules
+    assert 'GET' in rules["/demo/hello"].methods
+    assert 'POST' in rules["/demo/hello"].methods
+
+
+@pytest.fixture
 def view_cls(ui):
     @ui.route("/hello")
     class Demo(View):

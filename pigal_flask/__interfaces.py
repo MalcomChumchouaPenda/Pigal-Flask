@@ -1,5 +1,6 @@
 
 import os
+import inspect
 from flask import Blueprint
 from flask_restx import Namespace
 
@@ -52,25 +53,36 @@ class ModuleUi(Blueprint):
         
 
     def route(self, rule, **options):
-        def decorator(cls):
-            if hasattr(cls, 'methods'):
-                methods = cls.methods
+        def decorator(wrapped):
+            if inspect.isclass(wrapped):
+                self._wrap_view_cls(wrapped, rule, options)
             else:
-                methods = [
-                    name.upper()
-                    for name in ("get", "post", "put", "patch", "delete")
-                    if hasattr(cls, name)
-                ]
-
-            self.add_url_rule(
-                rule,
-                cls.__name__.lower(),
-                cls.as_view(cls.__name__.lower()),
-                methods=methods
-            )
-            return cls
+                self._wrap_view_func(wrapped, rule, options)
+            return wrapped
         return decorator
     
+
+    def _list_methods(self, view_cls):
+        if hasattr(view_cls, 'methods'):
+            return view_cls.methods
+        return [
+            name.upper()
+            for name in ("get", "post", "put", "patch", "delete")
+            if hasattr(view_cls, name)
+        ]
+
+
+    def _wrap_view_cls(self, view_cls, rule, options):
+        methods = self._list_methods(view_cls)
+        options['methods'] = methods
+        view_name = view_cls.__name__.lower()
+        view_func = view_cls.as_view(view_name)
+        self.add_url_rule(rule, view_name, view_func, **options)
+
+
+    def _wrap_view_func(self, view_func, rule, options):
+        self.add_url_rule(rule, view_func=view_func, **options)
+
     
 class ModuleApi(Namespace):
 
