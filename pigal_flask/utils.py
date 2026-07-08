@@ -50,6 +50,7 @@ class PigalApi(Namespace):
 
         # search api path
         base_name, version = root_name.split('_v')
+        print(root_name)
         super().__init__(root_name, path=f'/{base_name}/v{version}')
 
     def model(self, name, *args, **kwargs):

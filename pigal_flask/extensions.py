@@ -4,7 +4,7 @@ import re
 import sys
 import inspect
 import warnings
-from importlib import import_module
+import importlib
 
 from flask import Blueprint
 from flask_restx import Api
@@ -29,8 +29,7 @@ class Pigal:
         self._check_project_structure(app)
         self._check_project_config(app)
         self._setup_api(app)
-        self._register_frontends(app)
-        self._register_backends(app)
+        self._register_modules(app)
 
 
     def _check_project_structure(self, app):
@@ -56,67 +55,93 @@ class Pigal:
         app.register_blueprint(api_bp)
         self.api = api
 
-        
-    def _register_frontends(self, app):
-        app.logger.debug('looking for frontends...')
+    def _register_modules(self, app):
+        app.logger.debug('looking for modules...')
         project_dir = os.path.dirname(app.instance_path)
-        frontends_dir = os.path.join(project_dir, 'modules')
-        if os.path.isdir(frontends_dir):
-            for name in os.listdir(frontends_dir):
+        modules_dir = os.path.join(project_dir, 'modules')
+        if os.path.isdir(modules_dir):
+            for name in os.listdir(modules_dir):
                 if name.startswith('_'):
                     continue 
-                url_prefix = f'/{name}' 
-                ui_root = f'modules.{name}'
-                self._register_frontend(app, ui_root, url_prefix)
+                self._register_ui(app, name)
+                self._register_api(app, name)
+                self._register_rst(app, name)
+
                 
-    def _register_frontend(self, app, ui_root, url_prefix):
+    def _register_ui(self, app, name):
         try:
-            routes = import_module(f'{ui_root}.views')
-            ui = routes.ui
+            root = f'modules.{name}.views'
+            module = importlib.import_module(root)
+            ui = module.ui
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
-            return False
+            return
         
+        # 
+        # check ui module
+        #
+        module_path = os.path.abspath(module.__file__)
+        if not os.path.isfile(module_path):
+            return
+            
+        # 
+        # check ui parent class
+        #  
         if not isinstance(ui, views.WebUi):
-            name = url_prefix[1:]
-            msg = f"The object 'ui' of module '{name}' "
-            msg += "is not an instance of 'WebUi'"
+            msg = f"The object 'ui' of {root} "
+            msg += "is not an instance of WebUi"
             raise exc.InvalidUi(msg)
         
+        #
+        # register ui blueprint
         # menus = import_module(f'{ui_root}.menus')
-        app.register_blueprint(routes.ui, url_prefix=url_prefix)
-        app.logger.info(f'Register frontend: {ui_root} => {url_prefix}')
+        url_prefix=f'/{name}'
+        app.register_blueprint(ui, url_prefix=url_prefix)
+        app.logger.info(f'Register ui: {root} => {url_prefix}')
         return True
+    
 
-
-    def _register_backends(self, app):
-        app.logger.debug('looking for backends...')
-        project_dir = os.path.dirname(app.instance_path)
-        backends_dir = os.path.join(project_dir, 'modules')
-        if os.path.isdir(backends_dir):
-            for name in os.listdir(backends_dir):
-                if name.startswith('_'):
-                    continue
-                backend_root = f'modules.{name}'
-                self._register_backend(app, backend_root)
-
-    def _register_backend(self, app, backend_root):
+    def _register_api(self, app, name):
+        #
+        # load api
+        #
         try:
-            routes = import_module(f'{backend_root}.routes')
-            api = routes.api
+            root = f'modules.{name}.services'
+            module = importlib.import_module(root)
+            api = module.api
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
             return False
 
+        # 
+        # check api module
+        #
+        module_path = os.path.abspath(module.__file__)
+        if not os.path.isfile(module_path):
+            return
+        
+        # 
+        # check api parent class
+        #  
         if not isinstance(api, utils.PigalApi):
-            _ , name = backend_root.split('.')
-            msg = f"The object 'api' of backend '{name}' "
-            msg += "is not an instance of 'PigalApi'"
+            msg = f"The object 'api' of {root} "
+            msg += "is not an instance of PigalApi"
             raise exc.InvalidApi(msg)
         
         self.api.add_namespace(api)
-        app.logger.info(f'Register backend: {backend_root} => {api.path}')
+        app.logger.info(f'Register api: {root} => {api.path}')
         return True
+
+
+    def _register_rst(self, app, name):
+        root = f'modules.{name}.resources'
+        try:
+            _ = importlib.import_module(root)
+        except ModuleNotFoundError as e:
+            app.logger.warning(e)
+            return False
+
+    
 
 warnings.filterwarnings(
     'ignore',                            # Action: Ignore the warning
@@ -176,7 +201,7 @@ class PigalDb(SQLAlchemy):
                 modelspath = os.path.join(backends_dir, name, 'models.py')
                 if not os.path.isfile(modelspath):
                     continue
-                _ = import_module(f'backends.{name}.models') # important to load metada
+                _ = importlib.import_module(f'backends.{name}.models') # important to load metada
 
                 # create binds for sqlalchemy
                 uri_args['backend_id'] = name
@@ -186,17 +211,5 @@ class PigalDb(SQLAlchemy):
                 app.logger.debug(f'Prepare database: {name} => {min_uri}')
         
         # store models binds
-        app.config['SQLALCHEMY_BINDS'] = bind_keys
-
-
-# class PigalDb(SQLAlchemy):
-#     """The Extended Db for Pigal Projects backend"""
-
-
-#     def init_app(self, app):
-#         self._prepare_db(app)
-#         return super().init_app(app)
-    
-    
-    
+        app.config['SQLALCHEMY_BINDS'] = bind_keys    
 

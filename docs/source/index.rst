@@ -38,7 +38,7 @@ A **module** represent a domain. It is a ``Flask blueprint`` which provides:
 
 * a **Web UI** made of web pages and provides by ``views`` to client browser
 * a **Public API** provides by ``services`` to any other modules within project
-* a **Rest API** provides by ``ressources`` to any external client
+* a **Rest API** provides by ``resources`` to any external client
 
 .. image:: ../diagrams/pigal_module_structure.drawio.svg
 

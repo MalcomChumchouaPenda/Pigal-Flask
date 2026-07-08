@@ -94,7 +94,7 @@ def test_create_default_home_module(tmpdir, change_dir):
     assert os.path.isdir(os.path.join(home_path, 'pages'))
     assert os.path.isfile(os.path.join(home_path, 'pages', 'index.jinja'))
     assert os.path.isfile(os.path.join(home_path, 'models.py'))
-    assert os.path.isfile(os.path.join(home_path, 'ressources.py'))
+    assert os.path.isfile(os.path.join(home_path, 'resources.py'))
     assert os.path.isfile(os.path.join(home_path, 'views.py'))
     assert os.path.isfile(os.path.join(home_path, 'services.py'))
 
@@ -109,7 +109,7 @@ def test_create_default_auth_module(tmpdir, change_dir):
     assert os.path.isdir(os.path.join(auth_path, 'pages'))
     assert os.path.isfile(os.path.join(auth_path, 'pages', 'login.jinja'))
     assert os.path.isfile(os.path.join(auth_path, 'models.py'))
-    assert os.path.isfile(os.path.join(auth_path, 'ressources.py'))
+    assert os.path.isfile(os.path.join(auth_path, 'resources.py'))
     assert os.path.isfile(os.path.join(auth_path, 'views.py'))
     assert os.path.isfile(os.path.join(auth_path, 'services.py'))
 
