@@ -3,6 +3,7 @@ import os
 import inspect
 from flask import Blueprint
 from flask_restx import Namespace
+from .views import FileBasedView
 
 
 class ModuleUi(Blueprint):
@@ -17,6 +18,9 @@ class ModuleUi(Blueprint):
     """
 
     def __init__(self, location):
+        self.location = location
+        self.file_based_view = None
+
         # split path components
         path_components = []
         current_file = location
@@ -50,7 +54,16 @@ class ModuleUi(Blueprint):
                          template_folder='pages', 
                          static_folder=static_url_path,
                          static_url_path=static_url_path)
-        
+    
+
+    def scan(self):
+        file_based_view = FileBasedView(self.location)
+        file_based_view.scan()
+        view_func = file_based_view.as_view("solve")
+        for url in file_based_view.routes:
+            self.add_url_rule(url, view_func=view_func)
+        self.file_based_view = file_based_view
+
 
     def route(self, rule, **options):
         def decorator(wrapped):

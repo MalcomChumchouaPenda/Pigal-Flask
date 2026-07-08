@@ -2,14 +2,12 @@
 import os
 import sys
 import shutil
+from unittest.mock import MagicMock
 
 import pytest
 from flask import Flask, Blueprint
 from flask_restx import Api, Namespace
 
-from pigal_flask import utils
-from pigal_flask import views
-# from pigal_flask import extensions as pkg
 from pigal_flask.extensions import Pigal
 from pigal_flask.exceptions import (
     InvalidUi, 
@@ -168,6 +166,7 @@ def ui_cls(monkeypatch):
             dir_ = os.path.dirname(file)
             name = os.path.basename(dir_)
             super().__init__(name, f'modules.{name}.views')
+            self.scan = MagicMock()
 
     monkeypatch.setattr(pkg1, 'ModuleUi', FakeUi)
     monkeypatch.setattr(pkg2, 'ModuleUi', FakeUi)
@@ -184,7 +183,7 @@ VIEWS_CODE = """
 def demos_with_views(full_project_dir):
     created = []
     modules_dir = full_project_dir / 'modules'
-    for name in ('demo1', 'demo2', '_demo3'):
+    for name in ('demo1', 'demo2'):
         module_dir = modules_dir / name
         module_dir.mkdir()
         views_file = module_dir / 'views.py'
@@ -193,8 +192,19 @@ def demos_with_views(full_project_dir):
     return created
 
 
+@pytest.mark.usefixtures('demos_with_views', 'ui_cls')
+def test_scan_routes_using_module_ui(app_with_config):
+    app = app_with_config
+    pigal = Pigal()
+    pigal.init_app(app)
+
+    blueprints = app.blueprints
+    blueprints['demo1'].scan.assert_called_once()
+    blueprints['demo2'].scan.assert_called_once()
+
+
 @pytest.mark.usefixtures('demos_with_views')
-def test_registers_web_ui_as_blueprint(app_with_config, ui_cls):
+def test_registers_ui_as_blueprint(app_with_config, ui_cls):
     app = app_with_config
     pigal = Pigal()
     pigal.init_app(app)
@@ -206,12 +216,26 @@ def test_registers_web_ui_as_blueprint(app_with_config, ui_cls):
     assert isinstance(blueprints['demo2'], ui_cls)
 
 
-@pytest.mark.usefixtures('demos_with_views', 'ui_cls')
+@pytest.fixture
+def demos_with_private_views(full_project_dir):
+    created = []
+    modules_dir = full_project_dir / 'modules'
+    for name in ('_demo1', '_demo2'):
+        module_dir = modules_dir / name
+        module_dir.mkdir()
+        views_file = module_dir / 'views.py'
+        views_file.write_text(VIEWS_CODE, encoding='utf-8')
+        created.append(module_dir)
+    return created
+
+
+@pytest.mark.usefixtures('demos_with_private_views', 'ui_cls')
 def test_ignores_private_dirs_within_modules_dir(app_with_config):
     app = app_with_config
     pigal = Pigal()
     pigal.init_app(app)
-    assert '_demo3' not in app.blueprints
+    assert '_demo1' not in app.blueprints
+    assert '_demo2' not in app.blueprints
 
 
 @pytest.fixture
@@ -224,7 +248,7 @@ def demo_with_bad_views(full_project_dir):
 
 
 @pytest.mark.usefixtures('demo_with_bad_views', 'ui_cls')
-def test_checks_module_ui_is_web_ui(app_with_config):
+def test_checks_views_ui_is_module_ui(app_with_config):
     err_msg = "The object 'ui' of modules.demo.views "
     err_msg += "is not an instance of ModuleUi"
     app = app_with_config
@@ -233,7 +257,6 @@ def test_checks_module_ui_is_web_ui(app_with_config):
     with pytest.raises(InvalidUi) as exc_info:
         pigal.init_app(app)
     assert str(exc_info.value) == err_msg
-
 
 
 @pytest.fixture
@@ -304,7 +327,7 @@ def demo_with_bad_services(full_project_dir):
 
 
 @pytest.mark.usefixtures('demo_with_bad_services', 'api_cls')
-def test_checks_module_api_is_pigal_api_instance(app_with_config):
+def test_checks_services_api_is_module_api(app_with_config):
     err_msg = "The object 'api' of modules.demo.services "
     err_msg += "is not an instance of ModuleApi"
     app = app_with_config

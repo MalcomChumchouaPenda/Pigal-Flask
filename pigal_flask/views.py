@@ -12,14 +12,19 @@ class FileBasedView(View):
     This is python object which implement file-based routing for a module ModuleUi.
     """
 
-    @classmethod
-    def scan(cls, location):
+    def __init__(self, location):
+        super().__init__()
+        self.location = location
+        self.routes = {}
+
+    def scan(self):
         routes = {}
-        template_dir = Path(location)
+        template_dir = Path(self.location)
         for file in sorted(template_dir.rglob("*.html")):
             template = file.relative_to(template_dir).as_posix()
-            route = cls._template_to_route(template)
+            route = self._template_to_route(template)
             routes[route] = template
+        self.routes = routes
         return routes
     
     @classmethod

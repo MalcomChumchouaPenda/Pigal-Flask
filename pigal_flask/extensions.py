@@ -78,7 +78,7 @@ class Pigal:
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
             return
-        
+                
         # 
         # check ui module
         #
@@ -90,14 +90,15 @@ class Pigal:
         # check ui parent class
         #  
         if not isinstance(ui, ModuleUi):
-            print(ui, ModuleUi)
             msg = f"The object 'ui' of {root} "
             msg += "is not an instance of ModuleUi"
             raise exc.InvalidUi(msg)
         
         #
-        # register ui blueprint
-        # menus = import_module(f'{ui_root}.menus')
+        # file-based routing
+        # ui blueprint registering
+        # 
+        ui.scan()
         url_prefix=f'/{name}'
         app.register_blueprint(ui, url_prefix=url_prefix)
         app.logger.info(f'Register ui: {root} => {url_prefix}')
