@@ -14,8 +14,8 @@ from sqlalchemy.exc import SAWarning
 from . import utils
 from . import views
 from . import exceptions as exc
-from .__interfaces import ModuleUi
-from .__interfaces import ModuleApi
+from ._interfaces import ModuleUi
+from ._interfaces import ModuleApi
 
 
 class Pigal:
