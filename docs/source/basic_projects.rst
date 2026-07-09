@@ -1,5 +1,4 @@
 
-
 Creating projects
 =================
 
@@ -9,7 +8,6 @@ To create a project ``MyProject`` use ``create-project`` command:
 .. code-block:: bash
 
     pigal create-project MyProject
-
 
 
 Project structure
@@ -40,8 +38,6 @@ This will create a project with the following structure:
     * ``modules/auth`` (to customize it see ...)
     * ``modules/home`` (to customize it see ...)
     * ``themes/default`` (to customize it see ...)
-
-    
 
 
 Running project
