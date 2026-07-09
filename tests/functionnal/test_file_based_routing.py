@@ -104,3 +104,19 @@ def test_route_nested_index_page(pages_dir, app, ui):
     assert response.status_code == 200
     assert response.data == b'<div>A Blog</div>'
 
+
+def test_route_dynamic_page(pages_dir, app, ui):
+    page_html = '<div>A Blog {{ id }}</div>'
+    blog_dir = pages_dir / 'blog'
+    blog_dir.mkdir()
+    page_file = blog_dir / '[id].html'
+    page_file.write_text(page_html, encoding='utf-8')
+
+    ui.scan_pages()
+    app.register_blueprint(ui, url_prefix='/demo')
+    client = app.test_client()
+    response = client.get("/demo/blog/12")
+
+    assert response.status_code == 200
+    assert response.data == b'<div>A Blog 12</div>'
+
