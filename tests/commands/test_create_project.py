@@ -90,7 +90,7 @@ def test_create_home_module(tmpdir, change_dir):
         runner.invoke(create_project, ['myproj'])
 
     home_path = os.path.join(tmpdir, 'myproj', 'modules', 'home')
-    assert os.path.isdir(os.path.join(home_path, 'assets'))
+    assert os.path.isdir(os.path.join(home_path, 'static'))
     assert os.path.isdir(os.path.join(home_path, 'pages'))
     assert os.path.isfile(os.path.join(home_path, 'pages', 'index.html'))
     assert os.path.isfile(os.path.join(home_path, 'models.py'))
@@ -118,7 +118,7 @@ def test_create_auth_module(tmpdir, change_dir):
         runner.invoke(create_project, ['myproj'])
 
     auth_path = os.path.join(tmpdir, 'myproj', 'modules', 'auth')
-    assert os.path.isdir(os.path.join(auth_path, 'assets'))
+    assert os.path.isdir(os.path.join(auth_path, 'static'))
     assert os.path.isdir(os.path.join(auth_path, 'pages'))
     assert os.path.isfile(os.path.join(auth_path, 'models.py'))
     assert os.path.isfile(os.path.join(auth_path, 'resources.py'))
@@ -132,7 +132,7 @@ def test_create_default_theme(tmpdir, change_dir):
         runner.invoke(create_project, ['myproj'])
 
     theme_path = os.path.join(tmpdir, 'myproj', 'themes', 'default')
-    assert os.path.isdir(os.path.join(theme_path, 'assets'))
+    assert os.path.isdir(os.path.join(theme_path, 'static'))
     assert os.path.isdir(os.path.join(theme_path, 'layouts'))
     assert os.path.isfile(os.path.join(theme_path, 'layouts', 'page.jinja'))
     assert os.path.isfile(os.path.join(theme_path, 'components.jinja'))

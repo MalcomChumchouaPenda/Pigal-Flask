@@ -28,7 +28,7 @@ class ModuleUi(Blueprint):
             name, 
             import_name,
             template_folder='pages',
-            static_folder='assets'
+            static_folder='static'
         )
         
     def _generate_name(self, import_name):
@@ -55,8 +55,9 @@ class ModuleUi(Blueprint):
 
     
     def scan_pages(self):
-        static_dir = self.static_folder
-        pages_dir = Path(static_dir.replace('assets', 'pages'))
+        root_dir = os.path.dirname(self.static_folder)
+        pages_dir = Path(os.path.join(root_dir, 'pages'))
+        print(pages_dir)
         for file in sorted(pages_dir.rglob("*.html")):
             template = file.relative_to(pages_dir).as_posix()
             rule = self._template_to_rule(template)

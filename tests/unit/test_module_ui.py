@@ -51,8 +51,8 @@ def test_has_generated_template_folder(demo_name):
 
 def test_has_generated_static_paths(demo_name, modules_dir):
     ui = ModuleUi(demo_name)
-    assert ui.static_url_path == '/assets'
-    assert ui.static_folder == os.path.join(modules_dir, 'demo', 'assets')
+    assert ui.static_url_path == '/static'
+    assert ui.static_folder == os.path.join(modules_dir, 'demo', 'static')
 
 
 @pytest.fixture

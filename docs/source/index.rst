@@ -45,7 +45,7 @@ A **module** represent a domain. It is a ``Flask blueprint`` which provides:
 A module contains also:
 
 * ``pages`` which contains jinja templates
-* ``assets`` which contains static files
+* ``static`` which contains static files
 * ``models`` which contains databases models and entities
 
 Module pages use the global **theme** provided by app for their design:
@@ -56,7 +56,7 @@ A theme provides:
 
 * **layouts** of pages as Jinja templates
 * **components** of pages as Jinja macros
-* **assets** for page styling with static files (imgs, csv, ...)
+* **static** for page styling with static files (imgs, csv, ...)
 
 
 With this architecture, *Pigal-Flask* aims to provide the following benefits:

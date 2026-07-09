@@ -51,6 +51,7 @@ def test_route_static_page(pages_dir, app, ui):
 
     ui.scan_pages()
     app.register_blueprint(ui, url_prefix='/demo')
+    print([rule.rule for rule in app.url_map.iter_rules()])
     client = app.test_client()
     response = client.get("/demo/hello")
 
