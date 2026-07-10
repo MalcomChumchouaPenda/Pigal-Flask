@@ -25,9 +25,9 @@ def demo_dir(tmp_path, monkeypatch):
 
 @pytest.fixture
 def demo_name(demo_dir):
-    views_file = demo_dir / "views.py"
-    views_file.touch()
-    import_name = 'modules.demo.views'
+    routes_file = demo_dir / "pages/routes.py"
+    routes_file.touch()
+    import_name = 'modules.demo.pages.routes'
     yield import_name
     sys.modules.pop(import_name, None)
 
@@ -35,7 +35,8 @@ def demo_name(demo_dir):
 @pytest.fixture
 def pages_dir(demo_dir):
     pages_dir = demo_dir / 'pages'
-    pages_dir.mkdir()
+    contents_dir = pages_dir / 'demo'
+    contents_dir.mkdir(parents=True)
     return pages_dir
 
 
@@ -46,7 +47,7 @@ def ui(demo_name):
 
 def test_route_static_page(pages_dir, app, ui):
     page_html = '<div>Hello World</div>'
-    page_file = pages_dir / 'hello.html'
+    page_file = pages_dir / 'demo/hello.html'
     page_file.write_text(page_html, encoding='utf-8')
 
     ui.scan_pages()
@@ -62,7 +63,7 @@ def test_route_static_page(pages_dir, app, ui):
 @pytest.mark.parametrize('url', ['/demo', '/demo/'])
 def test_route_index_page(pages_dir, app, ui, url):
     page_html = '<div>Home</div>'
-    page_file = pages_dir / 'index.html'
+    page_file = pages_dir / 'demo/index.html'
     page_file.write_text(page_html, encoding='utf-8')
 
     ui.scan_pages()
@@ -76,7 +77,7 @@ def test_route_index_page(pages_dir, app, ui, url):
 
 def test_route_nested_static_page(pages_dir, app, ui):
     page_html = '<div>Any Post</div>'
-    blog_dir = pages_dir / 'blog'
+    blog_dir = pages_dir / 'demo/blog'
     blog_dir.mkdir()
     page_file = blog_dir / 'post.html'
     page_file.write_text(page_html, encoding='utf-8')
@@ -92,7 +93,7 @@ def test_route_nested_static_page(pages_dir, app, ui):
 
 def test_route_nested_index_page(pages_dir, app, ui):
     page_html = '<div>A Blog</div>'
-    blog_dir = pages_dir / 'blog'
+    blog_dir = pages_dir / 'demo/blog'
     blog_dir.mkdir()
     page_file = blog_dir / 'index.html'
     page_file.write_text(page_html, encoding='utf-8')
@@ -108,7 +109,7 @@ def test_route_nested_index_page(pages_dir, app, ui):
 
 def test_route_dynamic_page(pages_dir, app, ui):
     page_html = '<div>A Blog {{ id }}</div>'
-    blog_dir = pages_dir / 'blog'
+    blog_dir = pages_dir / 'demo/blog'
     blog_dir.mkdir()
     page_file = blog_dir / '[id].html'
     page_file.write_text(page_html, encoding='utf-8')

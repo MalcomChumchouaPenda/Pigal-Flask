@@ -73,7 +73,7 @@ def test_create_app_init_file(tmp_path, change_dir):
         assert 'pigal.init_app(app)' in code
 
 
-def test_create_defaults_modules(tmp_path, change_dir):
+def test_create_default_modules(tmp_path, change_dir):
     runner = CliRunner()
     with change_dir(tmp_path):
         runner.invoke(create_project, ['myproj'])
@@ -89,49 +89,41 @@ def test_create_home_module(tmp_path, change_dir):
         runner.invoke(create_project, ['myproj'])
 
     home_dir = tmp_path / 'myproj/modules/home'
-    assert os.path.isdir(str(home_dir / 'static'))
     assert os.path.isdir(str(home_dir / 'pages'))
-    assert os.path.isfile(str(home_dir / 'pages/index.html'))
-    assert os.path.isfile(str(home_dir / 'models.py'))
-    assert os.path.isfile(str(home_dir / 'resources.py'))
-    assert os.path.isfile(str(home_dir / 'services.py'))
-    assert os.path.isfile(str(home_dir / 'views.py'))
+    assert os.path.isdir(str(home_dir / 'services'))
+    assert os.path.isdir(str(home_dir / 'static'))
+    
 
-
-def test_create_home_module(tmp_path, change_dir):
+def test_create_home_pages(tmp_path, change_dir):
     runner = CliRunner()
     with change_dir(tmp_path):
         runner.invoke(create_project, ['myproj'])
 
     home_dir = tmp_path / 'myproj/modules/home'
-    assert os.path.isdir(str(home_dir / 'pages'))
-    assert os.path.isdir(str(home_dir / 'static'))
-    assert os.path.isfile(str(home_dir / 'models.py'))
-    assert os.path.isfile(str(home_dir / 'resources.py'))
-    assert os.path.isfile(str(home_dir / 'services.py'))
-    assert os.path.isfile(str(home_dir / 'views.py'))
+    assert os.path.isfile(str(home_dir / 'pages/home/index.html'))
+    assert os.path.isfile(str(home_dir / 'pages/routes.py'))
 
     
-def test_create_home_views_file(tmp_path, change_dir):
+def test_create_home_pages_routes(tmp_path, change_dir):
     runner = CliRunner()
     with change_dir(tmp_path):
         runner.invoke(create_project, ['myproj'])
 
     home_dir = tmp_path / 'myproj/modules/home'
-    file_name = home_dir / 'views.py'
+    file_name = home_dir / 'pages/routes.py'
     with open(file_name, 'rt') as file:
         code = file.read()
         assert 'from pigal_flask import ModuleUi' in code
         assert 'ui = ModuleUi(__name__)' in code
 
 
-def test_create_home_index_file(tmp_path, change_dir):
+def test_create_home_pages_index(tmp_path, change_dir):
     runner = CliRunner()
     with change_dir(tmp_path):
         runner.invoke(create_project, ['myproj'])
 
     home_dir = tmp_path / 'myproj/modules/home'
-    file_name = home_dir / 'pages/index.html'
+    file_name = home_dir / 'pages/home/index.html'
     with open(file_name, 'rt') as file:
         code = file.read()
         assert '<h1>Welcome in <b>myproj</b> project</h1>' in code
@@ -144,20 +136,27 @@ def test_create_auth_module(tmp_path, change_dir):
 
     auth_dir = tmp_path / 'myproj/modules/auth'
     assert os.path.isdir(str(auth_dir / 'pages'))
+    assert os.path.isdir(str(auth_dir / 'services'))
     assert os.path.isdir(str(auth_dir / 'static'))
-    assert os.path.isfile(str(auth_dir / 'models.py'))
-    assert os.path.isfile(str(auth_dir / 'resources.py'))
-    assert os.path.isfile(str(auth_dir / 'services.py'))
-    assert os.path.isfile(str(auth_dir / 'views.py'))
+
+
+def test_create_auth_pages(tmp_path, change_dir):
+    runner = CliRunner()
+    with change_dir(tmp_path):
+        runner.invoke(create_project, ['myproj'])
+
+    auth_dir = tmp_path / 'myproj/modules/auth'
+    assert os.path.isfile(str(auth_dir / 'pages/auth/login.html'))
+    assert os.path.isfile(str(auth_dir / 'pages/routes.py'))
 
     
-def test_create_auth_views_file(tmp_path, change_dir):
+def test_create_auth_pages_routes(tmp_path, change_dir):
     runner = CliRunner()
     with change_dir(tmp_path):
         runner.invoke(create_project, ['myproj'])
 
     home_dir = tmp_path / 'myproj/modules/auth'
-    file_name = home_dir / 'views.py'
+    file_name = home_dir / 'pages/routes.py'
     with open(file_name, 'rt') as file:
         code = file.read()
         assert 'from pigal_flask import ModuleUi' in code
@@ -173,4 +172,4 @@ def test_create_default_theme(tmp_path, change_dir):
     assert os.path.isdir(str(theme_dir / 'static'))
     assert os.path.isdir(str(theme_dir / 'layouts'))
     assert os.path.isfile(str(theme_dir / 'layouts/page.jinja'))
-    assert os.path.isfile(str(theme_dir / 'components.jinja'))
+    assert os.path.isfile(str(theme_dir / 'macros.jinja'))

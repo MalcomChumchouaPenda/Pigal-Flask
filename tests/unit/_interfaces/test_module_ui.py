@@ -24,41 +24,49 @@ def demo_dir(modules_dir):
     demo_dir = modules_dir / 'demo'
     demo_dir.mkdir(parents=True)
     return demo_dir
+
+
+@pytest.fixture
+def pages_dir(demo_dir):
+    pages_dir = demo_dir / 'pages'
+    pages_dir.mkdir(parents=True)
+    return pages_dir
+
     
 @pytest.fixture
-def demo_name(demo_dir):
-    views_file = demo_dir / "views.py"
+def import_name(pages_dir):
+    views_file = pages_dir / "routes.py"
     views_file.touch()
-    import_name = 'modules.demo.views'
+    import_name = 'modules.demo.pages.routes'
     yield import_name
     sys.modules.pop(import_name, None)
     
 
-def test_is_configured_with_import_name(demo_name):
-    ui = ModuleUi(demo_name)
-    assert ui.import_name == demo_name
+def test_is_configured_with_import_name(import_name):
+    ui = ModuleUi(import_name)
+    assert ui.import_name == import_name
 
 
-def test_has_generated_name(demo_name):
-    ui = ModuleUi(demo_name)
+def test_has_generated_name(import_name):
+    ui = ModuleUi(import_name)
     assert ui.name == 'demo'
 
 
-def test_has_generated_template_folder(demo_name):
-    ui = ModuleUi(demo_name)
-    assert ui.template_folder == 'pages'
+def test_has_generated_template_folder(import_name):
+    ui = ModuleUi(import_name)
+    assert ui.template_folder == '../pages'
 
 
-def test_has_generated_static_paths(demo_name, modules_dir):
-    ui = ModuleUi(demo_name)
-    assert ui.static_url_path == '/static'
-    assert ui.static_folder == os.path.join(modules_dir, 'demo', 'static')
+def test_has_generated_static_paths(import_name, modules_dir):
+    ui = ModuleUi(import_name)
+    assert ui.static_url_path == '../static'
+    assert ui.static_folder == str(modules_dir / 'demo/static')
 
 
 @pytest.fixture
-def ui(demo_name):
+def ui(import_name):
     """ui with mocked add_url_rule"""
-    ui = ModuleUi(demo_name)
+    ui = ModuleUi(import_name)
     ui.add_url_rule = MagicMock()
     return ui
 
@@ -82,17 +90,11 @@ def test_route_with_class_based_view(ui):
     Hello.as_view.assert_called_with('Hello')
     ui.add_url_rule.assert_called_with('/hello', view_func=view_func)
     assert ui.deferred_rules == ['/hello']
-    
-
-@pytest.fixture
-def pages_dir(demo_dir):
-    pages_dir = demo_dir / "pages"
-    pages_dir.mkdir()
-    return pages_dir
 
 
 def test_scan_static_pages(ui, pages_dir):
-    (pages_dir / 'about.html').touch()
+    (pages_dir / 'demo').mkdir()
+    (pages_dir / 'demo/about.html').touch()
     ui.scan_pages()
     
     ui.add_url_rule.assert_called()
@@ -101,11 +103,12 @@ def test_scan_static_pages(ui, pages_dir):
     assert rule == '/about'
     assert isinstance(view_func, partial)
     assert view_func.func == ui.show_page
-    assert view_func.args == ('about.html', )
+    assert view_func.args == ('demo/about.html', )
 
 
 def test_scan_index_page(ui, pages_dir):
-    (pages_dir / 'index.html').touch()
+    (pages_dir / 'demo').mkdir()
+    (pages_dir / 'demo/index.html').touch()
     ui.scan_pages()
     
     ui.add_url_rule.assert_called()
@@ -116,13 +119,12 @@ def test_scan_index_page(ui, pages_dir):
     assert endpoint == 'show_page'
     assert isinstance(view_func, partial)
     assert view_func.func == ui.show_page
-    assert view_func.args == ('index.html', )
+    assert view_func.args == ('demo/index.html', )
 
 
 def test_scan_nested_static_page(ui, pages_dir):
-    blog_dir = pages_dir / "blog"
-    blog_dir.mkdir(parents=True)
-    (blog_dir / "post.html").touch()
+    (pages_dir / 'demo/blog').mkdir(parents=True)
+    (pages_dir / "demo/blog/post.html").touch()
     ui.scan_pages()
     
     ui.add_url_rule.assert_called()
@@ -133,13 +135,12 @@ def test_scan_nested_static_page(ui, pages_dir):
     assert endpoint == 'show_page'
     assert isinstance(view_func, partial)
     assert view_func.func == ui.show_page
-    assert view_func.args == ('blog/post.html', )
+    assert view_func.args == ('demo/blog/post.html', )
 
 
 def test_scan_nested_index_page(ui, pages_dir):
-    blog_dir = pages_dir / "blog"
-    blog_dir.mkdir(parents=True)
-    (blog_dir / "index.html").touch()
+    (pages_dir / 'demo/blog').mkdir(parents=True)
+    (pages_dir / 'demo/blog/index.html').touch()
     ui.scan_pages()
     
     ui.add_url_rule.assert_called()
@@ -150,13 +151,12 @@ def test_scan_nested_index_page(ui, pages_dir):
     assert endpoint == 'show_page'
     assert isinstance(view_func, partial)
     assert view_func.func == ui.show_page
-    assert view_func.args == ('blog/index.html', )
+    assert view_func.args == ('demo/blog/index.html', )
 
 
 def test_scan_dynamic_page_with_one_param(ui, pages_dir):
-    blog_dir = pages_dir / "blog"
-    blog_dir.mkdir(parents=True)
-    (blog_dir / "[id].html").touch()
+    (pages_dir / 'demo/blog').mkdir(parents=True)
+    (pages_dir / 'demo/blog/[id].html').touch()
     ui.scan_pages()
     
     ui.add_url_rule.assert_called()
@@ -167,13 +167,12 @@ def test_scan_dynamic_page_with_one_param(ui, pages_dir):
     assert endpoint == 'show_page'
     assert isinstance(view_func, partial)
     assert view_func.func == ui.show_page
-    assert view_func.args == ('blog/[id].html', )
+    assert view_func.args == ('demo/blog/[id].html', )
 
 
 def test_scan_dynamic_page_with_multi_param(ui, pages_dir):
-    nested_dir = pages_dir / "blog" / "[year]"
-    nested_dir.mkdir(parents=True)
-    (nested_dir / "[slug].html").touch()
+    (pages_dir / 'demo/blog/[year]').mkdir(parents=True)
+    (pages_dir / 'demo/blog/[year]/[slug].html').touch()
     ui.scan_pages()
     
     ui.add_url_rule.assert_called()
@@ -184,12 +183,13 @@ def test_scan_dynamic_page_with_multi_param(ui, pages_dir):
     assert endpoint == 'show_page'
     assert isinstance(view_func, partial)
     assert view_func.func == ui.show_page
-    assert view_func.args == ('blog/[year]/[slug].html', )
+    assert view_func.args == ('demo/blog/[year]/[slug].html', )
 
 
 def test_scan_and_avoid_duplicated_rules(ui, pages_dir):
-    (pages_dir / 'index.html').touch()
-    (pages_dir / 'hello.html').touch()
+    (pages_dir / 'demo').mkdir()
+    (pages_dir / 'demo/index.html').touch()
+    (pages_dir / 'demo/hello.html').touch()
     ui.deferred_rules = ['/', '/hello']
     ui.scan_pages()
     ui.add_url_rule.assert_not_called()
@@ -204,11 +204,11 @@ def render_template(monkeypatch):
 
 
 def test_show_static_page(ui, render_template):
-    ui.show_page('about.html')
-    render_template.assert_called_with('about.html')
+    ui.show_page('demo/about.html')
+    render_template.assert_called_with('demo/about.html')
 
 
 def test_show_dynamic_page(ui, render_template):
-    ui.show_page('[id].html', id=7)
-    render_template.assert_called_with('[id].html', id=7)
+    ui.show_page('demo/[id].html', id=7)
+    render_template.assert_called_with('demo/[id].html', id=7)
 

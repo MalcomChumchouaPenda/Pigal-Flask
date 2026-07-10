@@ -19,16 +19,18 @@ def app(tmpdir):
 def demo_dir(tmp_path, monkeypatch):
     project_dir = tmp_path / 'fake'
     monkeypatch.syspath_prepend(str(project_dir))
-    demo_dir = project_dir / 'modules' / 'demo'
+    demo_dir = project_dir / 'modules/demo'
     demo_dir.mkdir(parents=True)
+    contents_dir = demo_dir / 'pages/demo'
+    contents_dir.mkdir(parents=True)
     return demo_dir
 
 
 @pytest.fixture
 def demo_name(demo_dir):
-    views_file = demo_dir / "views.py"
-    views_file.touch()
-    import_name = 'modules.demo.views'
+    routes_file = demo_dir / "pages/routes.py"
+    routes_file.touch()
+    import_name = 'modules.demo.pages.routes'
     yield import_name
     sys.modules.pop(import_name, None)
 

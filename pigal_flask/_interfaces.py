@@ -23,17 +23,27 @@ class ModuleUi(Blueprint):
 
     def __init__(self, import_name):
         name = self._generate_name(import_name)
+        static_dir = self._generate_static_dir(import_name)
         self.deferred_rules = []
         super().__init__(
             name, 
             import_name,
-            template_folder='pages',
-            static_folder='static'
+            static_folder=static_dir,
+            static_url_path='../static',
+            template_folder='../pages'
         )
         
     def _generate_name(self, import_name):
-        names = re.findall(r'modules\.(\S+)\.views', import_name)
+        names = re.findall(r'modules\.(\S+)\.pages', import_name)
         return names[0]
+    
+    def _generate_static_dir(self, import_name):
+        spec = importlib.util.find_spec(import_name)
+        if spec and spec.origin:
+            routes_path = spec.origin
+            pages_dir = os.path.dirname(routes_path)
+            root_dir = os.path.dirname(pages_dir)
+            return os.path.join(root_dir, 'static')
 
 
     def route(self, rule, **options):
@@ -57,7 +67,6 @@ class ModuleUi(Blueprint):
     def scan_pages(self):
         root_dir = os.path.dirname(self.static_folder)
         pages_dir = Path(os.path.join(root_dir, 'pages'))
-        print(pages_dir)
         for file in sorted(pages_dir.rglob("*.html")):
             template = file.relative_to(pages_dir).as_posix()
             rule = self._template_to_rule(template)
@@ -71,9 +80,9 @@ class ModuleUi(Blueprint):
         return render_template(page, **kwargs)
             
     
-    @classmethod
-    def _template_to_rule(cls, template):
-        rule = re.sub(r"index\.html", "", template)
+    def _template_to_rule(self, template):
+        rule = re.sub(f'^{self.name}/', "", template)
+        rule = re.sub(r"index\.html", "", rule)
         rule = re.sub(r"\.html", "", rule)
         rule = re.sub(
             r"\[([a-zA-Z_][a-zA-Z0-9_]*)\]",
@@ -114,7 +123,6 @@ class ModuleApi(Namespace):
 
         # search api path
         base_name, version = root_name.split('_v')
-        print(root_name)
         super().__init__(root_name, path=f'/{base_name}/v{version}')
 
     def model(self, name, *args, **kwargs):
