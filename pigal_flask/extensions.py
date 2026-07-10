@@ -14,7 +14,7 @@ from sqlalchemy.exc import SAWarning
 from . import utils
 from . import views
 from . import exceptions as exc
-from ._interfaces import ModuleUi
+from ._interfaces import Ui
 from ._interfaces import ModuleApi
 
 
@@ -89,9 +89,9 @@ class Pigal:
         # 
         # check ui parent class
         #  
-        if not isinstance(ui, ModuleUi):
+        if not isinstance(ui, Ui):
             msg = f"The object 'ui' of {root} "
-            msg += "is not an instance of ModuleUi"
+            msg += "is not an instance of Ui"
             raise exc.InvalidUi(msg)
         
         #

@@ -168,14 +168,14 @@ def ui_cls(monkeypatch):
             super().__init__(name, f'modules.{name}.views')
             self.scan = MagicMock()
 
-    monkeypatch.setattr(pkg1, 'ModuleUi', FakeUi)
-    monkeypatch.setattr(pkg2, 'ModuleUi', FakeUi)
+    monkeypatch.setattr(pkg1, 'Ui', FakeUi)
+    monkeypatch.setattr(pkg2, 'Ui', FakeUi)
     return FakeUi
 
 
 VIEWS_CODE = """
-    \nfrom pigal_flask import ModuleUi
-    \nui = ModuleUi(__file__)
+    \nfrom pigal_flask import Ui
+    \nui = Ui(__file__)
     """
 
 
@@ -250,7 +250,7 @@ def demo_with_bad_views(full_project_dir):
 @pytest.mark.usefixtures('demo_with_bad_views', 'ui_cls')
 def test_checks_views_ui_is_module_ui(app_with_config):
     err_msg = "The object 'ui' of modules.demo.views "
-    err_msg += "is not an instance of ModuleUi"
+    err_msg += "is not an instance of Ui"
     app = app_with_config
     pigal = Pigal()
 

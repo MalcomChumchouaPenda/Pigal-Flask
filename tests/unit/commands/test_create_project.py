@@ -113,8 +113,8 @@ def test_create_home_pages_routes(tmp_path, change_dir):
     file_name = home_dir / 'pages/routes.py'
     with open(file_name, 'rt') as file:
         code = file.read()
-        assert 'from pigal_flask import ModuleUi' in code
-        assert 'ui = ModuleUi(__name__)' in code
+        assert 'from pigal_flask import Ui' in code
+        assert 'ui = Ui(__name__)' in code
 
 
 def test_create_home_pages_index(tmp_path, change_dir):
@@ -159,8 +159,8 @@ def test_create_auth_pages_routes(tmp_path, change_dir):
     file_name = home_dir / 'pages/routes.py'
     with open(file_name, 'rt') as file:
         code = file.read()
-        assert 'from pigal_flask import ModuleUi' in code
-        assert 'ui = ModuleUi(__name__)' in code
+        assert 'from pigal_flask import Ui' in code
+        assert 'ui = Ui(__name__)' in code
 
 
 def test_create_default_theme(tmp_path, change_dir):

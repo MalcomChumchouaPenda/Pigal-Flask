@@ -1,9 +1,9 @@
 
 from flask import render_template
-from pigal_flask import ModuleUi
+from pigal_flask import Ui
 
 
-ui = ModuleUi(__file__)
+ui = Ui(__file__)
 
 @ui.route('/')
 def index():
