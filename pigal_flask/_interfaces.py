@@ -89,9 +89,12 @@ class ModuleUi(Blueprint):
             r"<\1>",
             rule,
         )
+        rule = re.sub(r"home", "", rule)
         if rule.endswith('/'):
             rule = rule[:-1]
-        return '/' + rule
+        if not rule.startswith('/'):
+            rule = '/' + rule
+        return rule
 
     
 class ModuleApi(Namespace):

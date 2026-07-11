@@ -134,6 +134,15 @@ def test_register_module_ui_as_blueprint(app2, project3, route_manager):
     ui = pkg.ModuleUi.return_value
     app2.register_blueprint.assert_any_call(ui, url_prefix='/demo')
 
+def test_register_home_ui_with_no_prefix(app2, project3, route_manager):
+    (project3 / 'modules/home/pages').mkdir(parents=True)
+    routes_file = project3 / 'modules/home/pages/routes.py'
+    routes_file.write_text(UI_CODE, encoding='utf-8')
+    route_manager.init_app(app2)
+
+    ui = pkg.ModuleUi.return_value
+    app2.register_blueprint.assert_any_call(ui, url_prefix='/')
+
 
 def test_call_module_ui_for_scanning(app2, project3, route_manager):
     routes_file = project3 / 'modules/demo/pages/routes.py'

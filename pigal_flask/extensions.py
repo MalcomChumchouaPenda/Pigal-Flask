@@ -95,7 +95,7 @@ class RouteManager:
             raise exc.InvalidModuleUi(msg)
         
         ui.scan_pages()
-        url_prefix=f'/{name}'
+        url_prefix = '/' if name == 'home' else f'/{name}'
         app.register_blueprint(ui, url_prefix=url_prefix)
         app.logger.info(f'Register ui: {root} => {url_prefix}')
         return True

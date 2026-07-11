@@ -122,6 +122,22 @@ def test_scan_index_page(ui, pages_dir):
     assert view_func.args == ('demo/index.html', )
 
 
+def test_scan_home_index_page(ui, pages_dir):
+    (pages_dir / 'home').mkdir()
+    (pages_dir / 'home/index.html').touch()
+    ui.scan_pages()
+    
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    endpoint = ui.add_url_rule.call_args[0][1]
+    view_func = ui.add_url_rule.call_args[0][2]
+    assert rule == '/'
+    assert endpoint == 'show_page'
+    assert isinstance(view_func, partial)
+    assert view_func.func == ui.show_page
+    assert view_func.args == ('home/index.html', )
+
+
 def test_scan_nested_static_page(ui, pages_dir):
     (pages_dir / 'demo/blog').mkdir(parents=True)
     (pages_dir / "demo/blog/post.html").touch()
