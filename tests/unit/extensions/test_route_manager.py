@@ -135,6 +135,15 @@ def test_register_module_ui_as_blueprint(app2, project3, route_manager):
     app2.register_blueprint.assert_any_call(ui, url_prefix='/demo')
 
 
+def test_call_module_ui_for_scanning(app2, project3, route_manager):
+    routes_file = project3 / 'modules/demo/pages/routes.py'
+    routes_file.write_text(UI_CODE, encoding='utf-8')
+    route_manager.init_app(app2)
+
+    ui = pkg.ModuleUi.return_value
+    ui.scan_pages.assert_any_call()
+
+
 def test_ignore_private_module_ui(app2, project3, route_manager):
     routes_file = project3 / 'modules/_demo/pages/routes.py'
     routes_file.write_text(UI_CODE, encoding='utf-8')

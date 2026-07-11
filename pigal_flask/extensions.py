@@ -94,6 +94,7 @@ class RouteManager:
             msg = f"{root}.ui is not an instance of ModuleUi"
             raise exc.InvalidModuleUi(msg)
         
+        ui.scan_pages()
         url_prefix=f'/{name}'
         app.register_blueprint(ui, url_prefix=url_prefix)
         app.logger.info(f'Register ui: {root} => {url_prefix}')
@@ -130,135 +131,6 @@ class RouteManager:
         app.logger.info(f'Register api: {root} => {api.path}')
         return True
 
-
-class Pigal:
-
-    def __init__(self, app=None):
-        super().__init__()
-        self.api = None
-        if app is not None:
-            self.init_app(app)
-    
-    def init_app(self, app):
-        """Initializes the Flask app"""
-        self._check_project_structure(app)
-        self._check_project_config(app)
-        self._setup_api(app)
-        self._register_modules(app)
-
-
-    def _check_project_structure(self, app):
-        project_dir = os.path.dirname(app.instance_path)
-        for required_name in ('app', 'modules'):
-            required_dir = os.path.join(project_dir, required_name)
-            if not os.path.isdir(required_dir):
-                msg = f"'{required_name}' directory is required but not found"
-                raise exc.InvalidProjectStructure(msg)
-    
-    def _check_project_config(self, app):
-        for name in ('PIGAL_PROJECT_NAME', 'PIGAL_PROJECT_VERSION'):
-            if name not in app.config:
-                msg = f"Configuration parameter '{name}' is missing"
-                raise exc.InvalidProjectConfig(msg)
-
-    def _setup_api(self, app):
-        config = app.config
-        title = config['PIGAL_PROJECT_NAME'] + ' API'
-        version = config['PIGAL_PROJECT_VERSION']
-        api_bp = Blueprint('api', __name__, url_prefix='/api')
-        api = Api(api_bp, title=title, version=version)
-        app.register_blueprint(api_bp)
-        self.api = api
-
-    def _register_modules(self, app):
-        app.logger.debug('looking for modules...')
-        project_dir = os.path.dirname(app.instance_path)
-        modules_dir = os.path.join(project_dir, 'modules')
-        if os.path.isdir(modules_dir):
-            for name in os.listdir(modules_dir):
-                if name.startswith('_'):
-                    continue 
-                self._register_ui(app, name)
-                self._register_api(app, name)
-                self._register_rst(app, name)
-
-                
-    def _register_ui(self, app, name):
-        try:
-            root = f'modules.{name}.views'
-            module = importlib.import_module(root)
-            ui = module.ui
-        except (ModuleNotFoundError, AttributeError) as e:
-            app.logger.warning(e)
-            return
-                
-        # 
-        # check ui module
-        #
-        module_path = os.path.abspath(module.__file__)
-        if not os.path.isfile(module_path):
-            return
-            
-        # 
-        # check ui parent class
-        #  
-        if not isinstance(ui, ModuleUi):
-            msg = f"The ui of {root} "
-            msg += "is not an instance of ModuleUi"
-            raise exc.InvalidModuleUi(msg)
-        
-        #
-        # file-based routing
-        # ui blueprint registering
-        # 
-        ui.scan()
-        url_prefix=f'/{name}'
-        app.register_blueprint(ui, url_prefix=url_prefix)
-        app.logger.info(f'Register ui: {root} => {url_prefix}')
-        return True
-    
-
-    def _register_api(self, app, name):
-        #
-        # load api
-        #
-        try:
-            root = f'modules.{name}.services'
-            module = importlib.import_module(root)
-            api = module.api
-        except (ModuleNotFoundError, AttributeError) as e:
-            app.logger.warning(e)
-            return False
-
-        # 
-        # check api module
-        #
-        module_path = os.path.abspath(module.__file__)
-        if not os.path.isfile(module_path):
-            return
-        
-        # 
-        # check api parent class
-        #  
-        if not isinstance(api, ModuleApi):
-            msg = f"The api of {root} "
-            msg += "is not an instance of ModuleApi"
-            raise exc.InvalidModuleApi(msg)
-        
-        self.api.add_namespace(api)
-        app.logger.info(f'Register api: {root} => {api.path}')
-        return True
-
-
-    def _register_rst(self, app, name):
-        root = f'modules.{name}.resources'
-        try:
-            _ = importlib.import_module(root)
-        except ModuleNotFoundError as e:
-            app.logger.warning(e)
-            return False
-
-    
 
 warnings.filterwarnings(
     'ignore',                            # Action: Ignore the warning
