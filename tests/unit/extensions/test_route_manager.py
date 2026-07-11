@@ -193,7 +193,7 @@ def test_ignore_invalid_module_api(app2, project4, route_manager):
     routes_file = project4 / 'modules/demo/services/routes.py'
     routes_file.write_text("api = object()", encoding='utf-8')
 
-    with pytest.raises(exc.InvalidApi) as exc_info:
+    with pytest.raises(exc.InvalidModuleApi) as exc_info:
         route_manager.init_app(app2)
     err_msg = "The object 'api' of modules.demo.services.routes"
     err_msg += " is not an instance of ModuleApi"

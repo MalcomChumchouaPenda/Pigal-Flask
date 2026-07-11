@@ -112,7 +112,7 @@ class RouteManager:
         if not isinstance(api, ModuleApi):
             msg = f"The object 'api' of {root} "
             msg += "is not an instance of ModuleApi"
-            raise exc.InvalidApi(msg)
+            raise exc.InvalidModuleApi(msg)
         
         self.api.add_namespace(api)
         app.logger.info(f'Register api: {root} => {api.path}')
@@ -231,7 +231,7 @@ class Pigal:
         if not isinstance(api, ModuleApi):
             msg = f"The object 'api' of {root} "
             msg += "is not an instance of ModuleApi"
-            raise exc.InvalidApi(msg)
+            raise exc.InvalidModuleApi(msg)
         
         self.api.add_namespace(api)
         app.logger.info(f'Register api: {root} => {api.path}')

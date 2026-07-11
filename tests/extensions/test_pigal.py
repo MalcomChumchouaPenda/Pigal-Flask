@@ -11,7 +11,7 @@ from flask_restx import Api, Namespace
 from pigal_flask.extensions import Pigal
 from pigal_flask.exceptions import (
     InvalidModuleUi, 
-    InvalidApi,
+    InvalidModuleApi,
     InvalidProjectStructure,
     InvalidProjectConfig
 )
@@ -333,7 +333,7 @@ def test_checks_services_api_is_module_api(app_with_config):
     app = app_with_config
     pigal = Pigal()
 
-    with pytest.raises(InvalidApi) as exc_info:
+    with pytest.raises(InvalidModuleApi) as exc_info:
         pigal.init_app(app)
     assert str(exc_info.value) == err_msg
     assert 'demo' not in app.blueprints
