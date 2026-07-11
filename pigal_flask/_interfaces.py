@@ -21,10 +21,10 @@ class ModuleUi(Blueprint):
 
     """
 
-    def __init__(self, import_name, extensions=['.html', '.j2', '.jinja', '.jinja2']):
+    def __init__(self, import_name, jinja_extensions=['.html', '.jinja']):
         name = self._generate_name(import_name)
         static_dir = self._generate_static_dir(import_name)
-        self.extensions = extensions
+        self.jinja_extensions = jinja_extensions
         self.deferred_rules = []
         super().__init__(
             name, 
@@ -69,7 +69,7 @@ class ModuleUi(Blueprint):
         root_dir = os.path.dirname(self.static_folder)
         pages_dir = Path(os.path.join(root_dir, 'pages'))
         for file in sorted(pages_dir.rglob("*")):
-            if file.suffix not in self.extensions:
+            if file.suffix not in self.jinja_extensions:
                 continue
             template = file.relative_to(pages_dir).as_posix()
             rule = self._template_to_rule(template)

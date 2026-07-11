@@ -63,14 +63,14 @@ def test_has_generated_static_paths(import_name, modules_dir):
     assert ui.static_folder == str(modules_dir / 'demo/static')
 
 
-def test_has_default_supported_extensions(import_name):
+def test_has_default_jinja_extensions(import_name):
     ui = pkg.ModuleUi(import_name)
-    assert ui.extensions == [".html", ".j2", ".jinja", ".jinja2"]
+    assert ui.jinja_extensions == [".html", ".jinja"]
 
     
 def test_can_be_configured_by_extensions(import_name):
-    ui = pkg.ModuleUi(import_name, extensions=['.j2', '.j3'])
-    assert ui.extensions == ['.j2', '.j3']
+    ui = pkg.ModuleUi(import_name, jinja_extensions=['.j2', '.j3'])
+    assert ui.jinja_extensions == ['.j2', '.j3']
 
 
 @pytest.fixture
@@ -226,7 +226,7 @@ def test_scan_page_with_specific_extensions(ui, pages_dir):
     (pages_dir / 'demo/blog/[id]/x.html').touch()
     (pages_dir / 'demo/blog/[id]/y.jinja').touch()
     (pages_dir / 'demo/blog/[id]/z.jinja2').touch()
-    ui.extensions = ['.jinja', '.jinja2']
+    ui.jinja_extensions = ['.jinja', '.jinja2']
     ui.scan_pages()
 
     calls = ui.add_url_rule.call_args_list
