@@ -18,6 +18,107 @@ from ._interfaces import Ui
 from ._interfaces import ModuleApi
 
 
+class RouteManager:
+    
+    def __init__(self, app=None):
+        super().__init__()
+        if app is not None:
+            self.init_app(app)
+        self._project_dir = None
+
+    def init_app(self, app):
+        """Initializes the Flask app"""
+        self._find_project_dir(app)
+        self._check_project_structure()
+        self._check_project_config(app)
+        self._setup_rest_api(app)
+        self._register_modules(app)
+    
+
+    def _find_project_dir(self, app):
+        project_dir = os.path.dirname(app.instance_path)
+        while 'app' in project_dir:
+            project_dir = os.path.dirname(project_dir)
+        print(project_dir, project_dir in sys.path)
+        self._project_dir = project_dir
+
+
+    def _check_project_structure(self):
+        project_dir = self._project_dir
+        for required_name in ('app', 'modules'):
+            required_dir = os.path.join(project_dir, required_name)
+            if not os.path.isdir(required_dir):
+                msg = f"'{required_name}' directory is required but not found"
+                raise exc.InvalidProjectStructure(msg)
+    
+
+    def _check_project_config(self, app):
+        for name in ('PIGAL_PROJECT_NAME', 'PIGAL_PROJECT_VERSION'):
+            if name not in app.config:
+                msg = f"Configuration parameter '{name}' is missing"
+                raise exc.InvalidProjectConfig(msg)
+
+
+    def _setup_rest_api(self, app):
+        config = app.config
+        title = config['PIGAL_PROJECT_NAME'] + ' API'
+        version = config['PIGAL_PROJECT_VERSION']
+        api_bp = Blueprint('api', __name__, url_prefix='/api')
+        api = Api(api_bp, title=title, version=version)
+        app.register_blueprint(api_bp)
+        self.api = api
+
+
+    def _register_modules(self, app):
+        app.logger.debug('looking for modules...')
+        modules_dir = os.path.join(self._project_dir, 'modules')
+        if os.path.isdir(modules_dir):
+            for name in os.listdir(modules_dir):
+                if name.startswith('_'):
+                    continue 
+                self._register_ui(app, name)
+                self._register_api(app, name)
+
+                
+    def _register_ui(self, app, name):
+        try:
+            root = f'modules.{name}.pages.routes'
+            module = importlib.import_module(root)
+            ui = module.ui
+        except (ModuleNotFoundError, AttributeError) as e:
+            app.logger.warning(e)
+            return
+        
+        if not isinstance(ui, Ui):
+            msg = f"The object 'ui' of {root} "
+            msg += "is not an instance of Ui"
+            raise exc.InvalidUi(msg)
+        
+        url_prefix=f'/{name}'
+        app.register_blueprint(ui, url_prefix=url_prefix)
+        app.logger.info(f'Register ui: {root} => {url_prefix}')
+        return True
+    
+
+    def _register_api(self, app, name):
+        try:
+            root = f'modules.{name}.services.routes'
+            module = importlib.import_module(root)
+            api = module.api
+        except (ModuleNotFoundError, AttributeError) as e:
+            app.logger.warning(e)
+            return False
+        
+        if not isinstance(api, ModuleApi):
+            msg = f"The object 'api' of {root} "
+            msg += "is not an instance of ModuleApi"
+            raise exc.InvalidApi(msg)
+        
+        self.api.add_namespace(api)
+        app.logger.info(f'Register api: {root} => {api.path}')
+        return True
+
+
 class Pigal:
 
     def __init__(self, app=None):

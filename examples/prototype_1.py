@@ -24,7 +24,7 @@ app.add_url_rule("/demo/<int:a>", view_func=view_func)
 app.add_url_rule("/demo/13", view_func=view_func)
 app.add_url_rule("/<path:path>", view_func=view_func)
 
-print({r.rule:r for r in app.url_map.iter_rules()})
+print(app.instance_path)
 
 if __name__ == '__main__':
     app.run(debug=True)
