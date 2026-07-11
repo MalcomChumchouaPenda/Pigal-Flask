@@ -21,9 +21,10 @@ class ModuleUi(Blueprint):
 
     """
 
-    def __init__(self, import_name):
+    def __init__(self, import_name, extensions=['.html', '.j2', '.jinja', '.jinja2']):
         name = self._generate_name(import_name)
         static_dir = self._generate_static_dir(import_name)
+        self.extensions = extensions
         self.deferred_rules = []
         super().__init__(
             name, 
@@ -67,7 +68,9 @@ class ModuleUi(Blueprint):
     def scan_pages(self):
         root_dir = os.path.dirname(self.static_folder)
         pages_dir = Path(os.path.join(root_dir, 'pages'))
-        for file in sorted(pages_dir.rglob("*.html")):
+        for file in sorted(pages_dir.rglob("*")):
+            if file.suffix not in self.extensions:
+                continue
             template = file.relative_to(pages_dir).as_posix()
             rule = self._template_to_rule(template)
             if rule not in self.deferred_rules:
@@ -81,9 +84,9 @@ class ModuleUi(Blueprint):
             
     
     def _template_to_rule(self, template):
-        rule = re.sub(f'^{self.name}/', "", template)
-        rule = re.sub(r"index\.html", "", rule)
-        rule = re.sub(r"\.html", "", rule)
+        rule, _ = os.path.splitext(template)
+        rule = re.sub(f'^{self.name}/', "", rule)
+        rule = re.sub(r"index", "", rule)
         rule = re.sub(
             r"\[([a-zA-Z_][a-zA-Z0-9_]*)\]",
             r"<\1>",
