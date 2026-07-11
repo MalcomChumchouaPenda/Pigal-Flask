@@ -1,4 +1,5 @@
 
+import os
 import sys
 from unittest.mock import MagicMock
 
@@ -36,7 +37,7 @@ def app1(project1):
     return app
 
 
-def test_requires_app_dir_in_project(route_manager, app1, project1):
+def test_require_app_dir_in_project(route_manager, app1, project1):
     modules_dir = project1 / 'modules'
     modules_dir.mkdir()
 
@@ -46,7 +47,7 @@ def test_requires_app_dir_in_project(route_manager, app1, project1):
     assert str(exc_info.value) == err_msg
         
 
-def test_requires_modules_dir_in_project(route_manager, app1, project1):    
+def test_require_modules_dir_in_project(route_manager, app1, project1):    
     app_dir = project1 / 'app'
     app_dir.mkdir()
 
@@ -68,7 +69,7 @@ def project2(project1):
 
 
 @pytest.mark.usefixtures('project2')
-def test_requires_project_name_in_config(app1, route_manager):    
+def test_require_project_name_in_config(app1, route_manager):    
     app1.config = {'PIGAL_PROJECT_VERSION': '1.0'}
     
     with pytest.raises(exc.InvalidProjectConfig) as exc_info:
@@ -78,7 +79,7 @@ def test_requires_project_name_in_config(app1, route_manager):
 
 
 @pytest.mark.usefixtures('project2')
-def test_requires_project_version_in_config(app1, route_manager):
+def test_require_project_version_in_config(app1, route_manager):
     app1.config = {'PIGAL_PROJECT_NAME': 'test'}
 
     with pytest.raises(exc.InvalidProjectConfig) as exc_info:
@@ -150,8 +151,8 @@ def test_ignore_invalid_module_ui(app2, project3, route_manager):
 
     with pytest.raises(exc.InvalidModuleUi) as exc_info:
         route_manager.init_app(app2)
-    err_msg = "The object 'ui' of modules.demo.pages.routes"
-    err_msg += " is not an instance of ModuleUi"
+    err_msg = "modules.demo.pages.routes.ui "
+    err_msg += "is not an instance of ModuleUi"
     assert str(exc_info.value) == err_msg
 
 
@@ -169,34 +170,46 @@ API_CODE = '''
     '''
 
 def test_register_module_api_as_namespace(app2, project4, route_manager):
-    routes_file = project4 / 'modules/demo/services/routes.py'
+    routes_file = project4 / 'modules/demo/services/demo_v1.py'
     routes_file.write_text(API_CODE, encoding='utf-8')
     route_manager.init_app(app2)
 
+    path = '/demo/v1'
     module_api = pkg.ModuleApi.return_value
     rest_api = ext.Api.return_value
-    rest_api.add_namespace.assert_any_call(module_api)
+    rest_api.add_namespace.assert_any_call(module_api, path=path)
 
 
 def test_ignore_private_module_api(app2, project4, route_manager):
-    routes_file = project4 / 'modules/_demo/services/routes.py'
+    routes_file = project4 / 'modules/_demo/services/demo_v1.py'
     routes_file.write_text(API_CODE, encoding='utf-8')
     route_manager.init_app(app2)
 
     with pytest.raises(AssertionError):
+        path = '/demo/v1'
         module_api = pkg.ModuleApi.return_value
         rest_api = ext.Api.return_value
-        rest_api.add_namespace.assert_any_call(module_api)
+        rest_api.add_namespace.assert_any_call(module_api, path=path)
 
 
 def test_ignore_invalid_module_api(app2, project4, route_manager):
-    routes_file = project4 / 'modules/demo/services/routes.py'
+    routes_file = project4 / 'modules/demo/services/demo_v1.py'
     routes_file.write_text("api = object()", encoding='utf-8')
 
     with pytest.raises(exc.InvalidModuleApi) as exc_info:
         route_manager.init_app(app2)
-    err_msg = "The object 'api' of modules.demo.services.routes"
-    err_msg += " is not an instance of ModuleApi"
+    err_msg = "modules.demo.services.demo_v1.api "
+    err_msg += "is not an instance of ModuleApi"
     assert str(exc_info.value) == err_msg
 
 
+def test_ignore_nonstandard_module_api(app2, project4, route_manager):
+    routes_file = project4 / 'modules/demo/services/demo.py'
+    routes_file.write_text(API_CODE, encoding='utf-8')
+    route_manager.init_app(app2)
+
+    with pytest.raises(AssertionError):
+        path = '/demo/v1'
+        module_api = pkg.ModuleApi.return_value
+        rest_api = ext.Api.return_value
+        rest_api.add_namespace.assert_any_call(module_api, path=path)

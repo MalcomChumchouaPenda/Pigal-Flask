@@ -92,40 +92,17 @@ class ModuleUi(Blueprint):
         if rule.endswith('/'):
             rule = rule[:-1]
         return '/' + rule
-        
-    
-    # def scan(self):
-    #     file_based_view = FileBasedView(self.location)
-    #     print('\ncheck')
-    #     file_based_view.scan()
-    #     view_func = file_based_view.as_view("solve")
-    #     for url in file_based_view.routes:
-    #         print('\n\tadd rule', url)
-    #         self.add_url_rule(url, view_func=view_func)
-    #     self.file_based_view = file_based_view
 
     
 class ModuleApi(Namespace):
 
-    def __init__(self, import_file):
-        # split path components
-        path_components = []
-        current_file = import_file
-        while current_file != os.path.dirname(current_file):
-            path_components.append(os.path.basename(current_file))
-            current_file = os.path.dirname(current_file)
-        path_components.append(current_file)
-        path_components.reverse()
-
-        # search root name
-        i = path_components.index('routes.py')
-        root_name = path_components[i-1]
-
-        # search api path
-        base_name, version = root_name.split('_v')
-        super().__init__(root_name, path=f'/{base_name}/v{version}')
+    def __init__(self, import_name):
+        name = re.findall(r'\.([A-Za-z0-9_]+_v\d+)$', import_name)[0]
+        super().__init__(name, description=f'{name} service')
+        self.import_name = import_name
 
     def model(self, name, *args, **kwargs):
         args = list(args)
         args.insert(0, f'{self.name}.{name}')
         return super().model(*args, **kwargs)
+    

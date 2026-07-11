@@ -1,14 +1,14 @@
-import os
+
 import sys
 import pytest
 from functools import partial
 from unittest.mock import MagicMock
 from flask import Blueprint
-from pigal_flask import ModuleUi
+import pigal_flask._interfaces as pkg
 
 
-def test_is_blueprint_sub_class():
-    assert issubclass(ModuleUi, Blueprint)
+def test_is_flask_blueprint_sub_class():
+    assert issubclass(pkg.ModuleUi, Blueprint)
 
 
 @pytest.fixture
@@ -43,22 +43,22 @@ def import_name(pages_dir):
     
 
 def test_is_configured_with_import_name(import_name):
-    ui = ModuleUi(import_name)
+    ui = pkg.ModuleUi(import_name)
     assert ui.import_name == import_name
 
 
 def test_has_generated_name(import_name):
-    ui = ModuleUi(import_name)
+    ui = pkg.ModuleUi(import_name)
     assert ui.name == 'demo'
 
 
 def test_has_generated_template_folder(import_name):
-    ui = ModuleUi(import_name)
+    ui = pkg.ModuleUi(import_name)
     assert ui.template_folder == '../pages'
 
 
 def test_has_generated_static_paths(import_name, modules_dir):
-    ui = ModuleUi(import_name)
+    ui = pkg.ModuleUi(import_name)
     assert ui.static_url_path == '../static'
     assert ui.static_folder == str(modules_dir / 'demo/static')
 
@@ -66,7 +66,7 @@ def test_has_generated_static_paths(import_name, modules_dir):
 @pytest.fixture
 def ui(import_name):
     """ui with mocked add_url_rule"""
-    ui = ModuleUi(import_name)
+    ui = pkg.ModuleUi(import_name)
     ui.add_url_rule = MagicMock()
     return ui
 

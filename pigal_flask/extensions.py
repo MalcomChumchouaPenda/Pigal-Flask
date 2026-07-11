@@ -11,9 +11,8 @@ from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SAWarning
 
-from . import utils
-from . import views
 from . import exceptions as exc
+from . import utils
 from ._interfaces import ModuleUi
 from ._interfaces import ModuleApi
 
@@ -25,6 +24,7 @@ class RouteManager:
         if app is not None:
             self.init_app(app)
         self._project_dir = None
+
 
     def init_app(self, app):
         """Initializes the Flask app"""
@@ -39,7 +39,6 @@ class RouteManager:
         project_dir = os.path.dirname(app.instance_path)
         while 'app' in project_dir:
             project_dir = os.path.dirname(project_dir)
-        print(project_dir, project_dir in sys.path)
         self._project_dir = project_dir
 
 
@@ -76,8 +75,10 @@ class RouteManager:
             for name in os.listdir(modules_dir):
                 if name.startswith('_'):
                     continue 
+                module_dir = os.path.join(modules_dir, name)
+                services_dir = os.path.join(module_dir, 'services')
+                self._search_apis(app, services_dir)
                 self._register_ui(app, name)
-                self._register_api(app, name)
 
                 
     def _register_ui(self, app, name):
@@ -90,8 +91,7 @@ class RouteManager:
             return
         
         if not isinstance(ui, ModuleUi):
-            msg = f"The object 'ui' of {root} "
-            msg += "is not an instance of ModuleUi"
+            msg = f"{root}.ui is not an instance of ModuleUi"
             raise exc.InvalidModuleUi(msg)
         
         url_prefix=f'/{name}'
@@ -100,9 +100,22 @@ class RouteManager:
         return True
     
 
-    def _register_api(self, app, name):
+    def _search_apis(self, app, services_dir):
+        if not os.path.isdir(services_dir):
+            return
+        
+        for filename in os.listdir(services_dir):
+            if filename.startswith('_'):
+                continue
+            found = re.findall(r'(\S+)_(v\d+)', filename)
+            if len(found):
+                name, version = found[0]
+                self._register_api(app, name, version)
+
+
+    def _register_api(self, app, name, version):
         try:
-            root = f'modules.{name}.services.routes'
+            root = f'modules.{name}.services.{name}_{version}'
             module = importlib.import_module(root)
             api = module.api
         except (ModuleNotFoundError, AttributeError) as e:
@@ -110,11 +123,10 @@ class RouteManager:
             return False
         
         if not isinstance(api, ModuleApi):
-            msg = f"The object 'api' of {root} "
-            msg += "is not an instance of ModuleApi"
+            msg = f"{root}.api is not an instance of ModuleApi"
             raise exc.InvalidModuleApi(msg)
         
-        self.api.add_namespace(api)
+        self.api.add_namespace(api, path=f'/{name}/{version}')
         app.logger.info(f'Register api: {root} => {api.path}')
         return True
 
@@ -191,7 +203,7 @@ class Pigal:
         # check ui parent class
         #  
         if not isinstance(ui, ModuleUi):
-            msg = f"The object 'ui' of {root} "
+            msg = f"The ui of {root} "
             msg += "is not an instance of ModuleUi"
             raise exc.InvalidModuleUi(msg)
         
@@ -229,7 +241,7 @@ class Pigal:
         # check api parent class
         #  
         if not isinstance(api, ModuleApi):
-            msg = f"The object 'api' of {root} "
+            msg = f"The api of {root} "
             msg += "is not an instance of ModuleApi"
             raise exc.InvalidModuleApi(msg)
         

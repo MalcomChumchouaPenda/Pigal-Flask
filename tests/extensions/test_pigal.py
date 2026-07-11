@@ -249,7 +249,7 @@ def demo_with_bad_views(full_project_dir):
 
 @pytest.mark.usefixtures('demo_with_bad_views', 'ui_cls')
 def test_checks_views_ui_is_module_ui(app_with_config):
-    err_msg = "The object 'ui' of modules.demo.views "
+    err_msg = "The ui of modules.demo.views "
     err_msg += "is not an instance of ModuleUi"
     app = app_with_config
     pigal = Pigal()
@@ -328,7 +328,7 @@ def demo_with_bad_services(full_project_dir):
 
 @pytest.mark.usefixtures('demo_with_bad_services', 'api_cls')
 def test_checks_services_api_is_module_api(app_with_config):
-    err_msg = "The object 'api' of modules.demo.services "
+    err_msg = "The api of modules.demo.services "
     err_msg += "is not an instance of ModuleApi"
     app = app_with_config
     pigal = Pigal()
