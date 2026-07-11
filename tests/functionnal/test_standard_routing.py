@@ -5,7 +5,7 @@ import pytest
 from unittest.mock import MagicMock
 from flask import Flask
 from flask.views import View, MethodView
-from pigal_flask import Ui
+from pigal_flask import ModuleUi
 
 
 @pytest.fixture
@@ -37,7 +37,7 @@ def demo_name(demo_dir):
 
 @pytest.fixture
 def ui(demo_name):
-    return Ui(demo_name)
+    return ModuleUi(demo_name)
 
 
 def test_route_view_function(app, ui):

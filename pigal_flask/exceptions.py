@@ -9,7 +9,7 @@ class InvalidProjectConfig(Exception):
     pass
 
 
-class InvalidUi(Exception):
+class InvalidModuleUi(Exception):
     pass
 
 class InvalidApi(Exception):

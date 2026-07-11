@@ -10,7 +10,7 @@ from flask_restx import Api, Namespace
 
 from pigal_flask.extensions import Pigal
 from pigal_flask.exceptions import (
-    InvalidUi, 
+    InvalidModuleUi, 
     InvalidApi,
     InvalidProjectStructure,
     InvalidProjectConfig
@@ -161,21 +161,21 @@ def ui_cls(monkeypatch):
     import pigal_flask as pkg1
     import pigal_flask.extensions as pkg2
 
-    class FakeUi(Blueprint):
+    class FakeModuleUi(Blueprint):
         def __init__(self, file):
             dir_ = os.path.dirname(file)
             name = os.path.basename(dir_)
             super().__init__(name, f'modules.{name}.views')
             self.scan = MagicMock()
 
-    monkeypatch.setattr(pkg1, 'Ui', FakeUi)
-    monkeypatch.setattr(pkg2, 'Ui', FakeUi)
-    return FakeUi
+    monkeypatch.setattr(pkg1, 'ModuleUi', FakeModuleUi)
+    monkeypatch.setattr(pkg2, 'ModuleUi', FakeModuleUi)
+    return FakeModuleUi
 
 
 VIEWS_CODE = """
-    \nfrom pigal_flask import Ui
-    \nui = Ui(__file__)
+    \nfrom pigal_flask import ModuleUi
+    \nui = ModuleUi(__file__)
     """
 
 
@@ -250,11 +250,11 @@ def demo_with_bad_views(full_project_dir):
 @pytest.mark.usefixtures('demo_with_bad_views', 'ui_cls')
 def test_checks_views_ui_is_module_ui(app_with_config):
     err_msg = "The object 'ui' of modules.demo.views "
-    err_msg += "is not an instance of Ui"
+    err_msg += "is not an instance of ModuleUi"
     app = app_with_config
     pigal = Pigal()
 
-    with pytest.raises(InvalidUi) as exc_info:
+    with pytest.raises(InvalidModuleUi) as exc_info:
         pigal.init_app(app)
     assert str(exc_info.value) == err_msg
 

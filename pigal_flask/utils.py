@@ -28,7 +28,7 @@ def tablename(cls):
     return f'{key}_{name}'
 
 
-class Ui:
+class ModuleUi:
     pass
 
 
@@ -36,7 +36,7 @@ class Ui:
 
 
 
-# class Ui(Blueprint):
+# class ModuleUi(Blueprint):
 #     """
 #     The Extended Flask Blueprint for Pigal Projects frontend
 

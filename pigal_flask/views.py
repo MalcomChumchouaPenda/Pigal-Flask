@@ -9,7 +9,7 @@ from flask.views import View
 class FileBasedView(View):
     """ A File-based routing engine for module frontend
 
-    This is python object which implement file-based routing for a module Ui.
+    This is python object which implement file-based routing for a module ModuleUi.
     """
 
     def __init__(self, location):

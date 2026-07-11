@@ -55,7 +55,7 @@ By default, ``home/routes.py`` provides this roles and routes:
     from backends.auth.models import User
 
 
-    ui = Ui(__file__)
+    ui = ModuleUi(__file__)
 
 
     @ui.route('/')

@@ -4,7 +4,7 @@ import sys
 import pytest
 from unittest.mock import MagicMock
 from flask import Flask
-from pigal_flask import Ui
+from pigal_flask import ModuleUi
 
 
 @pytest.fixture
@@ -42,7 +42,7 @@ def pages_dir(demo_dir):
 
 @pytest.fixture
 def ui(demo_name):
-    return Ui(demo_name)
+    return ModuleUi(demo_name)
 
 
 def test_route_static_page(pages_dir, app, ui):

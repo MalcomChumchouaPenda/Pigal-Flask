@@ -1,4 +1,4 @@
 
-from pigal_flask import Ui
+from pigal_flask import ModuleUi
 
-ui = Ui(__name__)
+ui = ModuleUi(__name__)

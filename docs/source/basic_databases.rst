@@ -152,11 +152,11 @@ Go to ``mydomain`` frontend folder, and edit for example ``routes.py``:
 .. code-block:: python
 
     from flask import render_template
-    from pigal_flask import Ui
+    from pigal_flask import ModuleUi
     from backends.mydomain_v1 import models as mdl
 
 
-    ui = Ui(__file__)
+    ui = ModuleModuleModuleModuleModuleModuleUi(__file__)
 
 
     @ui.route('/items')

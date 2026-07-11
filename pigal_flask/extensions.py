@@ -14,7 +14,7 @@ from sqlalchemy.exc import SAWarning
 from . import utils
 from . import views
 from . import exceptions as exc
-from ._interfaces import Ui
+from ._interfaces import ModuleUi
 from ._interfaces import ModuleApi
 
 
@@ -89,10 +89,10 @@ class RouteManager:
             app.logger.warning(e)
             return
         
-        if not isinstance(ui, Ui):
+        if not isinstance(ui, ModuleUi):
             msg = f"The object 'ui' of {root} "
-            msg += "is not an instance of Ui"
-            raise exc.InvalidUi(msg)
+            msg += "is not an instance of ModuleUi"
+            raise exc.InvalidModuleUi(msg)
         
         url_prefix=f'/{name}'
         app.register_blueprint(ui, url_prefix=url_prefix)
@@ -190,10 +190,10 @@ class Pigal:
         # 
         # check ui parent class
         #  
-        if not isinstance(ui, Ui):
+        if not isinstance(ui, ModuleUi):
             msg = f"The object 'ui' of {root} "
-            msg += "is not an instance of Ui"
-            raise exc.InvalidUi(msg)
+            msg += "is not an instance of ModuleUi"
+            raise exc.InvalidModuleUi(msg)
         
         #
         # file-based routing
