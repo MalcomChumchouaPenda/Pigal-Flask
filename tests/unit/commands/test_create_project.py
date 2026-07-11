@@ -53,8 +53,8 @@ def test_create_app_extensions_file(tmp_path, change_dir):
     file_name = tmp_path / 'myproj/app/extensions.py'
     with open(file_name, 'rt') as file:
         code = file.read()
-        assert 'from pigal_flask import Pigal' in code
-        assert 'pigal = Pigal()' in code
+        assert 'from pigal_flask import RouteManager' in code
+        assert 'route_manager = RouteManager()' in code
 
 
 def test_create_app_init_file(tmp_path, change_dir):
@@ -66,11 +66,11 @@ def test_create_app_init_file(tmp_path, change_dir):
     with open(file_name, 'rt') as file:
         code = file.read()
         assert 'from flask import Flask' in code
-        assert 'from .extensions import pigal' in code
         assert 'from .config import Config' in code
+        assert 'from .extensions import route_manager' in code
         assert 'app = Flask(__name__)' in code
         assert 'app.config.from_object(Config)' in code
-        assert 'pigal.init_app(app)' in code
+        assert 'route_manager.init_app(app)' in code
 
 
 def test_create_default_modules(tmp_path, change_dir):

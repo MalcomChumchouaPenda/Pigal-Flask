@@ -1,6 +1,6 @@
 
 from flask import Flask
-from .extensions import pigal
+from .extensions import route_manager
 from .config import Config
 
 
@@ -9,4 +9,4 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # initialize Flask extensions
-pigal.init_app(app)
+route_manager.init_app(app)
