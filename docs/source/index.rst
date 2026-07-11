@@ -11,7 +11,7 @@ that facilitate the management of online information and activities for any orga
 Indeed Pigal-Flask helps web developpers to collaborate using following conventions and best practices:
 
 * **modular monolith architecture** of web projects
-* **File-based Routing** for web interface
+* **optional File-based Routing** for web interface
 * **Role-Based Access Control** for the security
 * **Reusable and shareable themes** for frontend
 * **Internationalisation** native support
@@ -20,11 +20,11 @@ Indeed Pigal-Flask helps web developpers to collaborate using following conventi
 Basic concepts
 --------------
 
-A **Project** represent a web portal project. It is a ``Flask application`` with a modular architecture based on 03 components:
+A **project** is a web portal project. It has a modular architecture based on 03 components:
 
 * **app** which provide configuration and Flask extensions
 * **modules** which provide specific domain frontends, backends and databases
-* **themes** which provide global themes and styling for domain frontends
+* **themes** which provide global themes and styling for modules frontends
 
 .. image:: ../diagrams/pigal_project_architecture.drawio.svg
 
@@ -32,53 +32,38 @@ A **Project** represent a web portal project. It is a ``Flask application`` with
 In any project, there is two specialized modules:
 
 * **home** which provide home frontend and backend
-* **auth** which provide authentification and authorization functionnalities
+* **auth** which handle authentification and authorization
 
-A **module** represent a domain. It is a ``Flask blueprint`` which provides:
+Any module contains:
 
-* a **Web UI** made of web pages and provides by ``views`` to client browser
-* a **Public API** provides by ``services`` to any other modules within project
-* a **Rest API** provides by ``resources`` to any external client
+* **pages** which provides html UI through app
+* **services** which provides Rest API to clients
+* **static** which contains static resources
 
 .. image:: ../diagrams/pigal_module_structure.drawio.svg
 
-A module contains also:
 
-* ``pages`` which contains jinja templates
-* ``static`` which contains static files
-* ``models`` which contains databases models and entities
+Pages use themes for their design. Each theme contains:
 
-Module pages use the global **theme** provided by app for their design:
+* **layouts** which help to structure pages with Jinja templates
+* **macros** which help to create pages components with Jinja macros
+* **static** which provides static files (images, styles, ...)
 
 .. image:: ../diagrams/pigal_theme_structure.drawio.svg
 
-A theme provides:
 
-* **layouts** of pages as Jinja templates
-* **components** of pages as Jinja macros
-* **static** for page styling with static files (imgs, csv, ...)
+Web developpers can collaborate by exchanging modules or themes. 
+From a project, a module can be exported as ``.mopz`` files then imported in another project. 
+Similarly, a theme can be exported as ``.thpz`` files then imported in another project.
+
+.. image:: ../diagrams/pigal_dev_collaboration.drawio.svg
 
 
 With this architecture, *Pigal-Flask* aims to provide the following benefits:
 
-* **easier collaboration**: frontend and backend developers can easily collaborate
+* **easier collaboration**: developers can easily collaborate with parts of project
 * **easier scalability**: developers can easily add and remove features to projects
 * **easier maintainability**: projects can easily be maintained, tested and refactored
-
-Indeed, web developpers can collaborate by exchanging modules. 
-from a project, A **module** can be exported as ``.mopz`` files then imported in another project.
-this allow flexible collaboration between or within teams of developpers.
-
-.. image:: ../diagrams/pigal_module_flows.drawio.svg
-
-
-
-Frontend developpers can create and publish themes. 
-A theme is published by exporting it as ``.thpz`` files from a project. 
-Then any other developper can import this theme in his project.
-
-.. image:: ../diagrams/pigal_theme_flows.drawio.svg
-
 
 
 Installation
