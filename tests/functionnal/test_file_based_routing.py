@@ -8,18 +8,18 @@ from pigal_flask import ModuleUi
 
 
 @pytest.fixture
-def app(tmpdir):
+def app(tmp_path):
     return Flask(__name__, 
-                instance_path=tmpdir.strpath, 
+                instance_path=str(tmp_path), 
                 instance_relative_config=True)
 
 
 @pytest.fixture
 def demo_dir(tmp_path, monkeypatch):
     project_dir = tmp_path / 'fake'
-    monkeypatch.syspath_prepend(str(project_dir))
     demo_dir = project_dir / 'modules' / 'demo'
     demo_dir.mkdir(parents=True)
+    monkeypatch.syspath_prepend(str(project_dir))
     return demo_dir
 
 

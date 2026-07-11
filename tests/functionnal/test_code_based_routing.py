@@ -2,16 +2,15 @@
 import os
 import sys
 import pytest
-from unittest.mock import MagicMock
 from flask import Flask
 from flask.views import View, MethodView
 from pigal_flask import ModuleUi
 
 
 @pytest.fixture
-def app(tmpdir):
+def app(tmp_path):
     return Flask(__name__, 
-                instance_path=tmpdir.strpath, 
+                instance_path=str(tmp_path), 
                 instance_relative_config=True)
 
 
@@ -78,3 +77,5 @@ def test_route_method_view(app, ui):
 
     assert response.status_code == 200
     assert response.data == b'Hello World'
+
+        
