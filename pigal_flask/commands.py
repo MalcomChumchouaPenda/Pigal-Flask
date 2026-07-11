@@ -14,7 +14,7 @@ template_dir = os.path.dirname(__file__)
 @click.argument('name')
 def create_project(name):
     """
-    Create new Pigal project
+    Create new project
     """
     extra = {'project_name': name}
     template = os.path.join(template_dir, 'cookiecutter_project')
@@ -35,4 +35,21 @@ def create_module(name):
     extra = {'module_name': name}
     template = os.path.join(template_dir, 'cookiecutter_module')
     cookiecutter(template, no_input=True, extra_context=extra)
+
+
+@click.command('create-theme')
+@click.argument('name')
+def create_theme(name):
+    """Create new theme
+    """
+    cur_dir = os.getcwd()
+    themes_dir = os.path.join(cur_dir, 'themes')
+    if not os.path.isdir(themes_dir):
+        msg = "create-theme must be executed from project dir"
+        raise InvalidCommandContext(msg)
+
+    extra = {'theme_name': name}
+    template = os.path.join(template_dir, 'cookiecutter_theme')
+    cookiecutter(template, no_input=True, extra_context=extra)
+
 
