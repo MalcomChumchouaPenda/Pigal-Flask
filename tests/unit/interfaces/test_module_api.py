@@ -4,7 +4,7 @@ import sys
 import pytest
 from unittest.mock import MagicMock
 from flask_restx import Namespace
-import pigal_flask._interfaces as pkg
+import pigal_flask.interfaces as pkg
 
 
 def test_is_flask_rest_namespace():

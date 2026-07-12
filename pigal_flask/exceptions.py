@@ -16,6 +16,9 @@ class InvalidModuleApi(Exception):
     pass
 
 
+class InvalidAppConfig(Exception):
+    pass
+
 
 class InvalidCommandContext(ClickException):
     """This exception is raised when a command is executed

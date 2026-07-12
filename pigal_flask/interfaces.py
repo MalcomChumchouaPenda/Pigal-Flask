@@ -3,15 +3,15 @@ import os
 import re
 import inspect
 import importlib
-from functools import partial
 from pathlib import Path
+from functools import partial
 
 from flask import Blueprint, render_template
 from flask_restx import Namespace
 
 
 class ModuleUi(Blueprint):
-    """A Web User Interface for a module or domain.
+    """A Web User Interface for a module.
     
     This is a extended Flask Blueprint whose name and url_prefix are automatically generated.
     It is automatically detected during app loading. It is required for web routing.
@@ -26,6 +26,8 @@ class ModuleUi(Blueprint):
         static_dir = self._generate_static_dir(import_name)
         self.jinja_extensions = jinja_extensions
         self.deferred_rules = []
+        self.access = None
+        
         super().__init__(
             name, 
             import_name,
@@ -45,6 +47,13 @@ class ModuleUi(Blueprint):
             pages_dir = os.path.dirname(routes_path)
             root_dir = os.path.dirname(pages_dir)
             return os.path.join(root_dir, 'static')
+
+
+    def bind_access(self, access):
+        if self.access is not None:
+            msg = f"{self} has already an access"
+            raise RuntimeError(msg)
+        self.access = access
 
 
     def route(self, rule, **options):
@@ -99,6 +108,28 @@ class ModuleUi(Blueprint):
             rule = '/' + rule
         return rule
 
+
+    def require_login(self):
+        try:
+            return self.access.require_login()
+        except AttributeError:
+            raise RuntimeError(f"{self} has no access")
+
+
+    def require_role(self, role):
+        try:
+            return self.access.require_role(role)
+        except AttributeError:
+            raise RuntimeError(f"{self} has no access")
+
+
+    def require_permission(self, first, *others):
+        try:
+            return self.access.require_permission(first, *others)
+        except AttributeError:
+            raise RuntimeError(f"{self} has no access")
+
+    
     
 class ModuleApi(Namespace):
 
@@ -111,4 +142,6 @@ class ModuleApi(Namespace):
         args = list(args)
         args.insert(0, f'{self.name}.{name}')
         return super().model(*args, **kwargs)
-    
+
+
+

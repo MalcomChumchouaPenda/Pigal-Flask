@@ -12,9 +12,9 @@ from pigal_flask import exceptions as exc
 @pytest.fixture
 def route_manager(monkeypatch):
     MockModuleUi = MagicMock(return_value=MagicMock(spec=pkg.ModuleUi))
-    MockApi = MagicMock(return_value=MagicMock(spec=pkg.ModuleApi))
+    MockModuleApi = MagicMock(return_value=MagicMock(spec=pkg.ModuleApi))
     monkeypatch.setattr(pkg, 'ModuleUi', MockModuleUi)
-    monkeypatch.setattr(pkg, 'ModuleApi', MockApi)
+    monkeypatch.setattr(pkg, 'ModuleApi', MockModuleApi)
     monkeypatch.setattr(ext, 'Api', MagicMock())
     monkeypatch.setattr(ext, 'Blueprint', MagicMock())
     route_manager = ext.RouteManager()
