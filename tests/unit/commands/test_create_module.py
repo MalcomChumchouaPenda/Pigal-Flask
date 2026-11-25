@@ -15,52 +15,62 @@ def project_dir(tmp_path, monkeypatch):
 
 
 def test_create_module_structure(project_dir):
+    # Given
+    module_dir = project_dir / 'my_module'
     runner = CliRunner()
-    result = runner.invoke(create_module, ['mymodule'])
 
-    module_dir = project_dir / 'mymodule'
+    # When
+    result = runner.invoke(create_module, ['my_module'])
+
+    # Then
     assert result.exit_code == 0
-    assert os.path.isdir(module_dir)
-    assert os.path.isdir(str(module_dir / 'pages'))
-    assert os.path.isdir(str(module_dir / 'services'))
     assert os.path.isdir(str(module_dir / 'static'))
+    assert os.path.isdir(str(module_dir / 'templates/my_module'))
+    assert os.path.isfile(str(module_dir / 'config.py'))
+    assert os.path.isfile(str(module_dir / 'models.py'))
+    assert os.path.isfile(str(module_dir / 'resources.py'))
+    assert os.path.isfile(str(module_dir / 'services.py'))
+    assert os.path.isfile(str(module_dir / 'views.py'))
 
 
-def test_create_pages_structure(project_dir):
+def test_create_module_ui(project_dir):
+    # Given
+    file_name = project_dir / 'my_module/views.py'
     runner = CliRunner()
-    runner.invoke(create_module, ['mymodule'])
 
-    pages_dir = project_dir / 'mymodule/pages'
-    assert os.path.isdir(str(pages_dir / 'mymodule'))
-    assert os.path.isfile(str(pages_dir / 'routes.py'))
-
-
-def test_create_pages_routes_file(project_dir):
-    runner = CliRunner()
-    runner.invoke(create_module, ['mymodule'])
-
-    file_name = project_dir / 'mymodule/pages/routes.py'
+    # When
+    runner.invoke(create_module, ['my_module'])
     with open(file_name, 'rt') as file:
         code = file.read()
-        assert 'from pigal_flask import ModuleUi' in code
-        assert "ui = ModuleUi(__name__)" in code
+
+    # Then
+    assert 'from pigal_flask import ModuleUi' in code
+    assert "ui = ModuleUi(__name__)" in code
 
 
-def test_create_first_default_services(project_dir):
+def test_create_module_api(project_dir):
+    # Given
     runner = CliRunner()
-    runner.invoke(create_module, ['mymodule'])
+    file_name = project_dir / 'my_module/services.py'
 
-    file_name = project_dir / 'mymodule/services/mymodule_v1.py'
+    # When
+    runner.invoke(create_module, ['my_module'])
     with open(file_name, 'rt') as file:
         code = file.read()
-        assert 'from pigal_flask import ModuleApi' in code
-        assert "api = ModuleApi(__name__)" in code
+
+    # Then
+    assert 'from pigal_flask import ModuleApi' in code
+    assert "api = ModuleApi(__name__)" in code
 
 
 def test_fails_outside_project_dir(tmp_path, monkeypatch):
+    # Given
     monkeypatch.chdir(tmp_path)
     runner = CliRunner()
-    result = runner.invoke(create_module, ['mymodule'])
 
+    # When
+    result = runner.invoke(create_module, ['my_module'])
+
+    # Then
     assert result.exit_code != 0
     assert "create-module must be executed from project dir" in result.output
