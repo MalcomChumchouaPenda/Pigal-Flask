@@ -111,8 +111,8 @@ def test_create_main_rest_api(app2, route_manager):
 @pytest.fixture
 def project3(project2):
     """project with private and public demo pages"""
-    (project2 / "modules/demo/pages").mkdir(parents=True)
-    (project2 / "modules/_demo/pages").mkdir(parents=True)
+    (project2 / "modules/demo").mkdir(parents=True)
+    (project2 / "modules/_demo").mkdir(parents=True)
     return project2
 
 
@@ -123,7 +123,7 @@ UI_CODE = """
 
 
 def test_register_module_ui_as_blueprint(app2, project3, route_manager):
-    routes_file = project3 / "modules/demo/pages/routes.py"
+    routes_file = project3 / "modules/demo/views.py"
     routes_file.write_text(UI_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
@@ -132,8 +132,8 @@ def test_register_module_ui_as_blueprint(app2, project3, route_manager):
 
 
 def test_register_home_ui_with_no_prefix(app2, project3, route_manager):
-    (project3 / "modules/home/pages").mkdir(parents=True)
-    routes_file = project3 / "modules/home/pages/routes.py"
+    (project3 / "modules/home").mkdir(parents=True)
+    routes_file = project3 / "modules/home/views.py"
     routes_file.write_text(UI_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
@@ -142,7 +142,7 @@ def test_register_home_ui_with_no_prefix(app2, project3, route_manager):
 
 
 def test_call_module_ui_for_scanning(app2, project3, route_manager):
-    routes_file = project3 / "modules/demo/pages/routes.py"
+    routes_file = project3 / "modules/demo/views.py"
     routes_file.write_text(UI_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
@@ -151,7 +151,7 @@ def test_call_module_ui_for_scanning(app2, project3, route_manager):
 
 
 def test_ignore_private_module_ui(app2, project3, route_manager):
-    routes_file = project3 / "modules/_demo/pages/routes.py"
+    routes_file = project3 / "modules/_demo/views.py"
     routes_file.write_text(UI_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
@@ -161,13 +161,12 @@ def test_ignore_private_module_ui(app2, project3, route_manager):
 
 
 def test_ignore_invalid_module_ui(app2, project3, route_manager):
-    routes_file = project3 / "modules/demo/pages/routes.py"
+    routes_file = project3 / "modules/demo/views.py"
     routes_file.write_text("ui = object()", encoding="utf-8")
 
     with pytest.raises(exc.InvalidUi) as exc_info:
         route_manager.init_app(app2)
-    err_msg = "modules.demo.pages.routes.ui "
-    err_msg += "is not an instance of Ui"
+    err_msg = "modules.demo.views.ui is not an instance of Ui"
     assert str(exc_info.value) == err_msg
 
 

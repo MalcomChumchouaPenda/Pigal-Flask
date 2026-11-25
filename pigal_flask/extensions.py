@@ -75,7 +75,7 @@ class RouteManager:
 
     def _register_ui(self, app, name):
         try:
-            root = f"modules.{name}.pages.routes"
+            root = f"modules.{name}.views"
             module = importlib.import_module(root)
             ui = module.ui
         except (ModuleNotFoundError, AttributeError) as e:
