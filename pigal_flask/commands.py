@@ -37,19 +37,22 @@ def create_module(name):
     cookiecutter(template, no_input=True, extra_context=extra)
 
 
-@click.command('create-theme')
-@click.argument('name')
-def create_theme(name):
-    """Create new theme
+@click.command('import-theme')
+@click.argument('path')
+def import_theme(path):
+    """Import new theme
     """
     cur_dir = os.getcwd()
-    themes_dir = os.path.join(cur_dir, 'themes')
-    if not os.path.isdir(themes_dir):
-        msg = "create-theme must be executed from project dir"
+    theme_dir = os.path.join(cur_dir, 'app', 'theme')
+    if not os.path.isdir(theme_dir):
+        msg = "import-theme must be executed from a project dir"
         raise InvalidCommandContext(msg)
+    for name in ('static', 'templates'):
+        to_clean = os.path.join(theme_dir, name)
+        shutil.rmtree(to_clean, ignore_errors=True)
+    with zpf.ZipFile(path, "r") as archive:
+        archive.extractall(theme_dir)
 
-    extra = {'theme_name': name}
-    template = os.path.join(template_dir, 'cookiecutter_theme')
-    cookiecutter(template, no_input=True, extra_context=extra)
+    
 
 
