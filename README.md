@@ -1,16 +1,32 @@
 # Pigal-Flask
 
 Pigal-Flask is an Flask extension which facilitates the creation and management of Pigal projects. 
-A **Pigal project** is a modular web portal for an organisation which need to build progressively an integrated information system.
-**Pigal** means in french ("Portail d'information et de gestion des activites en ligne").
+A **Pigal project** is a modular web portal for an organisation which need to build progressively 
+an integrated information system. **Pigal** means in french ("Portail d'information et de gestion des activites en ligne").
 
 ![SVG Image](docs/diagrams/pigal_project_architecture.drawio.svg)
 
 
-A Pigal project follow a modular architecture based on 03 components as shown above:
+A **project** follow a modular architecture based on 02 components as shown above:
 - **app** which provide global theme, configuration and flask extensions
-- **frontends** which provide specific frontend
-- **backends** which provide specific backend
+- **modules** which provide home pages, authentification and authorisation services and other business functionalites
+
+
+![SVG Image](docs/diagrams/pigal_module_structure.drawio.svg)
+
+A **module** is composed of :
+
+- **views** which provides a User Interfaces (*UI*) to browser
+- **resources** which provides a Rest API (*RestApi*) to browser
+- **services** which provides a Public Interface (*PublicAPI*) for other modules
+
+
+![SVG Image](docs/diagrams/pigal_theme_structure.drawio.svg)
+
+A **theme** is composed of:
+
+- **layouts** wihch provides *blocks* to extend by module jinja templates
+- **macros** which contains *renderer* functions to render html components of pages
 
 
 ## Installation
@@ -23,122 +39,109 @@ pip install Pigal-Flask
 
 ## Quickstart
 
-### Create minimal project
+### Create new project
 
-To create a new project ``MyProject`` with a theme ``MyTheme.zip``, use the following command :
+To create a new project ``MyProject``, use the following command :
 
 ```bash
-pigal create-project MyProject C:/MyTheme.zip
+pigal create-project MyProject
 ```
 
 This will create a pigal project with the following structure:
 
 ```
-/myproject
+/MyProject                # CREATED PROJECT DIRECTORY
 |   
 |-- /app                  # APP DIRECTORY
-|   |-- /static           # theme static files
-|   |-- /templates        # theme jinja templates
-|   |-- __init__.py       # app initialization
+|   |-- /theme            # global theme directory
 |   |-- config.py         # app configurations
 |   |-- extensions.py     # app flask extensions
+|   |-- server.py         # app flask server
 |   
-|-- /backends             # BACKENDS DIRECTORY
-|   |-- /auth             # authentification backend
-|   |-- __init__.py       # global api initialisation
-|   
-|-- /frontends            # FRONTENDS DIRECTORY
-|   |-- /demo             # theme live demo
-|   |-- /home             # home frontend 
-|   |-- __init__.py       # global frontend initialisation
+|-- /modules              # MODULES DIRECTORY
+|   |
+|   |-- /auth             # authentification and authorization module
+|   |   |-- /static       # auth static files
+|   |   |-- /templates    # auth page templates
+|   |   |-- config.py     # auth configuration
+|   |   |-- models.py     # auth db models
+|   |   |-- resources.py  # auth resources and Rest API
+|   |   |-- services.py   # auth services and Public API
+|   |   |-- views.py      # auth view routes and User Interface
+|   |
+|   |-- /home             # home and default module
+|   |   |-- /static       # home static files
+|   |   |-- /templates    # home page templates
+|   |   |-- config.py     # home configuration
+|   |   |-- models.py     # home db models
+|   |   |-- resources.py  # home resources and Rest API
+|   |   |-- services.py   # home services and Public API
+|   |   |-- views.py      # home view routes and User Interface
 |   
 |-- /migrations           # databases migration files
 |-- /tests                # project tests  
-|-- /translations         # internationalisation files
 
 
 ```
 
-To see and customize the project, navigate to `myproject` directory and run the flask app:
+To see and customize the project, navigate to `MyProject` directory and run the flask app:
 
 ```bash
-cd myproject
+cd MyProject
 flask run --debug
 ```
 
 Go to http://127.0.0.1:5000 to see the default project page.
-
 Go to http://127.0.0.1:5000/api to see the default project Rest API.
 
-Go to http://127.0.0.1:5000/demo to see examples of theme frontend pages.
-
-Go to http://127.0.0.1:5000/demo/docs to see documentation page of theme used.
 
 
+### Customize project theme
 
-### Create minimal frontend
-
-To create `MyDomain` frontend, navigate to `frontends` directory and use `create-frontend` command:
+You can change the theme of a project, by importing another theme. To import a theme, navigate to project directory and use `import-theme` command with the path of the theme file:
 
 ```bash
-cd frontends
-pigal create-frontend MyDomain
+cd MyProject
+pigal import-theme ./new_theme.zip
+```
+
+Go again to http://127.0.0.1:5000 to see the new theme. 
+
+
+
+### Create new module
+
+To create a new module `MyModule`, navigate to project directory and use `create-module` command:
+
+```bash
+cd MyProject
+pigal create-module MyModule
 ```
 
 This will create the following structure:
 
 ```
-/frontends
+/modules
 |   
-|-- /mydomain             # CREATED PAGES DIRECTORY
-|   |-- /static           # domain static files
-|   |-- /templates        # jinja templates
-|   |   |-- /mydomain     # domain templates
-|   |
-|   |-- __init__.py       # domain initialization
-|   |-- forms.py          # domain WTF-forms
-|   |-- routes.py         # domain flask routes
-
+|-- /my_module            # CREATED MODULE DIRECTORY
+|   |-- /static           # static files
+|   |-- /templates        # page templates
+|   |-- config.py         # configuration
+|   |-- models.py         # db models
+|   |-- resources.py      # resources and Rest API
+|   |-- services.py       # services and Public API
+|   |-- views.py          # view routes and User Interface
 
 ```
+
+
+Go to http://127.0.0.1:5000/my-module to see default `MyModule` page. 
+Go to http://127.0.0.1:5000/api/v0/my-module to see default `MyModule` Rest API. 
 
 > [!IMPORTANT]
-> frontend can only be created inside the `frontends` directory
+> Pigal-Flask automatically rename module directory and urls to respect standard conventions concerning **URL naming conventions** and **python naming convention**
 
-Go to http://127.0.0.1:5000/mydomain to see default `MyDomain` page. 
-
-You can modify this frontend (see [Documentation](#)).
-
-
-### Create minimal backend
-
-In Pigal project, any backend must have a **domain name** and a **version number**. 
-To create `MyDomain 1.0` backend, navigate to `myproject/backends` directory and use `create-backend`command:
-
-```bash
-pigal create-backend MyDomain 1.0
-```
-
-This will create the following structure:
-
-```
-/backends
-|   
-|-- /mydomain_v1_0        # CREATED SERVICE DIRECTORY
-|   |-- /store            # new backend files
-|   |-- __init__.py       # backend initialization
-|   |-- models.py         # domain database models
-|   |-- routes.py         # domain Rest API
-|   |-- utils.py          # domain utilities
-
-```
-
-> [!IMPORTANT]
-> Service can only be created inside the `backends` directory of a pigal project
-
-Go to http://127.0.0.1:5000/api to see the new MyDomain API. 
-
-you can now create databases, change default API or create utilities for frontends and others backends (see [Documentation](#)).
+you can now create databases, change frontends and backends (see [Documentation](#)).
 
 
 ## Contributions
