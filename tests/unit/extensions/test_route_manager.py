@@ -10,9 +10,9 @@ from pigal_flask import exceptions as exc
 
 @pytest.fixture
 def route_manager(monkeypatch):
-    MockModuleUi = MagicMock(return_value=MagicMock(spec=pkg.ModuleUi))
+    MockUi = MagicMock(return_value=MagicMock(spec=pkg.Ui))
     MockModuleApi = MagicMock(return_value=MagicMock(spec=pkg.ModuleApi))
-    monkeypatch.setattr(pkg, "ModuleUi", MockModuleUi)
+    monkeypatch.setattr(pkg, "Ui", MockUi)
     monkeypatch.setattr(pkg, "ModuleApi", MockModuleApi)
     monkeypatch.setattr(ext, "Api", MagicMock())
     monkeypatch.setattr(ext, "Blueprint", MagicMock())
@@ -117,8 +117,8 @@ def project3(project2):
 
 
 UI_CODE = """
-    \nfrom pigal_flask import ModuleUi
-    \nui = ModuleUi(__name__)
+    \nfrom pigal_flask import Ui
+    \nui = Ui(__name__)
     """
 
 
@@ -127,7 +127,7 @@ def test_register_module_ui_as_blueprint(app2, project3, route_manager):
     routes_file.write_text(UI_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
-    ui = pkg.ModuleUi.return_value
+    ui = pkg.Ui.return_value
     app2.register_blueprint.assert_any_call(ui, url_prefix="/demo")
 
 
@@ -137,7 +137,7 @@ def test_register_home_ui_with_no_prefix(app2, project3, route_manager):
     routes_file.write_text(UI_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
-    ui = pkg.ModuleUi.return_value
+    ui = pkg.Ui.return_value
     app2.register_blueprint.assert_any_call(ui, url_prefix="/")
 
 
@@ -146,7 +146,7 @@ def test_call_module_ui_for_scanning(app2, project3, route_manager):
     routes_file.write_text(UI_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
-    ui = pkg.ModuleUi.return_value
+    ui = pkg.Ui.return_value
     ui.scan_pages.assert_any_call()
 
 
@@ -156,7 +156,7 @@ def test_ignore_private_module_ui(app2, project3, route_manager):
     route_manager.init_app(app2)
 
     with pytest.raises(AssertionError):
-        ui = pkg.ModuleUi.return_value
+        ui = pkg.Ui.return_value
         app2.register_blueprint.assert_any_call(ui, url_prefix="/_demo")
 
 
@@ -164,10 +164,10 @@ def test_ignore_invalid_module_ui(app2, project3, route_manager):
     routes_file = project3 / "modules/demo/pages/routes.py"
     routes_file.write_text("ui = object()", encoding="utf-8")
 
-    with pytest.raises(exc.InvalidModuleUi) as exc_info:
+    with pytest.raises(exc.InvalidUi) as exc_info:
         route_manager.init_app(app2)
     err_msg = "modules.demo.pages.routes.ui "
-    err_msg += "is not an instance of ModuleUi"
+    err_msg += "is not an instance of Ui"
     assert str(exc_info.value) == err_msg
 
 

@@ -9,7 +9,7 @@ from flask import Blueprint, render_template
 from flask_restx import Namespace
 
 
-class ModuleUi(Blueprint):
+class Ui(Blueprint):
     """A Web User Interface for a module.
 
     This is a extended Flask Blueprint whose name and url_prefix are automatically generated.

@@ -49,9 +49,9 @@ Inside ``routes.py``, a default routing system is created:
 .. code-block:: python
 
     from flask import render_template
-    from pigal_flask import ModuleUi
+    from pigal_flask import Ui
 
-    ui = ModuleUi(__file__)
+    ui = Ui(__file__)
 
     @ui.route('/')
     def index():
@@ -60,7 +60,7 @@ Inside ``routes.py``, a default routing system is created:
 
 The ``routes.py`` provides an ``ui`` object :
 
-* which is an extended Flask blueprint ( :any:`ModuleUi` )
+* which is an extended Flask blueprint ( :any:`Ui` )
 * whose name and url_prefix are automatically created
 * which is automatically registered into Flask app
 

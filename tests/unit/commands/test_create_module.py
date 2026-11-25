@@ -43,8 +43,8 @@ def test_create_module_ui(project_dir):
         code = file.read()
 
     # Then
-    assert "from pigal_flask import ModuleUi" in code
-    assert "ui = ModuleUi(__name__)" in code
+    assert "from pigal_flask import Ui" in code
+    assert "ui = Ui(__name__)" in code
 
 
 def test_create_module_api(project_dir):

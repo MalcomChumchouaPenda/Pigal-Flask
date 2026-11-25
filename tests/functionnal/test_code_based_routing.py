@@ -3,7 +3,7 @@ import sys
 import pytest
 from flask import Flask
 from flask.views import View, MethodView
-from pigal_flask import ModuleUi
+from pigal_flask import Ui
 
 
 @pytest.fixture
@@ -33,7 +33,7 @@ def demo_name(demo_dir):
 
 @pytest.fixture
 def ui(demo_name):
-    return ModuleUi(demo_name)
+    return Ui(demo_name)
 
 
 def test_route_view_function(app, ui):

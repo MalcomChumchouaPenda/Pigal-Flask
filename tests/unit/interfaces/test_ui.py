@@ -7,7 +7,7 @@ import pigal_flask.interfaces as pkg
 
 
 def test_is_flask_blueprint_sub_class():
-    assert issubclass(pkg.ModuleUi, Blueprint)
+    assert issubclass(pkg.Ui, Blueprint)
 
 
 @pytest.fixture
@@ -43,40 +43,40 @@ def import_name(pages_dir):
 
 
 def test_is_configured_with_import_name(import_name):
-    ui = pkg.ModuleUi(import_name)
+    ui = pkg.Ui(import_name)
     assert ui.import_name == import_name
 
 
 def test_has_generated_name(import_name):
-    ui = pkg.ModuleUi(import_name)
+    ui = pkg.Ui(import_name)
     assert ui.name == "demo"
 
 
 def test_has_generated_template_folder(import_name):
-    ui = pkg.ModuleUi(import_name)
+    ui = pkg.Ui(import_name)
     assert ui.template_folder == "../pages"
 
 
 def test_has_generated_static_paths(import_name, modules_dir):
-    ui = pkg.ModuleUi(import_name)
+    ui = pkg.Ui(import_name)
     assert ui.static_url_path == "../static"
     assert ui.static_folder == str(modules_dir / "demo/static")
 
 
 def test_has_default_jinja_extensions(import_name):
-    ui = pkg.ModuleUi(import_name)
+    ui = pkg.Ui(import_name)
     assert ui.jinja_extensions == [".html", ".jinja"]
 
 
 def test_can_be_configured_by_extensions(import_name):
-    ui = pkg.ModuleUi(import_name, jinja_extensions=[".j2", ".j3"])
+    ui = pkg.Ui(import_name, jinja_extensions=[".j2", ".j3"])
     assert ui.jinja_extensions == [".j2", ".j3"]
 
 
 @pytest.fixture
 def ui1(import_name):
     """ui with mocked add_url_rule"""
-    ui = pkg.ModuleUi(import_name)
+    ui = pkg.Ui(import_name)
     ui.add_url_rule = MagicMock()
     return ui
 

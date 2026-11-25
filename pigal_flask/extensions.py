@@ -14,7 +14,7 @@ from sqlalchemy.exc import SAWarning
 from . import exceptions as exc
 from . import utils
 from .security.abstract import AccessStore, AccessProvider
-from .interfaces import ModuleUi, ModuleApi
+from .interfaces import Ui, ModuleApi
 
 
 class RouteManager:
@@ -83,9 +83,9 @@ class RouteManager:
             app.logger.warning(e)
             return
 
-        if not isinstance(ui, ModuleUi):
-            msg = f"{root}.ui is not an instance of ModuleUi"
-            raise exc.InvalidModuleUi(msg)
+        if not isinstance(ui, Ui):
+            msg = f"{root}.ui is not an instance of Ui"
+            raise exc.InvalidUi(msg)
 
         ui.scan_pages()
         url_prefix = "/" if name == "home" else f"/{name}"

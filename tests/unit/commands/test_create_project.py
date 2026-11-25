@@ -171,8 +171,8 @@ def test_create_home_ui(project_dir):
         code = file.read()
 
     # Then
-    assert "from pigal_flask import ModuleUi" in code
-    assert "ui = ModuleUi(__name__)" in code
+    assert "from pigal_flask import Ui" in code
+    assert "ui = Ui(__name__)" in code
 
 
 def test_create_home_index_page(project_dir):
@@ -218,5 +218,5 @@ def test_create_auth_ui(project_dir):
         code = file.read()
 
     # Then
-    assert "from pigal_flask import ModuleUi" in code
-    assert "ui = ModuleUi(__name__)" in code
+    assert "from pigal_flask import Ui" in code
+    assert "ui = Ui(__name__)" in code

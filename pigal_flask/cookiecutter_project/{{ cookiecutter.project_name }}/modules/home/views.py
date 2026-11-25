@@ -1,3 +1,3 @@
-from pigal_flask import ModuleUi
+from pigal_flask import Ui
 
-ui = ModuleUi(__name__)
+ui = Ui(__name__)
