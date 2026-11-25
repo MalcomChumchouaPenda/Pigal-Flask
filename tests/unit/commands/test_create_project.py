@@ -4,10 +4,15 @@ from click.testing import CliRunner
 from pigal_flask.commands import create_project
 
 
-def test_create_project_structure(tmp_path, monkeypatch):
-    # Given
+@pytest.fixture
+def project_dir(tmp_path, monkeypatch):
     project_dir = tmp_path / "MyProject"
     monkeypatch.chdir(tmp_path)
+    return project_dir
+
+
+def test_create_project_structure(project_dir):
+    # Given
     runner = CliRunner()
 
     # When
@@ -22,11 +27,10 @@ def test_create_project_structure(tmp_path, monkeypatch):
     assert os.path.isdir(str(project_dir / "tests"))
 
 
-def test_create_app_structure(tmp_path, monkeypatch):
+def test_create_app_structure(project_dir):
     # Given
-    app_dir = tmp_path / "MyProject/app"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    app_dir = project_dir / "app"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -38,11 +42,10 @@ def test_create_app_structure(tmp_path, monkeypatch):
     assert os.path.isfile(str(app_dir / "__init__.py"))
 
 
-def test_create_app_theme(tmp_path, monkeypatch):
+def test_create_app_theme(project_dir):
     # Given
-    theme_dir = tmp_path / "MyProject/app/theme"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    theme_dir = project_dir / "app/theme"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -52,11 +55,10 @@ def test_create_app_theme(tmp_path, monkeypatch):
     assert os.path.isdir(str(theme_dir / "templates"))
 
 
-def test_create_app_theme_layouts(tmp_path, monkeypatch):
+def test_create_app_theme_layouts(project_dir):
     # Given
-    template_dir = tmp_path / "MyProject/app/theme/templates"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    template_dir = project_dir / "app/theme/templates"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -65,11 +67,10 @@ def test_create_app_theme_layouts(tmp_path, monkeypatch):
     assert os.path.isfile(str(template_dir / "layouts/page.jinja"))
 
 
-def test_create_app_theme_macros(tmp_path, monkeypatch):
+def test_create_app_theme_macros(project_dir):
     # Given
-    template_dir = tmp_path / "MyProject/app/theme/templates"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    template_dir = project_dir / "app/theme/templates"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -78,11 +79,10 @@ def test_create_app_theme_macros(tmp_path, monkeypatch):
     assert os.path.isfile(str(template_dir / "macros.jinja"))
 
 
-def test_create_app_config_file(tmp_path, monkeypatch):
+def test_create_app_config_file(project_dir):
     # Given
-    file_name = tmp_path / "MyProject/app/config.py"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    file_name = project_dir / "app/config.py"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -95,11 +95,10 @@ def test_create_app_config_file(tmp_path, monkeypatch):
     assert '    PIGAL_PROJECT_VERSION = "0.0"' in code
 
 
-def test_create_app_extensions_file(tmp_path, monkeypatch):
+def test_create_app_extensions_file(project_dir):
     # Given
-    file_name = tmp_path / "MyProject/app/extensions.py"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    file_name = project_dir / "app/extensions.py"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -111,11 +110,10 @@ def test_create_app_extensions_file(tmp_path, monkeypatch):
     assert "route_manager = RouteManager()" in code
 
 
-def test_create_app_init_file(tmp_path, monkeypatch):
+def test_create_app_init_file(project_dir):
     # Given
-    file_name = tmp_path / "MyProject/app/__init__.py"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    file_name = project_dir / "app/__init__.py"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -131,11 +129,10 @@ def test_create_app_init_file(tmp_path, monkeypatch):
     assert "route_manager.init_app(app)" in code
 
 
-def test_create_default_modules(tmp_path, monkeypatch):
+def test_create_default_modules(project_dir):
     # Given
-    modules_dir = tmp_path / "MyProject/modules"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    modules_dir = project_dir / "modules"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -145,11 +142,10 @@ def test_create_default_modules(tmp_path, monkeypatch):
     assert os.path.isdir(str(modules_dir / "auth"))
 
 
-def test_create_home_module(tmp_path, monkeypatch):
+def test_create_home_module(project_dir):
     # Given
-    home_dir = tmp_path / "MyProject/modules/home"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    home_dir = project_dir / "modules/home"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -164,11 +160,10 @@ def test_create_home_module(tmp_path, monkeypatch):
     assert os.path.isfile(str(home_dir / "views.py"))
 
 
-def test_create_home_ui(tmp_path, monkeypatch):
+def test_create_home_ui(project_dir):
     # Given
-    file_name = tmp_path / "MyProject/modules/home/views.py"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    file_name = project_dir / "modules/home/views.py"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -180,11 +175,10 @@ def test_create_home_ui(tmp_path, monkeypatch):
     assert "ui = ModuleUi(__name__)" in code
 
 
-def test_create_home_index_page(tmp_path, monkeypatch):
+def test_create_home_index_page(project_dir):
     # Given
-    file_name = tmp_path / "MyProject/modules/home/templates/home/index.html"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    file_name = project_dir / "modules/home/templates/home/index.html"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -195,11 +189,10 @@ def test_create_home_index_page(tmp_path, monkeypatch):
     assert "<h1>Welcome in <b>MyProject</b> project</h1>" in code
 
 
-def test_create_auth_module(tmp_path, monkeypatch):
+def test_create_auth_module(project_dir):
     # Given
-    auth_dir = tmp_path / "MyProject/modules/auth"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    auth_dir = project_dir / "modules/auth"
 
     # When
     runner.invoke(create_project, ["MyProject"])
@@ -214,11 +207,10 @@ def test_create_auth_module(tmp_path, monkeypatch):
     assert os.path.isfile(str(auth_dir / "views.py"))
 
 
-def test_create_auth_ui(tmp_path, monkeypatch):
+def test_create_auth_ui(project_dir):
     # Given
-    file_name = tmp_path / "MyProject/modules/auth/views.py"
-    monkeypatch.chdir(tmp_path)
     runner = CliRunner()
+    file_name = project_dir / "modules/auth/views.py"
 
     # When
     runner.invoke(create_project, ["MyProject"])
