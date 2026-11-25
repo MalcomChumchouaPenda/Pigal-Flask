@@ -11,9 +11,9 @@ from pigal_flask import exceptions as exc
 @pytest.fixture
 def route_manager(monkeypatch):
     MockUi = MagicMock(return_value=MagicMock(spec=pkg.Ui))
-    MockModuleApi = MagicMock(return_value=MagicMock(spec=pkg.ModuleApi))
+    MockPublicApi = MagicMock(return_value=MagicMock(spec=pkg.PublicApi))
     monkeypatch.setattr(pkg, "Ui", MockUi)
-    monkeypatch.setattr(pkg, "ModuleApi", MockModuleApi)
+    monkeypatch.setattr(pkg, "PublicApi", MockPublicApi)
     monkeypatch.setattr(ext, "Api", MagicMock())
     monkeypatch.setattr(ext, "Blueprint", MagicMock())
     route_manager = ext.RouteManager()
@@ -180,8 +180,8 @@ def project4(project2):
 
 
 API_CODE = """
-    \nfrom pigal_flask import ModuleApi
-    \napi = ModuleApi(__file__)
+    \nfrom pigal_flask import PublicApi
+    \napi = PublicApi(__file__)
     """
 
 
@@ -191,7 +191,7 @@ def test_register_module_api_as_namespace(app2, project4, route_manager):
     route_manager.init_app(app2)
 
     path = "/demo/v1"
-    module_api = pkg.ModuleApi.return_value
+    module_api = pkg.PublicApi.return_value
     rest_api = ext.Api.return_value
     rest_api.add_namespace.assert_any_call(module_api, path=path)
 
@@ -203,7 +203,7 @@ def test_ignore_private_module_api(app2, project4, route_manager):
 
     with pytest.raises(AssertionError):
         path = "/demo/v1"
-        module_api = pkg.ModuleApi.return_value
+        module_api = pkg.PublicApi.return_value
         rest_api = ext.Api.return_value
         rest_api.add_namespace.assert_any_call(module_api, path=path)
 
@@ -212,10 +212,10 @@ def test_ignore_invalid_module_api(app2, project4, route_manager):
     routes_file = project4 / "modules/demo/services/demo_v1.py"
     routes_file.write_text("api = object()", encoding="utf-8")
 
-    with pytest.raises(exc.InvalidModuleApi) as exc_info:
+    with pytest.raises(exc.InvalidPublicApi) as exc_info:
         route_manager.init_app(app2)
     err_msg = "modules.demo.services.demo_v1.api "
-    err_msg += "is not an instance of ModuleApi"
+    err_msg += "is not an instance of PublicApi"
     assert str(exc_info.value) == err_msg
 
 
@@ -226,6 +226,6 @@ def test_ignore_nonstandard_module_api(app2, project4, route_manager):
 
     with pytest.raises(AssertionError):
         path = "/demo/v1"
-        module_api = pkg.ModuleApi.return_value
+        module_api = pkg.PublicApi.return_value
         rest_api = ext.Api.return_value
         rest_api.add_namespace.assert_any_call(module_api, path=path)

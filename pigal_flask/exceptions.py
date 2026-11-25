@@ -13,7 +13,7 @@ class InvalidUi(Exception):
     pass
 
 
-class InvalidModuleApi(Exception):
+class InvalidPublicApi(Exception):
     pass
 
 

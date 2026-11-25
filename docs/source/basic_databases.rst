@@ -107,12 +107,12 @@ to provide **CRUD** functionnalities. For example:
 
     from flask import request
     from flask_restx import Resource
-    from pigal_flask importModuleApi
+    from pigal_flask importPublicApi
     from app.extensions import db
     from . import models as mdl
 
 
-    api =ModuleApi(__file__)
+    api =PublicApi(__file__)
 
 
     @api.route('/items')

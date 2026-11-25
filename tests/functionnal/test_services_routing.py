@@ -37,9 +37,9 @@ def test_route_default_api_doc(app):
 
 REST_CODE = """
     \nfrom flask_restx import Resource, Api
-    \nfrom pigal_flask import ModuleApi
+    \nfrom pigal_flask import PublicApi
 
-    \napi = ModuleApi(__name__)
+    \napi = PublicApi(__name__)
 
     \n@api.route('/hello')
     \nclass HelloWorld(Resource):

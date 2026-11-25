@@ -47,7 +47,7 @@ def test_create_module_ui(project_dir):
     assert "ui = Ui(__name__)" in code
 
 
-def test_create_module_api(project_dir):
+def test_create_module_public_api(project_dir):
     # Given
     runner = CliRunner()
     file_name = project_dir / "my_module/services.py"
@@ -58,8 +58,8 @@ def test_create_module_api(project_dir):
         code = file.read()
 
     # Then
-    assert "from pigal_flask import ModuleApi" in code
-    assert "api = ModuleApi(__name__)" in code
+    assert "from pigal_flask import PublicApi" in code
+    assert "api = PublicApi(__name__)" in code
 
 
 def test_fails_outside_project_dir(tmp_path, monkeypatch):

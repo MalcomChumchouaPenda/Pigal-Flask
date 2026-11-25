@@ -121,7 +121,7 @@ class Ui(Blueprint):
             raise RuntimeError(f"{self} has no access")
 
 
-class ModuleApi(Namespace):
+class PublicApi(Namespace):
 
     def __init__(self, import_name):
         name = re.findall(r"\.([A-Za-z0-9_]+_v\d+)$", import_name)[0]

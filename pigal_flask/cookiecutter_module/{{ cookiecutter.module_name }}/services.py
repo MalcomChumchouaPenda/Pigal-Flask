@@ -1,4 +1,4 @@
-from pigal_flask import ModuleApi
+from pigal_flask import PublicApi
 
 
-api = ModuleApi(__name__)
+api = PublicApi(__name__)

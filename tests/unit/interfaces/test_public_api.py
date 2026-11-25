@@ -7,7 +7,7 @@ import pigal_flask.interfaces as pkg
 
 
 def test_is_flask_rest_namespace():
-    assert issubclass(pkg.ModuleApi, Namespace)
+    assert issubclass(pkg.PublicApi, Namespace)
 
 
 @pytest.fixture
@@ -29,21 +29,21 @@ def import_name(services_dir):
 
 
 def test_is_configured_with_import_name(import_name):
-    api = pkg.ModuleApi(import_name)
+    api = pkg.PublicApi(import_name)
     assert api.import_name == import_name
 
 
 def test_has_generated_name(import_name):
-    api = pkg.ModuleApi(import_name)
+    api = pkg.PublicApi(import_name)
     assert api.name == "demo_v1"
 
 
 def test_has_generated_descr(import_name):
-    api = pkg.ModuleApi(import_name)
+    api = pkg.PublicApi(import_name)
     assert api.description == "demo_v1 service"
 
 
 def test_model_by_adding_specific_prefix(import_name):
-    api = pkg.ModuleApi(import_name)
+    api = pkg.PublicApi(import_name)
     model = api.model("Any", {})
     assert model.name == "demo_v1.Any"

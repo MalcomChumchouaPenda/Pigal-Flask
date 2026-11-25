@@ -14,7 +14,7 @@ from sqlalchemy.exc import SAWarning
 from . import exceptions as exc
 from . import utils
 from .security.abstract import AccessStore, AccessProvider
-from .interfaces import Ui, ModuleApi
+from .interfaces import Ui, PublicApi
 
 
 class RouteManager:
@@ -114,9 +114,9 @@ class RouteManager:
             app.logger.warning(e)
             return False
 
-        if not isinstance(api, ModuleApi):
-            msg = f"{root}.api is not an instance of ModuleApi"
-            raise exc.InvalidModuleApi(msg)
+        if not isinstance(api, PublicApi):
+            msg = f"{root}.api is not an instance of PublicApi"
+            raise exc.InvalidPublicApi(msg)
 
         self.api.add_namespace(api, path=f"/{name}/{version}")
         app.logger.info(f"Register api: {root} => {api.path}")
