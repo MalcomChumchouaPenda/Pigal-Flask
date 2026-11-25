@@ -129,9 +129,9 @@ class RestApi(Namespace):
 
     def __init__(self, import_name):
         # name = re.findall(r"\.([A-Za-z0-9_]+_v\d+)$", import_name)[0]
-        name = re.findall(r"\.([A-Za-z0-9_]+)\.services$", import_name)[-1]
+        name = re.findall(r"\.([A-Za-z0-9_]+)\.resources$", import_name)[-1]
         name += '_v0'
-        super().__init__(name, description=f"{name} service")
+        super().__init__(name, description=f"{name} Rest-Full API")
         self.import_name = import_name
 
     def model(self, name, *args, **kwargs):

@@ -21,9 +21,9 @@ def module_dir(tmp_path, monkeypatch):
 
 @pytest.fixture
 def import_name(module_dir):
-    views_file = module_dir / "services.py"
+    views_file = module_dir / "resources.py"
     views_file.touch()
-    import_name = "modules.demo.services"
+    import_name = "modules.demo.resources"
     yield import_name
     sys.modules.pop(import_name, None)
 
@@ -40,7 +40,7 @@ def test_has_generated_name(import_name):
 
 def test_has_generated_descr(import_name):
     api = pkg.RestApi(import_name)
-    assert api.description == "demo_v0 service"
+    assert api.description == "demo_v0 Rest-Full API"
 
 
 def test_model_by_adding_specific_prefix(import_name):

@@ -37,11 +37,11 @@ def test_route_default_api_doc(app):
 
 REST_CODE = """
     \nfrom flask_restx import Resource, Api
-    \nfrom pigal_flask import PublicApi
+    \nfrom pigal_flask import RestApi
 
-    \napi = PublicApi(__name__)
+    \nrest_api = RestApi(__name__)
 
-    \n@api.route('/hello')
+    \n@rest_api.route('/hello')
     \nclass HelloWorld(Resource):
     \n    def get(self):
     \n        return {'message': 'Hello, World!'}
@@ -49,14 +49,14 @@ REST_CODE = """
 
 
 def test_route_minimal_rest_api(app, project_dir):
-    service_dir = project_dir / "modules/demo/services"
-    service_dir.mkdir(parents=True)
-    service_file = service_dir / "demo_v1.py"
+    module_dir = project_dir / "modules/demo"
+    module_dir.mkdir(parents=True)
+    service_file = module_dir / "resources.py"
     service_file.write_text(REST_CODE, encoding="utf-8")
     project_manager = ProjectManager()
     project_manager.init_app(app)
 
     with app.test_client() as client:
-        response = client.get("/api/demo/v1/hello")
+        response = client.get("/api/demo/v0/hello")
         assert response.status_code == 200
         assert response.json == {"message": "Hello, World!"}
