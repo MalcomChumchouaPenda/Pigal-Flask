@@ -14,7 +14,7 @@ from sqlalchemy.exc import SAWarning
 from . import exceptions as exc
 from . import utils
 from .security.abstract import AccessStore, AccessProvider
-from .interfaces import Ui, PublicApi
+from .interfaces import Ui, PublicApi, RestApi
 
 
 class RouteManager:
@@ -69,9 +69,8 @@ class RouteManager:
             for name in os.listdir(modules_dir):
                 if name.startswith("_"):
                     continue
-                module_dir = os.path.join(modules_dir, name)
-                services_dir = os.path.join(module_dir, "services")
-                self._search_apis(app, services_dir)
+                # module_dir = os.path.join(modules_dir, name)
+                self._register_rest_api(app, name)
                 self._register_ui(app, name)
 
     def _register_ui(self, app, name):
@@ -93,32 +92,33 @@ class RouteManager:
         app.logger.info(f"Register ui: {root} => {url_prefix}")
         return True
 
-    def _search_apis(self, app, services_dir):
-        if not os.path.isdir(services_dir):
-            return
+    # def _search_apis(self, app, resources_dir):
+    #     if not os.path.isdir(resources_dir):
+    #         return
 
-        for filename in os.listdir(services_dir):
-            if filename.startswith("_"):
-                continue
-            found = re.findall(r"(\S+)_(v\d+)", filename)
-            if len(found):
-                name, version = found[0]
-                self._register_api(app, name, version)
+    #     for filename in os.listdir(resources_dir):
+    #         if filename.startswith("_"):
+    #             continue
+    #         found = re.findall(r"(\S+)_(v\d+)", filename)
+    #         if len(found):
+    #             name, version = found[0]
+    #             self._register_api(app, name, version)
 
-    def _register_api(self, app, name, version):
+    def _register_rest_api(self, app, name):
         try:
-            root = f"modules.{name}.services.{name}_{version}"
+            root = f"modules.{name}.resources"
             module = importlib.import_module(root)
-            api = module.api
+            api = module.rest_api
         except (ModuleNotFoundError, AttributeError) as e:
             app.logger.warning(e)
             return False
 
-        if not isinstance(api, PublicApi):
-            msg = f"{root}.api is not an instance of PublicApi"
-            raise exc.InvalidPublicApi(msg)
+        if not isinstance(api, RestApi):
+            msg = f"{root}.rest_api is not an instance of RestApi"
+            raise exc.InvalidRestApi(msg)
 
-        self.api.add_namespace(api, path=f"/{name}/{version}")
+        print('adding', self.api, api, f"/{name}/v0")
+        self.api.add_namespace(api, path=f"/{name}/v0")
         app.logger.info(f"Register api: {root} => {api.path}")
         return True
 

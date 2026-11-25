@@ -47,6 +47,21 @@ def test_create_module_ui(project_dir):
     assert "ui = Ui(__name__)" in code
 
 
+def test_create_module_rest_api(project_dir):
+    # Given
+    runner = CliRunner()
+    file_name = project_dir / "my_module/resources.py"
+
+    # When
+    runner.invoke(create_module, ["my_module"])
+    with open(file_name, "rt") as file:
+        code = file.read()
+
+    # Then
+    assert "from pigal_flask import RestApi" in code
+    assert "rest_api = RestApi(__name__)" in code
+
+
 def test_create_module_public_api(project_dir):
     # Given
     runner = CliRunner()
@@ -59,7 +74,7 @@ def test_create_module_public_api(project_dir):
 
     # Then
     assert "from pigal_flask import PublicApi" in code
-    assert "api = PublicApi(__name__)" in code
+    assert "public_api = PublicApi(__name__)" in code
 
 
 def test_fails_outside_project_dir(tmp_path, monkeypatch):

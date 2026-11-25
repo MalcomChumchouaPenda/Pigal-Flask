@@ -11,9 +11,9 @@ from pigal_flask import exceptions as exc
 @pytest.fixture
 def route_manager(monkeypatch):
     MockUi = MagicMock(return_value=MagicMock(spec=pkg.Ui))
-    MockPublicApi = MagicMock(return_value=MagicMock(spec=pkg.PublicApi))
+    MockRestApi = MagicMock(return_value=MagicMock(spec=pkg.RestApi))
     monkeypatch.setattr(pkg, "Ui", MockUi)
-    monkeypatch.setattr(pkg, "PublicApi", MockPublicApi)
+    monkeypatch.setattr(pkg, "RestApi", MockRestApi)
     monkeypatch.setattr(ext, "Api", MagicMock())
     monkeypatch.setattr(ext, "Blueprint", MagicMock())
     route_manager = ext.RouteManager()
@@ -96,16 +96,16 @@ def app2(app1):
 
 
 @pytest.mark.usefixtures("project2")
-def test_create_default_rest_api(app2, route_manager):
+def test_create_main_rest_api(app2, route_manager):
     bp_name = ext.__name__
     route_manager.init_app(app2)
 
-    rest_api = ext.Api.return_value
+    main_rest_api = ext.Api.return_value
     api_bp = ext.Blueprint.return_value
     ext.Blueprint.assert_called_with("api", bp_name, url_prefix="/api")
     ext.Api.assert_called_with(api_bp, title="demo API", version="0.1")
     app2.register_blueprint.assert_any_call(api_bp)
-    assert route_manager.api == rest_api
+    assert route_manager.api == main_rest_api
 
 
 @pytest.fixture
@@ -173,59 +173,50 @@ def test_ignore_invalid_module_ui(app2, project3, route_manager):
 
 @pytest.fixture
 def project4(project2):
-    """project with private and public demo services"""
-    (project2 / "modules/demo/services").mkdir(parents=True)
-    (project2 / "modules/_demo/services").mkdir(parents=True)
+    """project with private and public demo resources"""
+    (project2 / "modules/demo/resources").mkdir(parents=True)
+    (project2 / "modules/_demo/resources").mkdir(parents=True)
     return project2
 
 
 API_CODE = """
-    \nfrom pigal_flask import PublicApi
-    \napi = PublicApi(__file__)
+    \nfrom pigal_flask import RestApi
+    \nrest_api = RestApi(__file__)
     """
 
 
-def test_register_module_api_as_namespace(app2, project4, route_manager):
-    routes_file = project4 / "modules/demo/services/demo_v1.py"
+def test_register_module_rest_api_as_namespace(app2, project4, route_manager):
+    routes_file = project4 / "modules/demo/resources.py"
     routes_file.write_text(API_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
-    path = "/demo/v1"
-    module_api = pkg.PublicApi.return_value
-    rest_api = ext.Api.return_value
-    rest_api.add_namespace.assert_any_call(module_api, path=path)
+    path = "/demo/v0"
+    module_rest_api = pkg.RestApi.return_value
+    main_rest_api = ext.Api.return_value
+    main_rest_api.add_namespace.assert_any_call(module_rest_api, path=path)
 
 
-def test_ignore_private_module_api(app2, project4, route_manager):
-    routes_file = project4 / "modules/_demo/services/demo_v1.py"
+def test_ignore_private_module_rest_api(app2, project4, route_manager):
+    routes_file = project4 / "modules/_demo/resources.py"
     routes_file.write_text(API_CODE, encoding="utf-8")
     route_manager.init_app(app2)
 
     with pytest.raises(AssertionError):
-        path = "/demo/v1"
-        module_api = pkg.PublicApi.return_value
-        rest_api = ext.Api.return_value
-        rest_api.add_namespace.assert_any_call(module_api, path=path)
+        path = "/_demo/v0"
+        main_rest_api = ext.Api.return_value
+        module_rest_api = pkg.RestApi.return_value
+        print("testing", main_rest_api, module_rest_api, path)
+        main_rest_api.add_namespace.assert_any_call(module_rest_api, path=path)
 
 
-def test_ignore_invalid_module_api(app2, project4, route_manager):
-    routes_file = project4 / "modules/demo/services/demo_v1.py"
-    routes_file.write_text("api = object()", encoding="utf-8")
+def test_ignore_invalid_module_rest_api(app2, project4, route_manager):
+    routes_file = project4 / "modules/demo/resources.py"
+    routes_file.write_text("rest_api = object()", encoding="utf-8")
 
-    with pytest.raises(exc.InvalidPublicApi) as exc_info:
+    with pytest.raises(exc.InvalidRestApi) as exc_info:
         route_manager.init_app(app2)
-    err_msg = "modules.demo.services.demo_v1.api "
-    err_msg += "is not an instance of PublicApi"
+    err_msg = "modules.demo.resources.rest_api "
+    err_msg += "is not an instance of RestApi"
     assert str(exc_info.value) == err_msg
 
 
-def test_ignore_nonstandard_module_api(app2, project4, route_manager):
-    routes_file = project4 / "modules/demo/services/demo.py"
-    routes_file.write_text(API_CODE, encoding="utf-8")
-    route_manager.init_app(app2)
-
-    with pytest.raises(AssertionError):
-        path = "/demo/v1"
-        module_api = pkg.PublicApi.return_value
-        rest_api = ext.Api.return_value
-        rest_api.add_namespace.assert_any_call(module_api, path=path)

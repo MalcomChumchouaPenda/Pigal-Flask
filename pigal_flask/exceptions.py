@@ -13,6 +13,11 @@ class InvalidUi(Exception):
     pass
 
 
+
+class InvalidRestApi(Exception):
+    pass
+
+
 class InvalidPublicApi(Exception):
     pass
 
