@@ -1,5 +1,5 @@
-from pigal_flask import RouteManager, PigalDb
+from pigal_flask import ProjectManager, PigalDb
 
 
 db = PigalDb()
-route_manager = RouteManager()
+project_manager = ProjectManager()

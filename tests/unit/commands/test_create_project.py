@@ -106,8 +106,8 @@ def test_create_app_extensions_file(project_dir):
         code = file.read()
 
     # Then
-    assert "from pigal_flask import RouteManager" in code
-    assert "route_manager = RouteManager()" in code
+    assert "from pigal_flask import ProjectManager" in code
+    assert "project_manager = ProjectManager()" in code
 
 
 def test_create_app_init_file(project_dir):
@@ -123,10 +123,10 @@ def test_create_app_init_file(project_dir):
     # Then
     assert "from flask import Flask" in code
     assert "from .config import Config" in code
-    assert "from .extensions import route_manager" in code
+    assert "from .extensions import project_manager" in code
     assert "app = Flask(__name__)" in code
     assert "app.config.from_object(Config)" in code
-    assert "route_manager.init_app(app)" in code
+    assert "project_manager.init_app(app)" in code
 
 
 def test_create_default_modules(project_dir):

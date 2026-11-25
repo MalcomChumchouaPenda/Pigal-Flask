@@ -17,7 +17,7 @@ from .security.abstract import AccessStore, AccessProvider
 from .interfaces import Ui, PublicApi, RestApi
 
 
-class RouteManager:
+class ProjectManager:
 
     def __init__(self, app=None):
         super().__init__()

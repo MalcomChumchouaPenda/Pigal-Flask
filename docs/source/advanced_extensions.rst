@@ -30,10 +30,10 @@ By default, ``app/extensions.py`` contains the following code:
 
 .. code-block:: python
 
-    from pigal_flask import RouteManager, PigalDb
+    from pigal_flask import ProjectManager, PigalDb
 
     db = PigalDb()
-    route_manager = RouteManager()
+    project_manager = ProjectManager()
 
 
 We must modify this file to create installed extensions:

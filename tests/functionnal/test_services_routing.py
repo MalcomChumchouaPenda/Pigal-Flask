@@ -2,7 +2,7 @@ import os
 import sys
 import pytest
 from flask import Flask
-from pigal_flask.extensions import RouteManager
+from pigal_flask.extensions import ProjectManager
 
 
 @pytest.fixture
@@ -25,8 +25,8 @@ def app(project_dir):
 
 
 def test_route_default_api_doc(app):
-    route_manager = RouteManager()
-    route_manager.init_app(app)
+    project_manager = ProjectManager()
+    project_manager.init_app(app)
 
     with app.test_client() as client:
         response = client.get("/api/")
@@ -53,8 +53,8 @@ def test_route_minimal_rest_api(app, project_dir):
     service_dir.mkdir(parents=True)
     service_file = service_dir / "demo_v1.py"
     service_file.write_text(REST_CODE, encoding="utf-8")
-    route_manager = RouteManager()
-    route_manager.init_app(app)
+    project_manager = ProjectManager()
+    project_manager.init_app(app)
 
     with app.test_client() as client:
         response = client.get("/api/demo/v1/hello")
