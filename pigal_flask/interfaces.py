@@ -22,30 +22,31 @@ class Ui(Blueprint):
 
     def __init__(self, import_name, jinja_extensions=[".html", ".jinja"]):
         name = self._generate_name(import_name)
-        static_dir = self._generate_static_dir(import_name)
+        template_dir, static_dir = self._generate_assets_dirs(import_name)
         self.jinja_extensions = jinja_extensions
         self.deferred_rules = []
         self.access = None
-
         super().__init__(
             name,
             import_name,
             static_folder=static_dir,
             static_url_path="../static",
-            template_folder="../pages",
+            template_folder=template_dir,
         )
 
     def _generate_name(self, import_name):
-        names = re.findall(r"modules\.(\S+)\.pages", import_name)
+        names = re.findall(r"modules\.(\S+)\.views", import_name)
         return names[0]
 
-    def _generate_static_dir(self, import_name):
+    def _generate_assets_dirs(self, import_name):
         spec = importlib.util.find_spec(import_name)
         if spec and spec.origin:
             routes_path = spec.origin
-            pages_dir = os.path.dirname(routes_path)
-            root_dir = os.path.dirname(pages_dir)
-            return os.path.join(root_dir, "static")
+            root_dir = os.path.dirname(routes_path)
+            static_folder = os.path.join(root_dir, "static")
+            template_folder = os.path.join(root_dir, "templates")
+            return template_folder, static_folder
+        return None, None
 
     def bind_access(self, access):
         if self.access is not None:
@@ -73,7 +74,7 @@ class Ui(Blueprint):
 
     def scan_pages(self):
         root_dir = os.path.dirname(self.static_folder)
-        pages_dir = Path(os.path.join(root_dir, "pages"))
+        pages_dir = Path(os.path.join(root_dir, "templates"))
         for file in sorted(pages_dir.rglob("*")):
             if file.suffix not in self.jinja_extensions:
                 continue

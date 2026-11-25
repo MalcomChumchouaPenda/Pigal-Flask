@@ -22,22 +22,16 @@ def modules_dir(tmp_path, monkeypatch):
 @pytest.fixture
 def demo_dir(modules_dir):
     demo_dir = modules_dir / "demo"
-    demo_dir.mkdir(parents=True)
+    pages_dir = demo_dir / "templates/demo"
+    pages_dir.mkdir(parents=True)
     return demo_dir
 
 
 @pytest.fixture
-def pages_dir(demo_dir):
-    pages_dir = demo_dir / "pages"
-    pages_dir.mkdir(parents=True)
-    return pages_dir
-
-
-@pytest.fixture
-def import_name(pages_dir):
-    views_file = pages_dir / "routes.py"
+def import_name(demo_dir):
+    views_file = demo_dir / "views.py"
     views_file.touch()
-    import_name = "modules.demo.pages.routes"
+    import_name = "modules.demo.views"
     yield import_name
     sys.modules.pop(import_name, None)
 
@@ -52,9 +46,9 @@ def test_has_generated_name(import_name):
     assert ui.name == "demo"
 
 
-def test_has_generated_template_folder(import_name):
+def test_has_generated_template_folder(import_name, modules_dir):
     ui = pkg.Ui(import_name)
-    assert ui.template_folder == "../pages"
+    assert ui.template_folder == str(modules_dir / "demo/templates")
 
 
 def test_has_generated_static_paths(import_name, modules_dir):
@@ -102,8 +96,12 @@ def test_route_with_class_based_view(ui1):
     assert ui1.deferred_rules == ["/hello"]
 
 
+@pytest.fixture
+def pages_dir(demo_dir):
+    return demo_dir / "templates"
+
+
 def test_scan_static_pages(ui1, pages_dir):
-    (pages_dir / "demo").mkdir()
     (pages_dir / "demo/about.html").touch()
     ui1.scan_pages()
 
@@ -117,7 +115,6 @@ def test_scan_static_pages(ui1, pages_dir):
 
 
 def test_scan_index_page(ui1, pages_dir):
-    (pages_dir / "demo").mkdir()
     (pages_dir / "demo/index.html").touch()
     ui1.scan_pages()
 
@@ -213,7 +210,6 @@ def test_scan_dynamic_page_with_multi_param(ui1, pages_dir):
 
 
 def test_scan_and_avoid_duplicated_rules(ui1, pages_dir):
-    (pages_dir / "demo").mkdir()
     (pages_dir / "demo/index.html").touch()
     (pages_dir / "demo/hello.html").touch()
     ui1.deferred_rules = ["/", "/hello"]

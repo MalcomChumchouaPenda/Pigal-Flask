@@ -17,16 +17,16 @@ def demo_dir(tmp_path, monkeypatch):
     monkeypatch.syspath_prepend(str(project_dir))
     demo_dir = project_dir / "modules/demo"
     demo_dir.mkdir(parents=True)
-    contents_dir = demo_dir / "pages/demo"
+    contents_dir = demo_dir / "templates/demo"
     contents_dir.mkdir(parents=True)
     return demo_dir
 
 
 @pytest.fixture
 def demo_name(demo_dir):
-    routes_file = demo_dir / "pages/routes.py"
+    routes_file = demo_dir / "views.py"
     routes_file.touch()
-    import_name = "modules.demo.pages.routes"
+    import_name = "modules.demo.views"
     yield import_name
     sys.modules.pop(import_name, None)
 
