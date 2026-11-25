@@ -1,4 +1,3 @@
-
 from flask import Flask
 from .extensions import route_manager
 from .config import Config

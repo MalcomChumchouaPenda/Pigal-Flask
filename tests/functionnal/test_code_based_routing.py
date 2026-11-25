@@ -1,4 +1,3 @@
-
 import os
 import sys
 import pytest
@@ -9,18 +8,16 @@ from pigal_flask import ModuleUi
 
 @pytest.fixture
 def app(tmp_path):
-    return Flask(__name__, 
-                instance_path=str(tmp_path), 
-                instance_relative_config=True)
+    return Flask(__name__, instance_path=str(tmp_path), instance_relative_config=True)
 
 
 @pytest.fixture
 def demo_dir(tmp_path, monkeypatch):
-    project_dir = tmp_path / 'fake'
+    project_dir = tmp_path / "fake"
     monkeypatch.syspath_prepend(str(project_dir))
-    demo_dir = project_dir / 'modules/demo'
+    demo_dir = project_dir / "modules/demo"
     demo_dir.mkdir(parents=True)
-    contents_dir = demo_dir / 'pages/demo'
+    contents_dir = demo_dir / "pages/demo"
     contents_dir.mkdir(parents=True)
     return demo_dir
 
@@ -29,7 +26,7 @@ def demo_dir(tmp_path, monkeypatch):
 def demo_name(demo_dir):
     routes_file = demo_dir / "pages/routes.py"
     routes_file.touch()
-    import_name = 'modules.demo.pages.routes'
+    import_name = "modules.demo.pages.routes"
     yield import_name
     sys.modules.pop(import_name, None)
 
@@ -40,42 +37,41 @@ def ui(demo_name):
 
 
 def test_route_view_function(app, ui):
-    @ui.route('/hello')
+    @ui.route("/hello")
     def hello():
-        return 'Hello World'
+        return "Hello World"
 
-    app.register_blueprint(ui, url_prefix='/demo')
+    app.register_blueprint(ui, url_prefix="/demo")
     client = app.test_client()
     response = client.get("/demo/hello")
 
     assert response.status_code == 200
-    assert response.data == b'Hello World'
+    assert response.data == b"Hello World"
 
 
 def test_route_class_based_view(app, ui):
-    @ui.route('/hello')
+    @ui.route("/hello")
     class Hello(View):
         def dispatch_request(self):
-            return 'Hello World'
+            return "Hello World"
 
-    app.register_blueprint(ui, url_prefix='/demo')
+    app.register_blueprint(ui, url_prefix="/demo")
     client = app.test_client()
     response = client.get("/demo/hello")
 
     assert response.status_code == 200
-    assert response.data == b'Hello World'
-    
+    assert response.data == b"Hello World"
+
+
 def test_route_method_view(app, ui):
-    @ui.route('/hello')
+    @ui.route("/hello")
     class Hello(MethodView):
         def get(self):
-            return 'Hello World'
+            return "Hello World"
 
-    app.register_blueprint(ui, url_prefix='/demo')
+    app.register_blueprint(ui, url_prefix="/demo")
     client = app.test_client()
     response = client.get("/demo/hello")
 
     assert response.status_code == 200
-    assert response.data == b'Hello World'
-
-        
+    assert response.data == b"Hello World"

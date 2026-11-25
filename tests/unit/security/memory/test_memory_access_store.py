@@ -17,21 +17,22 @@ def store():
 def test_create_user(store):
     store.create_user("alice", "1234")
     assert store.find_user("alice") == {
-        "id":"alice", 
-        "pwd":"1234",
+        "id": "alice",
+        "pwd": "1234",
         "roles": frozenset(),
         "permissions": frozenset(),
-        }
+    }
+
 
 def test_create_user_with_params(store):
     store.create_user("alice", "1234", name="alice")
     assert store.find_user("alice") == {
-        "id":"alice", 
-        "pwd":"1234", 
-        "name":"alice",
+        "id": "alice",
+        "pwd": "1234",
+        "name": "alice",
         "roles": frozenset(),
         "permissions": frozenset(),
-        }
+    }
 
 
 def test_find_unknown_user_returns_none(store):
@@ -42,12 +43,12 @@ def test_update_user(store):
     store.create_user("alice", "1234")
     store.update_user("alice", name="Alice Penda")
     assert store.find_user("alice") == {
-        "id":"alice", 
-        "pwd":"1234", 
-        "name":"Alice Penda",
+        "id": "alice",
+        "pwd": "1234",
+        "name": "Alice Penda",
         "roles": frozenset(),
         "permissions": frozenset(),
-        }
+    }
 
 
 def test_delete_user(store):
@@ -73,7 +74,7 @@ def test_delete_role(store):
 
 def test_grant_permission(store):
     store.create_role("admin")
-    store.grant_permission( "admin", "users.read")
+    store.grant_permission("admin", "users.read")
     assert "users.read" in store.find_role_permissions("admin")
 
 
@@ -82,16 +83,16 @@ def test_revoke_permission(store):
     store.grant_permission("admin", "users.read")
     store.revoke_permission("admin", "users.read")
     assert "users.read" not in store.find_role_permissions("admin")
-    
+
 
 def test_assign_role(store):
     store.create_user("alice", "10")
     store.create_role("admin")
     store.assign_role("alice", "admin")
     assert store.find_user_roles("alice") == {"admin"}
-    assert store.find_user('alice') == {
-        "id":"alice",
-        "pwd":"10",
+    assert store.find_user("alice") == {
+        "id": "alice",
+        "pwd": "10",
         "roles": {"admin"},
         "permissions": frozenset(),
     }
@@ -103,9 +104,9 @@ def test_revoke_role(store):
     store.assign_role("alice", "admin")
     store.revoke_role("alice", "admin")
     assert store.find_user_roles("alice") == frozenset()
-    assert store.find_user('alice') == {
-        "id":"alice",
-        "pwd":"10",
+    assert store.find_user("alice") == {
+        "id": "alice",
+        "pwd": "10",
         "roles": frozenset(),
         "permissions": frozenset(),
     }
@@ -118,9 +119,9 @@ def test_user_can_have_multiple_roles(store):
     store.assign_role("alice", "admin")
     store.assign_role("alice", "editor")
     assert store.find_user_roles("alice") == {"admin", "editor"}
-    assert store.find_user('alice') == {
-        "id":"alice",
-        "pwd":"10",
+    assert store.find_user("alice") == {
+        "id": "alice",
+        "pwd": "10",
         "roles": {"admin", "editor"},
         "permissions": frozenset(),
     }
@@ -172,6 +173,3 @@ def test_delete_user_removes_role_assignments(store):
     store.assign_role("alice", "admin")
     store.delete_user("alice")
     assert store.find_user_roles("alice") == frozenset()
-
-
-

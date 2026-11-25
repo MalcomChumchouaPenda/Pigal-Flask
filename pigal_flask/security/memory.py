@@ -1,4 +1,3 @@
-
 from collections import defaultdict
 from .abstract import AccessStore, AccessProvider
 
@@ -33,8 +32,8 @@ class MemoryAccessStore(AccessStore):
                 role_perms = self.find_role_permissions(role_id)
                 user_perms.extend(list(role_perms))
             user = user.copy()
-            user['roles'] = roles
-            user['permissions'] = set(user_perms)
+            user["roles"] = roles
+            user["permissions"] = set(user_perms)
             return user
 
     def update_user(self, user_id, **kwargs):
@@ -91,7 +90,6 @@ class MemoryAccessStore(AccessStore):
 
     def find_role_permissions(self, role):
         return frozenset(self._role_permissions.get(role, ()))
-    
 
 
 class MemoryAccessProvider(AccessProvider):
@@ -100,15 +98,13 @@ class MemoryAccessProvider(AccessProvider):
         super().__init__(store)
         self._identity = None
 
-
     def authenticate(self, credentials):
-        user = self.store.find_user(credentials['user_id'])
-        if user is None or user['user_pwd'] != credentials['user_pwd']:
+        user = self.store.find_user(credentials["user_id"])
+        if user is None or user["user_pwd"] != credentials["user_pwd"]:
             return False
-        user.pop('user_pwd')
+        user.pop("user_pwd")
         self._identity = user
         return True
-
 
     def logout(self):
         self._identity = None
@@ -130,7 +126,6 @@ class MemoryAccessProvider(AccessProvider):
         return permission in self._identity["permissions"]
 
 
-
 class MemoryUser:
     pass
 
@@ -141,4 +136,3 @@ class MemoryRole:
 
 class MemoryPermission:
     pass
-

@@ -3,7 +3,8 @@ import wrapt
 from flask import Blueprint
 
 # Définition de votre Blueprint ou Application Flask
-bp = Blueprint('api', __name__)
+bp = Blueprint("api", __name__)
+
 
 # Création du décorateur de route étendu avec wrapt
 def route_etendue(blueprint, rule, **options):
@@ -21,15 +22,15 @@ def route_etendue(blueprint, rule, **options):
             for attr_name in dir(cls):
                 attr = getattr(cls, attr_name)
                 # Vérifie si la méthode a été marquée avec des règles de route
-                if hasattr(attr, '__route_rule__'):
+                if hasattr(attr, "__route_rule__"):
                     # Crée l'instance de la classe pour l'injecter dans view_func
                     instance = cls()
                     bound_method = getattr(instance, attr_name)
                     # Enregistre la route auprès du blueprint
                     blueprint.add_url_rule(
-                        attr.__route_rule__, 
-                        view_func=bound_method, 
-                        **getattr(attr, '__route_options__', {})
+                        attr.__route_rule__,
+                        view_func=bound_method,
+                        **getattr(attr, "__route_options__", {})
                     )
             return cls
         else:
@@ -45,17 +46,18 @@ def route_etendue(blueprint, rule, **options):
 
 
 class MonControleur:
-    @route_etendue(bp, '/accueil', methods=['GET'])
+    @route_etendue(bp, "/accueil", methods=["GET"])
     def index(self, **kwargs):
         return "Bienvenue sur l'accueil de la classe !"
 
-@route_etendue(bp, '/api')
+
+@route_etendue(bp, "/api")
 class ApiControleur:
-    
-    @route_etendue(bp, '/users', methods=['GET'])
+
+    @route_etendue(bp, "/users", methods=["GET"])
     def get_users(self):
         return {"status": "success", "data": []}
 
-    @route_etendue(bp, '/status', methods=['GET'])
+    @route_etendue(bp, "/status", methods=["GET"])
     def check_status(self):
         return {"status": "online"}

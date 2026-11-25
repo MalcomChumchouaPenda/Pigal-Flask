@@ -8,7 +8,6 @@
 # from pigal_flask.security import AccessProvider
 
 
-
 # class MemoryAccessProvider(AccessProvider):
 
 #     def __init__(self, store):
@@ -49,7 +48,7 @@
 #             if permission in self.store.permissions(role):
 #                 return True
 #         return False
-    
+
 # # ----------------------------------------------------------------------
 # # Fixtures
 # # ----------------------------------------------------------------------
@@ -231,4 +230,3 @@
 
 #     response = client.get("/profile")
 #     assert response.status_code == 401
-

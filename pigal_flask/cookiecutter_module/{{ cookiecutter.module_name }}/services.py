@@ -1,4 +1,3 @@
-
 from pigal_flask import ModuleApi
 
 

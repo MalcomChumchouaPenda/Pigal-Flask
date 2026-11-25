@@ -1,4 +1,3 @@
-
 from flask import Flask, request, url_for
 from flask.views import View
 
@@ -9,12 +8,11 @@ app = Flask(__file__)
 class DemoView(View):
     def dispatch_request(self, **params):
         return {
-            'params':params,
-            'path':request.path,
-            'rule':request.url_rule.rule,
-            'view': url_for('solve')
+            "params": params,
+            "path": request.path,
+            "rule": request.url_rule.rule,
+            "view": url_for("solve"),
         }
-                
 
 
 view_func = DemoView.as_view("solve")
@@ -26,5 +24,5 @@ app.add_url_rule("/<path:path>", view_func=view_func)
 
 print(app.instance_path)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

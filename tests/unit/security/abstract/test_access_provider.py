@@ -1,4 +1,3 @@
-
 import inspect
 import pytest
 from unittest.mock import MagicMock
@@ -29,10 +28,10 @@ def test_declare_expected_abstract_methods():
     ("method", "parameters"),
     [
         ("authenticate", ("self", "credentials")),
-        ("logout", ("self", )),
-        ("identity", ("self", )),
+        ("logout", ("self",)),
+        ("identity", ("self",)),
         ("has_role", ("self", "role")),
-        ('has_permission', ("self", "permission"))
+        ("has_permission", ("self", "permission")),
     ],
 )
 def test_method_signature(method, parameters):
@@ -42,17 +41,27 @@ def test_method_signature(method, parameters):
 
 
 class FakeProvider(pkg.AccessProvider):
-    
-    def authenticate(self, credentials) : pass
-    def logout(self) : pass
-    def identity(self) : pass
-    def is_authenticated(self): pass
-    def has_role(self, role) : pass
-    def has_permission(self, permission): pass
+
+    def authenticate(self, credentials):
+        pass
+
+    def logout(self):
+        pass
+
+    def identity(self):
+        pass
+
+    def is_authenticated(self):
+        pass
+
+    def has_role(self, role):
+        pass
+
+    def has_permission(self, permission):
+        pass
 
 
 def test_is_configured_with_store():
     store = MagicMock()
     provider = FakeProvider(store)
     assert provider.store is store
-    

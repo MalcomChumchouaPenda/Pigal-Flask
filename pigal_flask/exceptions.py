@@ -1,9 +1,9 @@
-
 from click import ClickException
 
 
 class InvalidProjectStructure(Exception):
     pass
+
 
 class InvalidProjectConfig(Exception):
     pass
@@ -11,6 +11,7 @@ class InvalidProjectConfig(Exception):
 
 class InvalidModuleUi(Exception):
     pass
+
 
 class InvalidModuleApi(Exception):
     pass
@@ -22,12 +23,12 @@ class InvalidAppConfig(Exception):
 
 class InvalidCommandContext(ClickException):
     """This exception is raised when a command is executed
-    in the wrong directory. Theses wrong cases of command execution 
+    in the wrong directory. Theses wrong cases of command execution
     are the following:
 
     - execution of ``create-frontend`` outside of a ``frontends`` directory
     - execution of ``create-backend`` outside of a ``backends`` directory
-    
+
     """
 
 
@@ -45,6 +46,5 @@ class InvalidThemeFile(ClickException):
     - a ``home/index.jinja`` file
     - a ``home/dashboard.jinja`` file
     - a ``examples`` folder
-    
-    """
 
+    """

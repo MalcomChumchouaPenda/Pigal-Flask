@@ -1,4 +1,3 @@
-
 from abc import ABC, abstractmethod
 
 
@@ -7,7 +6,6 @@ class AccessProvider(ABC):
     def __init__(self, store):
         super().__init__()
         self.store = store
-
 
     @abstractmethod
     def authenticate(self, credentials):
@@ -134,4 +132,3 @@ class AccessRole:
 
 class AccessPermission:
     pass
-
