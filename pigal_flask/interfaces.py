@@ -3,7 +3,7 @@ import re
 import inspect
 import importlib
 from pathlib import Path
-from functools import partial
+from functools import partial, wraps
 
 from flask import Blueprint, render_template
 from flask_restx import Namespace
@@ -25,7 +25,7 @@ class Ui(Blueprint):
         template_dir, static_dir = self._generate_assets_dirs(import_name)
         self.jinja_extensions = jinja_extensions
         self.deferred_rules = []
-        self.access = None
+        self.authenticator = None
         super().__init__(
             name,
             import_name,
@@ -47,12 +47,6 @@ class Ui(Blueprint):
             template_folder = os.path.join(root_dir, "templates")
             return template_folder, static_folder
         return None, None
-
-    def bind_access(self, access):
-        if self.access is not None:
-            msg = f"{self} has already an access"
-            raise RuntimeError(msg)
-        self.access = access
 
     def route(self, rule, **options):
         def decorator(wrapped):
@@ -103,23 +97,26 @@ class Ui(Blueprint):
             rule = "/" + rule
         return rule
 
-    def require_login(self):
-        try:
-            return self.access.require_login()
-        except AttributeError:
-            raise RuntimeError(f"{self} has no access")
 
-    def require_role(self, role):
-        try:
-            return self.access.require_role(role)
-        except AttributeError:
-            raise RuntimeError(f"{self} has no access")
+    def login_required(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if not self.authenticator.is_authenticated():
+                return self.authenticator.on_unauthenticated()
+            return func(*args, **kwargs)
+        return wrapper
 
-    def require_permission(self, first, *others):
-        try:
-            return self.access.require_permission(first, *others)
-        except AttributeError:
-            raise RuntimeError(f"{self} has no access")
+    def roles_accepted(self, *roles):
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                if not self.authenticator.is_authenticated():
+                    return self.authenticator.on_unauthenticated()
+                if not self.authenticator.has_roles(*roles):
+                    return self.authenticator.on_unauthorized()
+                return func(*args, **kwargs)
+            return wrapper
+        return decorator
 
 
 class PublicApi:

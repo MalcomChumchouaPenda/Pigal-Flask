@@ -67,8 +67,13 @@ def test_can_be_configured_by_extensions(import_name):
     assert ui.jinja_extensions == [".j2", ".j3"]
 
 
+def test_has_no_default_authenticator(import_name):
+    ui = pkg.Ui(import_name)
+    assert ui.authenticator is None
+
+
 @pytest.fixture
-def ui1(import_name):
+def ui_without_url_rules(import_name):
     """ui with mocked add_url_rule"""
     ui = pkg.Ui(import_name)
     ui.add_url_rule = MagicMock()
@@ -76,24 +81,28 @@ def ui1(import_name):
 
 
 @pytest.mark.parametrize("options", [{}, {"methods": ["GET"]}])
-def test_route_with_view_function(ui1, options):
-    @ui1.route("/hello", **options)
+def test_route_with_view_function(ui_without_url_rules, options):
+    ui = ui_without_url_rules
+
+    @ui.route("/hello", **options)
     def hello():
         pass
 
-    ui1.add_url_rule.assert_called_with("/hello", view_func=hello, **options)
-    assert ui1.deferred_rules == ["/hello"]
+    ui.add_url_rule.assert_called_with("/hello", view_func=hello, **options)
+    assert ui_without_url_rules.deferred_rules == ["/hello"]
 
 
-def test_route_with_class_based_view(ui1):
-    @ui1.route("/hello")
+def test_route_with_class_based_view(ui_without_url_rules):
+    ui = ui_without_url_rules
+
+    @ui.route("/hello")
     class Hello:
         as_view = MagicMock()
 
     view_func = Hello.as_view.return_value
     Hello.as_view.assert_called_with("Hello")
-    ui1.add_url_rule.assert_called_with("/hello", view_func=view_func)
-    assert ui1.deferred_rules == ["/hello"]
+    ui.add_url_rule.assert_called_with("/hello", view_func=view_func)
+    assert ui_without_url_rules.deferred_rules == ["/hello"]
 
 
 @pytest.fixture
@@ -101,131 +110,150 @@ def pages_dir(demo_dir):
     return demo_dir / "templates"
 
 
-def test_scan_static_pages(ui1, pages_dir):
+def test_scan_static_pages(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/about.html").touch()
-    ui1.scan_pages()
+    ui = ui_without_url_rules
 
-    ui1.add_url_rule.assert_called()
-    rule = ui1.add_url_rule.call_args[0][0]
-    view_func = ui1.add_url_rule.call_args[0][2]
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    view_func = ui.add_url_rule.call_args[0][2]
     assert rule == "/about"
     assert isinstance(view_func, partial)
-    assert view_func.func == ui1.show_page
+    assert view_func.func == ui.show_page
     assert view_func.args == ("demo/about.html",)
 
 
-def test_scan_index_page(ui1, pages_dir):
+def test_scan_index_page(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/index.html").touch()
-    ui1.scan_pages()
+    ui = ui_without_url_rules
 
-    ui1.add_url_rule.assert_called()
-    rule = ui1.add_url_rule.call_args[0][0]
-    endpoint = ui1.add_url_rule.call_args[0][1]
-    view_func = ui1.add_url_rule.call_args[0][2]
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    endpoint = ui.add_url_rule.call_args[0][1]
+    view_func = ui.add_url_rule.call_args[0][2]
     assert rule == "/"
     assert endpoint == "show_page"
     assert isinstance(view_func, partial)
-    assert view_func.func == ui1.show_page
+    assert view_func.func == ui.show_page
     assert view_func.args == ("demo/index.html",)
 
 
-def test_scan_home_index_page(ui1, pages_dir):
+def test_scan_home_index_page(ui_without_url_rules, pages_dir):
     (pages_dir / "home").mkdir()
     (pages_dir / "home/index.html").touch()
-    ui1.scan_pages()
+    ui = ui_without_url_rules
 
-    ui1.add_url_rule.assert_called()
-    rule = ui1.add_url_rule.call_args[0][0]
-    endpoint = ui1.add_url_rule.call_args[0][1]
-    view_func = ui1.add_url_rule.call_args[0][2]
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    endpoint = ui.add_url_rule.call_args[0][1]
+    view_func = ui.add_url_rule.call_args[0][2]
     assert rule == "/"
     assert endpoint == "show_page"
     assert isinstance(view_func, partial)
-    assert view_func.func == ui1.show_page
+    assert view_func.func == ui.show_page
     assert view_func.args == ("home/index.html",)
 
 
-def test_scan_nested_static_page(ui1, pages_dir):
+def test_scan_nested_static_page(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/blog").mkdir(parents=True)
     (pages_dir / "demo/blog/post.html").touch()
-    ui1.scan_pages()
+    ui = ui_without_url_rules
 
-    ui1.add_url_rule.assert_called()
-    rule = ui1.add_url_rule.call_args[0][0]
-    endpoint = ui1.add_url_rule.call_args[0][1]
-    view_func = ui1.add_url_rule.call_args[0][2]
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    endpoint = ui.add_url_rule.call_args[0][1]
+    view_func = ui.add_url_rule.call_args[0][2]
     assert rule == "/blog/post"
     assert endpoint == "show_page"
     assert isinstance(view_func, partial)
-    assert view_func.func == ui1.show_page
+    assert view_func.func == ui.show_page
     assert view_func.args == ("demo/blog/post.html",)
 
 
-def test_scan_nested_index_page(ui1, pages_dir):
+def test_scan_nested_index_page(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/blog").mkdir(parents=True)
     (pages_dir / "demo/blog/index.html").touch()
-    ui1.scan_pages()
+    ui = ui_without_url_rules
 
-    ui1.add_url_rule.assert_called()
-    rule = ui1.add_url_rule.call_args[0][0]
-    endpoint = ui1.add_url_rule.call_args[0][1]
-    view_func = ui1.add_url_rule.call_args[0][2]
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    endpoint = ui.add_url_rule.call_args[0][1]
+    view_func = ui.add_url_rule.call_args[0][2]
     assert rule == "/blog"
     assert endpoint == "show_page"
     assert isinstance(view_func, partial)
-    assert view_func.func == ui1.show_page
+    assert view_func.func == ui.show_page
     assert view_func.args == ("demo/blog/index.html",)
 
 
-def test_scan_dynamic_page_with_one_param(ui1, pages_dir):
+def test_scan_dynamic_page_with_one_param(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/blog").mkdir(parents=True)
     (pages_dir / "demo/blog/[id].html").touch()
-    ui1.scan_pages()
+    ui = ui_without_url_rules
 
-    ui1.add_url_rule.assert_called()
-    rule = ui1.add_url_rule.call_args[0][0]
-    endpoint = ui1.add_url_rule.call_args[0][1]
-    view_func = ui1.add_url_rule.call_args[0][2]
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    endpoint = ui.add_url_rule.call_args[0][1]
+    view_func = ui.add_url_rule.call_args[0][2]
     assert rule == "/blog/<id>"
     assert endpoint == "show_page"
     assert isinstance(view_func, partial)
-    assert view_func.func == ui1.show_page
+    assert view_func.func == ui.show_page
     assert view_func.args == ("demo/blog/[id].html",)
 
 
-def test_scan_dynamic_page_with_multi_param(ui1, pages_dir):
+def test_scan_dynamic_page_with_multi_param(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/blog/[year]").mkdir(parents=True)
     (pages_dir / "demo/blog/[year]/[slug].html").touch()
-    ui1.scan_pages()
+    ui = ui_without_url_rules
 
-    ui1.add_url_rule.assert_called()
-    rule = ui1.add_url_rule.call_args[0][0]
-    endpoint = ui1.add_url_rule.call_args[0][1]
-    view_func = ui1.add_url_rule.call_args[0][2]
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_called()
+    rule = ui.add_url_rule.call_args[0][0]
+    endpoint = ui.add_url_rule.call_args[0][1]
+    view_func = ui.add_url_rule.call_args[0][2]
     assert rule == "/blog/<year>/<slug>"
     assert endpoint == "show_page"
     assert isinstance(view_func, partial)
-    assert view_func.func == ui1.show_page
+    assert view_func.func == ui.show_page
     assert view_func.args == ("demo/blog/[year]/[slug].html",)
 
 
-def test_scan_and_avoid_duplicated_rules(ui1, pages_dir):
+def test_scan_and_avoid_duplicated_rules(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/index.html").touch()
     (pages_dir / "demo/hello.html").touch()
-    ui1.deferred_rules = ["/", "/hello"]
-    ui1.scan_pages()
-    ui1.add_url_rule.assert_not_called()
+    ui = ui_without_url_rules
+    ui_without_url_rules.deferred_rules = ["/", "/hello"]
+
+    ui.scan_pages()
+
+    ui.add_url_rule.assert_not_called()
 
 
-def test_scan_page_with_specific_extensions(ui1, pages_dir):
+def test_scan_page_with_specific_extensions(ui_without_url_rules, pages_dir):
     (pages_dir / "demo/blog/[id]").mkdir(parents=True)
     (pages_dir / "demo/blog/[id]/x.html").touch()
     (pages_dir / "demo/blog/[id]/y.jinja").touch()
     (pages_dir / "demo/blog/[id]/z.jinja2").touch()
-    ui1.jinja_extensions = [".jinja", ".jinja2"]
-    ui1.scan_pages()
+    ui = ui_without_url_rules
+    ui.jinja_extensions = [".jinja", ".jinja2"]
 
-    calls = ui1.add_url_rule.call_args_list
+    ui.scan_pages()
+
+    calls = ui.add_url_rule.call_args_list
     assert len(calls) == 2
     assert calls[0][0][0] == "/blog/<id>/y"
     assert calls[1][0][0] == "/blog/<id>/z"
@@ -240,70 +268,85 @@ def render_template(monkeypatch):
     return method
 
 
-def test_show_static_page(ui1, render_template):
-    ui1.show_page("demo/about.html")
+def test_show_static_page(ui_without_url_rules, render_template):
+    ui = ui_without_url_rules
+    ui.show_page("demo/about.html")
     render_template.assert_called_with("demo/about.html")
 
 
-def test_show_dynamic_page(ui1, render_template):
-    ui1.show_page("demo/[id].html", id=7)
+def test_show_dynamic_page(ui_without_url_rules, render_template):
+    ui = ui_without_url_rules
+    ui.show_page("demo/[id].html", id=7)
     render_template.assert_called_with("demo/[id].html", id=7)
 
 
-def test_bind_access(ui1):
-    access = MagicMock()
-    ui1.bind_access(access)
-    assert ui1.access is access
-
-
-def test_bind_only_once(ui1):
-    ui1.bind_access(MagicMock())
-    with pytest.raises(RuntimeError) as exc_info:
-        ui1.bind_access(MagicMock())
-    err_msg = f"{ui1} has already an access"
-    assert str(exc_info.value) == err_msg
-
-
-def test_require_login_without_access(ui1):
-    with pytest.raises(RuntimeError) as exc_info:
-        ui1.require_login()
-    err_msg = f"{ui1} has no access"
-    assert str(exc_info.value) == err_msg
-
+@pytest.fixture
+def authenticator():
+    return MagicMock()
 
 @pytest.fixture
-def ui2(ui1):
-    ui1.access = MagicMock()
-    return ui1
+def ui_with_rbac(import_name, authenticator):
+    """ui with mocked add_url_rule"""
+    ui = pkg.Ui(import_name)
+    ui.authenticator = authenticator
+    return ui
 
 
-def test_require_login_by_using_access(ui2):
-    decorator = MagicMock()
-    ui2.access.require_login.return_value = decorator
-    result = ui2.require_login()
+def test_login_required_allows_authenticated_user(ui_with_rbac, authenticator):
+    authenticator.is_authenticated.return_value = True
+    ui = ui_with_rbac
 
-    ui2.access.require_login.assert_called_with()
-    assert result is decorator
+    @ui.login_required
+    def view():
+        return "Hello"
 
-
-def test_require_role_by_using_access(ui2):
-    decorator = MagicMock()
-    ui2.access.require_role.return_value = decorator
-    result = ui2.require_role("admin")
-
-    assert result is decorator
-    ui2.access.require_role.assert_called_with("admin")
+    assert view() == "Hello"
 
 
-def test_require_permission_by_using_access(ui2):
-    decorator = MagicMock()
-    ui2.access.require_permission.return_value = decorator
-    result = ui2.require_permission("users.read")
+def test_login_required_rejects_anonymous(ui_with_rbac, authenticator):
+    authenticator.is_authenticated.return_value = False
+    authenticator.on_unauthenticated.return_value = "Login please"
+    ui = ui_with_rbac
 
-    assert result is decorator
-    ui2.access.require_permission.assert_called_with("users.read")
+    @ui.login_required
+    def view():
+        return "Hello"
+
+    assert view() == "Login please"
+
+def test_roles_accepted_allows_authorized_user(ui_with_rbac, authenticator):
+    authenticator.is_authenticated.return_value = True
+    authenticator.has_roles.return_value = True
+    authenticator.on_unauthorized.return_value = "No permission"
+    ui = ui_with_rbac
+
+    @ui.roles_accepted("admin")
+    def view():
+        return "Hi"
+
+    assert view() == "Hi"
 
 
-def test_require_multiple_permissions(ui2):
-    ui2.require_permission("users.read", "users.write")
-    ui2.access.require_permission.assert_called_with("users.read", "users.write")
+def test_roles_accepted_rejects_missing_role(ui_with_rbac, authenticator):
+    authenticator.is_authenticated.return_value = True
+    authenticator.has_roles.return_value = False
+    authenticator.on_unauthorized.return_value = "No permission"
+    ui = ui_with_rbac
+
+    @ui.roles_accepted("admin")
+    def view():
+        return "Hi"
+
+    assert view() == "No permission"
+
+def test_roles_accepted_rejects_anonymous(ui_with_rbac, authenticator):
+    authenticator.is_authenticated.return_value = False
+    authenticator.on_unauthenticated.return_value = "Login please"
+    ui = ui_with_rbac
+
+    @ui.roles_accepted("admin")
+    def view():
+        return "Hi"
+
+    assert view() == "Login please"
+
