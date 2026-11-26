@@ -87,11 +87,30 @@ def test_require_project_version_in_config(app1, project_manager):
     assert str(exc_info.value) == err_msg
 
 
+AUTH_CODE = """
+    \nclass TestAuth:
+    \nrest_api = RestApi(__file__)
+    """
+
+
 @pytest.fixture
-def app2(app1):
+def authenticator_path(project2):
+    auth_dir = project2 / "modules/auth"
+    auth_dir.mkdir(parents=True)
+    auth_file = auth_dir / "services.py"
+    auth_file.write_text("\nclass TestAuth:pass", encoding="utf-8")
+    return "modules.auth.services.TestAuth"
+
+
+@pytest.fixture
+def app2(app1, authenticator_path):
     """app with minimal config"""
     app = app1
-    app.config = {"PIGAL_PROJECT_NAME": "demo", "PIGAL_PROJECT_VERSION": "0.1"}
+    app.config = {
+        "PIGAL_PROJECT_NAME": "demo",
+        "PIGAL_PROJECT_VERSION": "0.1",
+        "PIGAL_AUTHENTICATOR_PATH": authenticator_path,
+    }
     return app
 
 
@@ -106,6 +125,15 @@ def test_create_main_rest_api(app2, project_manager):
     ext.Api.assert_called_with(api_bp, title="demo API", version="0.1")
     app2.register_blueprint.assert_any_call(api_bp)
     assert project_manager.api == main_rest_api
+
+
+@pytest.mark.usefixtures("project2")
+def test_create_global_authenticator(app2, project_manager, authenticator_path):
+    project_manager.init_app(app2)
+
+    assert project_manager.authenticator is not None
+    assert project_manager.authenticator.__class__.__name__ in authenticator_path
+    assert project_manager.authenticator.__class__.__module__ in authenticator_path
 
 
 @pytest.fixture
@@ -168,6 +196,15 @@ def test_ignore_invalid_module_ui(app2, project3, project_manager):
         project_manager.init_app(app2)
     err_msg = "modules.demo.views.ui is not an instance of Ui"
     assert str(exc_info.value) == err_msg
+
+
+def test_set_module_ui_authenticator(app2, project3, project_manager):
+    routes_file = project3 / "modules/demo/views.py"
+    routes_file.write_text(UI_CODE, encoding="utf-8")
+    project_manager.init_app(app2)
+
+    ui = pkg.Ui.return_value
+    assert ui.authenticator is project_manager.authenticator
 
 
 @pytest.fixture

@@ -29,6 +29,7 @@ class ProjectManager:
         self._find_project_dir(app)
         self._check_project_structure()
         self._check_project_config(app)
+        self._setup_authenticator(app)
         self._setup_rest_api(app)
         self._register_modules(app)
 
@@ -51,6 +52,13 @@ class ProjectManager:
             if name not in app.config:
                 msg = f"Configuration parameter '{name}' is missing"
                 raise exc.InvalidProjectConfig(msg)
+
+    def _setup_authenticator(self, app):
+        auth_path = app.config["PIGAL_AUTHENTICATOR_PATH"]
+        module_name, class_name = auth_path.rsplit(".", 1)
+        module = importlib.import_module(module_name)
+        auth_cls = getattr(module, class_name)
+        self.authenticator = auth_cls()
 
     def _setup_rest_api(self, app):
         config = app.config
@@ -85,6 +93,7 @@ class ProjectManager:
             msg = f"{root}.ui is not an instance of Ui"
             raise exc.InvalidUi(msg)
 
+        ui.authenticator = self.authenticator
         ui.scan_pages()
         url_prefix = "/" if name == "home" else f"/{name}"
         app.register_blueprint(ui, url_prefix=url_prefix)
