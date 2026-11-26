@@ -90,7 +90,7 @@ def test_create_app_config_file(project_dir):
         code = file.read()
 
     # Then
-    assert 'class Config:' in code
+    assert "class Config:" in code
     assert '    PIGAL_PROJECT_NAME = "MyProject"' in code
     assert '    PIGAL_PROJECT_VERSION = "0.0"' in code
 

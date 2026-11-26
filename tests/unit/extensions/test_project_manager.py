@@ -217,5 +217,3 @@ def test_ignore_invalid_module_rest_api(app2, project4, project_manager):
     err_msg = "modules.demo.resources.rest_api "
     err_msg += "is not an instance of RestApi"
     assert str(exc_info.value) == err_msg
-
-

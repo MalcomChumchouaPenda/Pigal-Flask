@@ -97,13 +97,13 @@ class Ui(Blueprint):
             rule = "/" + rule
         return rule
 
-
     def login_required(self, func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             if not self.authenticator.is_authenticated():
                 return self.authenticator.on_unauthenticated()
             return func(*args, **kwargs)
+
         return wrapper
 
     def roles_accepted(self, *roles):
@@ -115,7 +115,9 @@ class Ui(Blueprint):
                 if not self.authenticator.has_roles(*roles):
                     return self.authenticator.on_unauthorized()
                 return func(*args, **kwargs)
+
             return wrapper
+
         return decorator
 
 
@@ -128,7 +130,7 @@ class RestApi(Namespace):
     def __init__(self, import_name):
         # name = re.findall(r"\.([A-Za-z0-9_]+_v\d+)$", import_name)[0]
         name = re.findall(r"\.([A-Za-z0-9_]+)\.resources$", import_name)[-1]
-        name += '_v0'
+        name += "_v0"
         super().__init__(name, description=f"{name} Rest-Full API")
         self.import_name = import_name
 

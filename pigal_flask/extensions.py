@@ -117,7 +117,7 @@ class ProjectManager:
             msg = f"{root}.rest_api is not an instance of RestApi"
             raise exc.InvalidRestApi(msg)
 
-        print('adding', self.api, api, f"/{name}/v0")
+        print("adding", self.api, api, f"/{name}/v0")
         self.api.add_namespace(api, path=f"/{name}/v0")
         app.logger.info(f"Register api: {root} => {api.path}")
         return True

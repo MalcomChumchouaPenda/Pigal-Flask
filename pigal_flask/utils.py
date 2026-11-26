@@ -1,4 +1,3 @@
-
 from abc import ABC, abstractmethod
 from sqlalchemy.orm import declared_attr
 
@@ -38,4 +37,3 @@ class Authenticator(ABC):
     @abstractmethod
     def on_unauthorized(self):
         """Handle an unauthorized access attempt (insufficient permissions)."""
-

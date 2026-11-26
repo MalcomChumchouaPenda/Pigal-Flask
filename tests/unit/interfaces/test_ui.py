@@ -284,6 +284,7 @@ def test_show_dynamic_page(ui_without_url_rules, render_template):
 def authenticator():
     return MagicMock()
 
+
 @pytest.fixture
 def ui_with_rbac(import_name, authenticator):
     """ui with mocked add_url_rule"""
@@ -314,6 +315,7 @@ def test_login_required_rejects_anonymous(ui_with_rbac, authenticator):
 
     assert view() == "Login please"
 
+
 def test_roles_accepted_allows_authorized_user(ui_with_rbac, authenticator):
     authenticator.is_authenticated.return_value = True
     authenticator.has_roles.return_value = True
@@ -339,6 +341,7 @@ def test_roles_accepted_rejects_missing_role(ui_with_rbac, authenticator):
 
     assert view() == "No permission"
 
+
 def test_roles_accepted_rejects_anonymous(ui_with_rbac, authenticator):
     authenticator.is_authenticated.return_value = False
     authenticator.on_unauthenticated.return_value = "Login please"
@@ -349,4 +352,3 @@ def test_roles_accepted_rejects_anonymous(ui_with_rbac, authenticator):
         return "Hi"
 
     assert view() == "Login please"
-
