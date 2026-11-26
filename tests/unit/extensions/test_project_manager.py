@@ -135,6 +135,12 @@ def test_create_global_authenticator(app2, project_manager, authenticator_path):
     assert project_manager.authenticator.__class__.__name__ in authenticator_path
     assert project_manager.authenticator.__class__.__module__ in authenticator_path
 
+@pytest.mark.usefixtures("project2")
+def test_create_no_authenticator_without_path(app2, project_manager):
+    app2.config["PIGAL_AUTHENTICATOR_PATH"] = None
+    project_manager.init_app(app2)
+    assert project_manager.authenticator is None
+
 
 @pytest.fixture
 def project3(project2):

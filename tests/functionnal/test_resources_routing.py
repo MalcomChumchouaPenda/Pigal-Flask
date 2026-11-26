@@ -36,7 +36,7 @@ def test_route_default_api_doc(app):
 
 
 REST_CODE = """
-    \nfrom flask_restx import Resource, Api
+    \nfrom flask_restx import Resource
     \nfrom pigal_flask import RestApi
 
     \nrest_api = RestApi(__name__)

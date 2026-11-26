@@ -20,9 +20,10 @@ class ProjectManager:
 
     def __init__(self, app=None):
         super().__init__()
+        self._project_dir = None
+        self.authenticator = None
         if app is not None:
             self.init_app(app)
-        self._project_dir = None
 
     def init_app(self, app):
         """Initializes the Flask app"""
@@ -54,11 +55,12 @@ class ProjectManager:
                 raise exc.InvalidProjectConfig(msg)
 
     def _setup_authenticator(self, app):
-        auth_path = app.config["PIGAL_AUTHENTICATOR_PATH"]
-        module_name, class_name = auth_path.rsplit(".", 1)
-        module = importlib.import_module(module_name)
-        auth_cls = getattr(module, class_name)
-        self.authenticator = auth_cls()
+        auth_path = app.config.get("PIGAL_AUTHENTICATOR_PATH")
+        if auth_path is not None:    
+            module_name, class_name = auth_path.rsplit(".", 1)
+            module = importlib.import_module(module_name)
+            auth_cls = getattr(module, class_name)
+            self.authenticator = auth_cls()
 
     def _setup_rest_api(self, app):
         config = app.config
