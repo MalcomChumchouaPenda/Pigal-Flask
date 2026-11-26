@@ -13,7 +13,6 @@ from sqlalchemy.exc import SAWarning
 
 from . import exceptions as exc
 from . import utils
-from .security.abstract import AccessStore, AccessProvider
 from .interfaces import Ui, PublicApi, RestApi
 
 
@@ -121,102 +120,6 @@ class ProjectManager:
         self.api.add_namespace(api, path=f"/{name}/v0")
         app.logger.info(f"Register api: {root} => {api.path}")
         return True
-
-
-class AccessManager:
-
-    def __init__(self, app=None):
-        super().__init__()
-        self.store = None
-        self.provider = None
-        if app is not None:
-            self.init_app(app)
-
-    def init_app(self, app):
-        app.extensions["access"] = self
-        module = self._load_access_module()
-        self._load_store(app, module)
-        self._load_provider(app, module)
-
-    def _load_access_module(self):
-        root = f"modules.auth.services.access"
-        module = importlib.import_module(root)
-        return module
-
-    def _load_store(self, app, module):
-        cls_name = app.config.get("PIGAL_ACCESS_STORE_CLASS")
-        if cls_name is None:
-            msg = "PIGAL_ACCESS_STORE_CLASS is not configured"
-            raise exc.InvalidAppConfig(msg)
-        Store = getattr(module, cls_name)
-        if not issubclass(Store, AccessStore):
-            msg = f"{Store} is not valid AccessStore"
-            raise TypeError(msg)
-        self.store = Store()
-
-    def _load_provider(self, app, module):
-        cls_name = app.config.get("PIGAL_ACCESS_PROVIDER_CLASS")
-        if cls_name is None:
-            msg = "PIGAL_ACCESS_PROVIDER_CLASS is not configured"
-            raise exc.InvalidAppConfig(msg)
-
-        Provider = getattr(module, cls_name)
-        if not issubclass(Provider, AccessProvider):
-            msg = f"{Provider} is not valid AccessProvider"
-            raise TypeError(msg)
-        self.provider = Provider(store=self.store)
-
-    def identity(self):
-        return self.provider.identity()
-
-    def is_authenticated(self):
-        return self.provider.is_authenticated()
-
-    def has_role(self, role):
-        return self.provider.has_role(role)
-
-    def has_permission(self, permission):
-        return self.provider.has_permission(permission)
-
-    def require_login(self):
-        def decorator(func):
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                if not self.is_authenticated():
-                    abort(401)
-                return func(*args, **kwargs)
-
-            return wrapper
-
-        return decorator
-
-    def require_role(self, role):
-        def decorator(func):
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                if not self.is_authenticated():
-                    abort(401)
-                if not self.has_role(role):
-                    abort(403)
-                return func(*args, **kwargs)
-
-            return wrapper
-
-        return decorator
-
-    def require_permission(self, permission):
-        def decorator(func):
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                if not self.is_authenticated():
-                    abort(401)
-                if not self.has_permission(permission):
-                    abort(403)
-                return func(*args, **kwargs)
-
-            return wrapper
-
-        return decorator
 
 
 warnings.filterwarnings(
