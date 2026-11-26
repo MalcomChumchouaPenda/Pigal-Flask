@@ -25,7 +25,7 @@ Modelling Databases
 
 The ``app.extensions`` module will provide a ``db`` object which:
 
-* is an instance of :any:`PigalDb` class (an extended ``Flask-SQLAlchemy`` extension)
+* is an instance of :any:`ProjectDb` class (an extended ``Flask-SQLAlchemy`` extension)
 * allows to model your database without conflict (within Multi-Databases architecture)
 
 

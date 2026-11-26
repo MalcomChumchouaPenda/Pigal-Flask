@@ -141,7 +141,7 @@ warnings.filterwarnings(
 )
 
 
-class PigalDb(SQLAlchemy):
+class ProjectDb(SQLAlchemy):
 
     def __init__(self, *args, **kwargs):
         kwargs["disable_autonaming"] = True

@@ -4,12 +4,12 @@ import importlib
 import pytest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from pigal_flask.extensions import PigalDb
+from pigal_flask.extensions import ProjectDb
 from pigal_flask.exceptions import InvalidProjectConfig
 
 
 def test_is_sqlachemy_instance():
-    assert issubclass(PigalDb, SQLAlchemy)
+    assert issubclass(ProjectDb, SQLAlchemy)
 
 
 @pytest.fixture
@@ -31,7 +31,7 @@ def app1(tmpdir):
 def test_requires_project_name_in_app_config(app1):
     app = app1
     with pytest.raises(InvalidProjectConfig) as exc_info:
-        db = PigalDb()
+        db = ProjectDb()
         db.init_app(app)
     err_msg = "Configuration parameter 'PIGAL_DB_URI_TEMPLATE' is missing"
     assert str(exc_info.value) == err_msg
@@ -48,7 +48,7 @@ def test_requires_project_name_in_app_config(app1):
 def test_creates_default_sqlalchemy_uri(app1, uri_template):
     app1.config["PIGAL_DB_URI_TEMPLATE"] = uri_template
     app = app1
-    db = PigalDb()
+    db = ProjectDb()
     db.init_app(app)
     project_path = app.project_dir.strpath
     kwargs = {"backend_id": "default", "project_dir": project_path}
@@ -79,7 +79,7 @@ def app2(app1):
 def test_creates_sqlalchemy_binds_by_backend(app2, uri_template):
     app2.config["PIGAL_DB_URI_TEMPLATE"] = uri_template
     app = app2
-    db = PigalDb()
+    db = ProjectDb()
     db.init_app(app)
     db_binds = app.config["SQLALCHEMY_BINDS"]
     project_path = app.project_dir.strpath
@@ -104,7 +104,7 @@ def app3(app1):
 def test_ignores_private_directories_in_backends_directory(app3):
     app3.config["PIGAL_DB_URI_TEMPLATE"] = "sqlite:///{backend_id}.db"
     app = app3
-    db = PigalDb()
+    db = ProjectDb()
     db.init_app(app)
     assert len(app.config["SQLALCHEMY_BINDS"]) == 0
 
@@ -114,7 +114,7 @@ def db1(app1):
     """Flask app with default db uri template"""
     app = app1
     app.config["PIGAL_DB_URI_TEMPLATE"] = "sqlite:///{backend_id}.db"
-    db = PigalDb(app)
+    db = ProjectDb(app)
     return db
 
 

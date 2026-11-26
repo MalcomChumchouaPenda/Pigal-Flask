@@ -1,5 +1,5 @@
-from pigal_flask import ProjectManager, PigalDb
+from pigal_flask import ProjectManager, ProjectDb
 
 
-db = PigalDb()
+db = ProjectDb()
 project_manager = ProjectManager()

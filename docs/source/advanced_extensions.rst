@@ -30,9 +30,9 @@ By default, ``app/extensions.py`` contains the following code:
 
 .. code-block:: python
 
-    from pigal_flask import ProjectManager, PigalDb
+    from pigal_flask import ProjectManager, ProjectDb
 
-    db = PigalDb()
+    db = ProjectDb()
     project_manager = ProjectManager()
 
 
@@ -92,7 +92,7 @@ by default ``app/__init__.py`` contains the following code:
         app = Flask(__name__)
         app.config.from_object(Config)
 
-        db.init_app(app)         # initialize PigalDb extension
+        db.init_app(app)         # initialize ProjectDb extension
         pigal.init_app(app)      # initialize Pigal extension
 
         with app.app_context():
